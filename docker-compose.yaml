@@ -27,8 +27,6 @@ services:
     image: postgres:12.1
     env_file: .env
     # restart: unless-stopped
-    ports:
-      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -40,8 +38,12 @@ services:
     # restart: unless-stopped
     depends_on:
       - 'db'
-
+    volumes:
+    - ./servers.json:/pgadmin4/servers.json
+    - pgadmin-data:/var/lib/pgadmin
+      
 volumes:
   gem_cache:
   db_data:
   node_modules:
+  pgadmin-data:
