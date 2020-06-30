@@ -27,18 +27,20 @@ RUN apk add --update --no-cache \
 	yarn \
 	nodejs
 
-RUN gem update --system
-RUN gem install --default bundler -v 2.1.4
 RUN mkdir /myapp
 WORKDIR /myapp
 
-COPY ./project ./
+RUN gem update --system
+RUN gem install --default bundler -v 2.1.4
+
 COPY ./project/Gemfile ./project/Gemfile.lock ./
 RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle check || bundle install
 
 COPY ./project/package.json ./project/yarn.lock ./
 RUN yarn install --ignore-engines
+
+COPY ./project ./
 
 EXPOSE 3000
 # Add a script to be executed every time the container starts.
