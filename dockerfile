@@ -36,15 +36,14 @@ RUN gem install --default bundler -v 2.1.4
 COPY ./project/Gemfile ./project/Gemfile.lock ./
 RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle check || bundle install
+RUN gem install rails -v 6.0.3.2
 
 COPY ./project/package.json ./
-COPY ./project/yarn.lock ./
+# COPY ./project/yarn.lock ./
 
 RUN yarn install --ignore-engines
 # RUN yarn install --check-files
 # RUN yarn install
-
-RUN gem install rails -v 6.0.3.2
 
 COPY ./project ./
 EXPOSE 3000
