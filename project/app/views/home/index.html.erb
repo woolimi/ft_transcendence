@@ -1,0 +1,19 @@
+<h1>Home#index</h1>
+<p>Find me in app/views/home/index.html.erb</p>
+
+<div class="jumbotron text-center">
+  <h1>My First Bootstrap Page</h1>
+  <p>Resize this responsive page to see the effect!</p>
+</div>
+
+<script>
+	$(document).ready(function() {
+		const FV = Backbone.View.extend({
+			render: function() {
+				console.log('hihi');
+			}
+		})
+		const fv = new FV();
+		fv.render();
+	})
+</script>
