@@ -1,4 +1,4 @@
-FROM ruby:2.5.1-alpine3.7
+FROM ruby:2.7.1-alpine3.12
 
 ENV BUNDLER_VERSION=2.1.4
 RUN apk add --update --no-cache \
@@ -22,7 +22,6 @@ RUN apk add --update --no-cache \
 	openssl \
 	pkgconfig \
 	postgresql-dev \
-	python \
 	tzdata \
 	yarn \
 	nodejs
@@ -31,19 +30,18 @@ RUN mkdir /myapp
 WORKDIR /myapp
 
 RUN gem update --system
+RUN gem install rails -v 6.0.3.2
 RUN gem install --default bundler -v 2.1.4
 
 COPY ./project/Gemfile ./project/Gemfile.lock ./
-RUN bundle config build.nokogiri --use-system-libraries
-RUN bundle check || bundle install
-RUN gem install rails -v 6.0.3.2
+# RUN bundle config build.nokogiri --use-system-libraries
+# RUN bundle check || bundle install
+RUN bundle install
 
 COPY ./project/package.json ./
-# COPY ./project/yarn.lock ./
-
-RUN yarn install --ignore-engines
+COPY ./project/yarn.lock ./
+RUN yarn install
 # RUN yarn install --check-files
-# RUN yarn install
 
 COPY ./project ./
 EXPOSE 3000
