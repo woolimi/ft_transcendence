@@ -30,20 +30,17 @@ RUN mkdir /myapp
 WORKDIR /myapp
 
 RUN gem update --system
+# remove this later
 RUN gem install rails -v 6.0.3.2
 RUN gem install --default bundler -v 2.1.4
 
 COPY ./project/Gemfile ./project/Gemfile.lock ./
-# RUN bundle config build.nokogiri --use-system-libraries
-# RUN bundle check || bundle install
 RUN bundle install
 
 COPY ./project/package.json ./
 COPY ./project/yarn.lock ./
-RUN yarn install
-# RUN yarn install --check-files
-
 COPY ./project ./
+
 EXPOSE 3000
 
 # Add a script to be executed every time the container starts.
