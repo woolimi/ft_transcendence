@@ -1,1 +1,13 @@
-<mxfile host="app.diagrams.net" modified="2020-07-11T09:53:26.574Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36" etag="A-ch4xjb4HFPb0lxqaWr" version="13.4.2" type="github"><diagram id="_0C07gXBYp2rqWtQ9HyH" name="Page-1">ddHBDoMgDADQr+GOkDnvzm0XTx52JtIJCVqDLLp9/TTgHHE7UV4LJYXwvJ0uVvSqRAmGMConwk+EsSRN2bws8vRyZJmHxmoZijao9AsC0qAPLWGICh2icbqPscaug9pFJqzFMS67o4m79qKBHVS1MHu9aemU1+xAN7+CbtTaOaEh04q1OMCghMTxi3hBeG4RnY/aKQezDG+diz93/pP9PMxC534cmIPt7nkT/RAv3g==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2020-07-11T10:04:31.172Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36" etag="axWXswu6r4yJFFvamSni" version="13.4.2" type="github">
+  <diagram id="_0C07gXBYp2rqWtQ9HyH" name="Page-1">
+    <mxGraphModel dx="950" dy="416" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="1k_r3KtNy3Kql5S1wtm--1" value="&lt;div style=&quot;box-sizing: border-box ; width: 100% ; background: #e4e4e4 ; padding: 2px&quot;&gt;user_data&lt;/div&gt;&lt;table style=&quot;width: 100% ; font-size: 1em&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;PK&lt;/td&gt;&lt;td&gt;user_id&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK1&lt;/td&gt;&lt;td&gt;foreignKey&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;display_name UNIQUE&lt;br&gt;oauth_key/session_key&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="150" width="410" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
