@@ -28,6 +28,7 @@ class SessionsController < ApplicationController
 			user.uid = @info["id"]
 			user.nickname = @info["login"] # wpark
 			user.avatar_url = @info["image_url"] # "https://cdn.intra.42.fr/users/wpark.jpg"
+			user.avatar_url[user.avatar_url.rindex('/')] = "/small_" # "https://cdn.intra.42.fr/users/small_wpark.jpg"
 			user.save
 			flash[:notice] = "user created"
 		end

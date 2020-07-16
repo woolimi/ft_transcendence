@@ -1,11 +1,12 @@
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
-	<a class="navbar-brand" href="#">
+	<a class="navbar-brand" href="/#game">
 		42 Pong
 	</a>
+
   <div class="nav-user">
-		<img class="rounded-circle nav-avatar" src=""/>
+		<img class="rounded-circle nav-avatar" src="<%= user["avatar_url"] %>"/>
 		<div>
-			<div>wpark</div>
+			<div><%= user["nickname"] %></div>
 			<div>win : 10 / loss : 10</div>
 		</div>
 	</div>

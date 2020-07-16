@@ -1,5 +1,5 @@
 <script>
-	const user = <%= raw @user %>
+	const user = <%= raw @user.to_json %>
 </script>
 
 
@@ -12,7 +12,7 @@
 <!-- user_signed_in = true -->
 <script type="text/template" name="game">
 
-	<%= render "navbar" %>
+	<%= render "navbar", user: @user %>
 
 	<div class="container-fluid">
 		<div class="row">
