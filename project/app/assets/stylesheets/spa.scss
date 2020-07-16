@@ -1,0 +1,58 @@
+// Place all the styles related to the spa controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+html, body, #app{
+  height: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.nav-link {
+  text-align: right;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+}
+
+.nav-avatar {
+  width: 40px;
+  height: 40px;
+  margin: 0 10px 0 5px;
+}
+
+.side-list {
+  width: 100%;
+  min-height: 40vh;
+}
+
+.card-header {
+  padding: 5px;
+}
+
+.card-body {
+  padding: 0
+}
+
+.list-group-item {
+  padding: 0 5px 0 5px;
+  background-color: #00000036;
+}
+
+@media (max-width: 767px) {
+  .side-list {
+    width: 50%;
+    min-height: 30vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .side-list {
+    width: 100%;
+    min-height: 30vh;
+  }
+}
