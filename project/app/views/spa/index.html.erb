@@ -1,0 +1,32 @@
+<script>
+	const user = <%= raw @user.to_json %>
+</script>
+
+
+
+<div id="app"></div>
+
+<!-- user_signed_in = false -->
+<%= render "login" %>
+
+<!-- user_signed_in = true -->
+<script type="text/template" name="game">
+
+	<%= render "navbar", user: @user %>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-8 border">
+				content
+			</div>
+			<div class="col-md-4">
+				<div class="row">
+
+					<%= render "channels" %>
+					<%= render "friends" %>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</script>

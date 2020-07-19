@@ -1,0 +1,1 @@
+sudo chmod -R 775 */* && sudo chown -R wpark:wpark */*
