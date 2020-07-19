@@ -5,10 +5,6 @@
 
   <div class="nav-user">
 		<img class="rounded-circle nav-avatar" src="<%= user["avatar_url"] %>"/>
-		<div>
-			<div><%= user["nickname"] %></div>
-			<div>win : 10 / loss : 10</div>
-		</div>
 	</div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -19,13 +15,13 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">game <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/#game">game <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">profile</a>
+        <a class="nav-link" href="/#profile">profile</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">guild</a>
+        <a class="nav-link" href="/#guild">guild</a>
       </li>
       <li class="nav-item">
 				<%= link_to "logout", destroy_user_session_path, class: "nav-link", :method => :delete %>
