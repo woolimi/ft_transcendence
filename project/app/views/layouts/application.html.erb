@@ -5,7 +5,15 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= render "backboneTemplates"%>
+    <%= render "spa/backboneTemplates/channelsList"%>
+    <%= render "spa/backboneTemplates/friendsList"%>
+    <%= render "spa/backboneTemplates/gameContent"%>
+    <%= render "spa/backboneTemplates/profileContent"%>
+    <%= render "spa/backboneTemplates/guildContent"%>
+    <%= render "spa/backboneTemplates/login"%>
+    <%= render "spa/backboneTemplates/navbarItems"%>
+    <%= render "spa/backboneTemplates/navbarUser"%>
+
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_pack_tag 'application' %>
   </head>

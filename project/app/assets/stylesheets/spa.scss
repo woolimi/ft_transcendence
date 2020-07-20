@@ -6,6 +6,16 @@ html, body, #app{
   height: 100%;
 }
 
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
+#content-wrapper {
+  flex: 1;
+  overflow: auto;
+}
+
 .full-height {
   height: 100%;
 }
@@ -27,7 +37,6 @@ html, body, #app{
 
 .side-list {
   width: 100%;
-  min-height: 40vh;
 }
 
 .card-header {
@@ -38,21 +47,17 @@ html, body, #app{
   padding: 0
 }
 
+.side-list-item {
+  background-color: #00000036;
+}
+
 .list-group-item {
   padding: 0 5px 0 5px;
-  background-color: #00000036;
 }
 
 @media (max-width: 767px) {
   .side-list {
     width: 50%;
-    min-height: 30vh;
-  }
-}
-
-@media (max-width: 600px) {
-  .side-list {
-    width: 100%;
-    min-height: 30vh;
+    min-height: 150px;
   }
 }

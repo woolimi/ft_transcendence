@@ -4,13 +4,13 @@
 <% else %>
 	<%= render "navbar" %>
 
-	<div class="container-fluid">
-		<div class="row">
+	<div class="container-fluid" id="content-wrapper">
+		<div class="row h-100">
 			<div class="col-md-8 border" id="view-content">
 				<!-- view-content -->
 			</div>
 			<div class="col-md-4">
-				<div class="row">
+				<div class="row h-100">
 					<%= render "channels" %>
 					<%= render "friends" %>
 				</div>
@@ -21,7 +21,6 @@
 </div>
 
 <% if user_signed_in? %>
-
 <script>
 let user_profile_model;
 $(()=> {
