@@ -3,13 +3,13 @@
 	<%= render "login" %>
 </script>
 
-<!-- navbar -->
+<!-- navbar user -->
 <script type="text/template" name="tmpl-nav-user">
-	<img class="rounded-circle nav-avatar" src="<%%= image_url %>"/>
+	<img class="rounded-circle nav-avatar" src="<%%= avatar_url %>"/>
 	<div><%%= display_name %></div>
 </script>
 
-<!-- navbar -->
+<!-- navbar items -->
 <script type="text/template" name="tmpl-nav-item">
 	<li class="nav-item <%%= (route === "game") ? "active" : "" %>">
 	<a class="nav-link" href="/#game">game</a>

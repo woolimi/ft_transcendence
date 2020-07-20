@@ -21,10 +21,13 @@
 </div>
 
 <% if user_signed_in? %>
+
 <script>
+let user_profile_model;
 $(()=> {
 	/* model setting */
 	const route_model = new SPA.Models.Route();
+	user_profile_model = new SPA.Models.UserProfile();
 
 	/* view setting */
 	const game_content_view = new SPA.Views.GameContent({
@@ -39,6 +42,10 @@ $(()=> {
 	const nav_item_view = new SPA.Views.NavItem({
 		el: $("#view-nav-item"),
 		model: route_model,
+	})
+	const nav_user_view = new SPA.Views.NavUser({
+		el: $("#view-nav-user"),
+		model: user_profile_model
 	})
 
 	/* router setting */

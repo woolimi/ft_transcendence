@@ -1,23 +1,9 @@
-import {
-	GameContent,
-	ProfileContent,
-	GuildContent,
-	NavItem
-} from "./Views.js";
-import {
-	Route,
-} from "./Models.js"
+import Views from "./Views.js";
+import Models from "./Models.js"
 
 const SPA = {
-	Views: {
-		GameContent,
-		ProfileContent, 
-		GuildContent,
-		NavItem
-	},
-	Models: {
-		Route,
-	}
+	Views: Views,
+	Models: Models
 }
 
 export default SPA;

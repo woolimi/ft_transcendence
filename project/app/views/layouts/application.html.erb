@@ -5,10 +5,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <% if user_signed_in? %>
     <%= render "backboneTemplates"%>
-    <% end %>
-    
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_pack_tag 'application' %>
   </head>
