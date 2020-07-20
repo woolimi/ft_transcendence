@@ -1,10 +1,22 @@
-import Backbone from "backbone"
-import Router from "./Router.js";
+import {
+	GameContent,
+	ProfileContent,
+	GuildContent,
+	NavItem
+} from "./Views.js";
+import {
+	Route,
+} from "./Models.js"
 
-class SPA {
-	constructor() {
-		new Router();
-		Backbone.history.start();		
+const SPA = {
+	Views: {
+		GameContent,
+		ProfileContent, 
+		GuildContent,
+		NavItem
+	},
+	Models: {
+		Route,
 	}
 }
 

@@ -1,24 +1,49 @@
 import _ from "underscore"
 import Backbone from "backbone"
 
-class LoginView extends Backbone.View {
-	initialize() {
-		this.template = $('script[name="login"]').html();
-	}
-	render() {
-		$("#app").html(_.template(this.template));
+const GameContent = Backbone.View.extend({
+	template: _.template($("script[name='tmpl-content-game']").html()),
+	render: function() {
+		const content = this.template(/* this.model.toJSON() */);
+		this.$el.html(content);
 		return this;
 	}
-}
+});
 
-class GameView extends Backbone.View {
-	initialize() {
-		this.template = $('script[name="game"]').html();
-	}
-	render() {
-		$("#app").html(_.template(this.template));
+const ProfileContent = Backbone.View.extend({
+	template: _.template($("script[name='tmpl-content-profile']").html()),
+	render: function () {
+		const content = this.template();
+		this.$el.html(content);
 		return this;
 	}
-}
+});
 
-export { LoginView, GameView };
+const GuildContent = Backbone.View.extend({
+	template: _.template($("script[name='tmpl-content-guild']").html()),
+	render: function () {
+		const content = this.template();
+		this.$el.html(content);
+		return this;
+	}
+});
+
+const NavItem = Backbone.View.extend({
+	template: _.template($("script[name='tmpl-nav-item']").html()),
+	initialize: function() {
+		this.listenTo(this.model, "change", this.render);
+		this.render();
+	},
+	render: function () {
+		const content = this.template(this.model.toJSON());
+		this.$el.html(content);
+		return this;
+	}
+});
+
+export { 
+	GameContent, 
+	ProfileContent, 
+	GuildContent,
+	NavItem
+};

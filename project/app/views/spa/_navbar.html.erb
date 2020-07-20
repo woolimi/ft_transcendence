@@ -3,8 +3,8 @@
 		42 Pong
 	</a>
 
-  <div class="nav-user">
-		<img class="rounded-circle nav-avatar" src="<%= user["avatar_url"] %>"/>
+  <div class="nav-user" id="view-nav-user">
+    <!-- view-nav-user template -->
 	</div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -13,16 +13,8 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/#game">game <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/#profile">profile</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/#guild">guild</a>
-      </li>
+    <ul class="navbar-nav ml-auto" id="view-nav-item">
+      <!-- view-nav-item template -->
       <li class="nav-item">
 				<%= link_to "logout", destroy_user_session_path, class: "nav-link", :method => :delete %>
       </li>
