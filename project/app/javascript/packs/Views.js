@@ -14,11 +14,20 @@ Views.GameContent = Backbone.View.extend({
 
 Views.ProfileContent = Backbone.View.extend({
 	template: _.template($("script[name='tmpl-content-profile']").html()),
+	initialize: function (options) {
+		this.route_model = options.route_model;
+		this.listenTo(this.model, "change", this.change);
+	},
 	render: function () {
-		const content = this.template();
+		const content = this.template(this.model.toJSON());
 		this.$el.html(content);
 		return this;
-	}
+	},
+	change: function () {
+		if (this.route_model.toJSON().route === "profile") {
+			this.render();
+		}
+	},
 });
 
 Views.GuildContent = Backbone.View.extend({

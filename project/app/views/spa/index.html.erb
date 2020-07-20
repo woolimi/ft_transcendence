@@ -33,7 +33,9 @@ $(()=> {
 		el: $("#view-content")
 	});
 	const profile_content_view = new SPA.Views.ProfileContent({
-		el: $("#view-content")
+		el: $("#view-content"),
+		model: user_profile_model,
+		route_model: route_model,
 	});
 	const guild_content_view = new SPA.Views.GuildContent({
 		el: $("#view-content")
@@ -44,7 +46,7 @@ $(()=> {
 	})
 	const nav_user_view = new SPA.Views.NavUser({
 		el: $("#view-nav-user"),
-		model: user_profile_model
+		model: user_profile_model,
 	})
 
 	/* router setting */
