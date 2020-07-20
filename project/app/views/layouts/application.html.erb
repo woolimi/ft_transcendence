@@ -4,64 +4,11 @@
     <title>42 Pong</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+
     <% if user_signed_in? %>
-    <!-- login page -->
-    <script type="text/template" name="login">
-      <%= render "login" %>
-    </script>
-
-    <!-- navbar -->
-    <script type="text/template" name="tmpl-nav-user">
-      <img class="rounded-circle nav-avatar" src="<%%= image_url %>"/>
-        <div><%%= display_name %></div>
-    </script>
-
-    <!-- navbar -->
-    <script type="text/template" name="tmpl-nav-item">
-      <li class="nav-item <%%= (route === "game") ? "active" : "" %>">
-        <a class="nav-link" href="/#game">game</a>
-      </li>
-      <li class="nav-item <%%= (route === "profile") ? "active" : "" %>">
-        <a class="nav-link" href="/#profile">profile</a>
-      </li>
-      <li class="nav-item <%%= (route === "guild") ? "active" : "" %>">
-        <a class="nav-link" href="/#guild">guild</a>
-      </li>
-    </script>
-
-    <!-- content -->
-    <script type="text/template" name="tmpl-content-game">
-      game content
-    </script>
-
-    <script type="text/template" name="tmpl-content-profile">
-      profile content
-    </script>
-
-    <script type="text/template" name="tmpl-content-guild">
-      guild content
-    </script>
-
-    <!-- channel -->
-    <script type="text/template" name="tmpl-channels-list">
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-          # public channel
-        </div>
-        <span class="badge badge-danger badge-pill">14</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-          # private channel <span class="oi oi-lock-locked"></span>
-        </div>
-        <span class="badge badge-danger badge-pill">14</span>
-      </li>
-    </script>
-
-    <!-- friends -->
-    <script type="text/template" name="tmpl-friends-list">
-    </script>
+    <%= render "backboneTemplates"%>
     <% end %>
+    
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_pack_tag 'application' %>
   </head>
