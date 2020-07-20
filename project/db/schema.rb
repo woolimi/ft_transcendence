@@ -10,12 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_19_142010) do
+ActiveRecord::Schema.define(version: 2020_07_20_110127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "user_logins", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "ft_id"
+    t.string "session_id"
+    t.string "access_token"
+    t.string "refresh_token"
+    t.string "token_expires_in"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["ft_id"], name: "index_user_logins_on_ft_id", unique: true
+  end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "ft_id", null: false
