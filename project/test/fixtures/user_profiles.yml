@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_name: MyString
+  display_name: MyString
+  two_factor: 
+  default: 
+  avatar_url: MyString
+  friend_list: MyString
+  block_list: MyString
+  is_owner: 
+  default: 
+  is_officer: 
+  default: 
+  is_admin: 
+  default: 
+
+two:
+  user_name: MyString
+  display_name: MyString
+  two_factor: 
+  default: 
+  avatar_url: MyString
+  friend_list: MyString
+  block_list: MyString
+  is_owner: 
+  default: 
+  is_officer: 
+  default: 
+  is_admin: 
+  default: 

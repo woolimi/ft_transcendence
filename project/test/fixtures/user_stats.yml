@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  wins_no: 1
+  losses_no: 1
+  ladder_level: 1
+  tournament_wins: 1
+
+two:
+  wins_no: 1
+  losses_no: 1
+  ladder_level: 1
+  tournament_wins: 1
