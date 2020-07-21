@@ -25,7 +25,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   # GET|POST /users/auth/marvin/callback
   def failure
-    super
+    flash[:alert] = "Failed to Sign in 42"
+    redirect_to root_path
   end
 
   protected
