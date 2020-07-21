@@ -1,0 +1,15 @@
+<!-- navbar items -->
+<script type="text/template" name="tmpl-nav-item">
+	<li class="nav-item <%%= (route === "game") ? "active" : "" %>">
+	<a class="nav-link" href="/#game">game</a>
+	</li>
+	<li class="nav-item <%%= (route === "profile") ? "active" : "" %>">
+	<a class="nav-link" href="/#profile">profile</a>
+	</li>
+	<li class="nav-item <%%= (route === "guild") ? "active" : "" %>">
+	<a class="nav-link" href="/#guild">guild</a>
+	</li>
+	<li class="nav-item">
+	<a class="nav-link" rel="nofollow" data-method="delete" href="/sign_out">logout</a>
+	</li>
+</script>

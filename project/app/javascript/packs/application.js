@@ -4,12 +4,10 @@
 // that code so it'll be compiled.
 
 require("@rails/ujs").start()
-require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
-var jQuery = require("jquery");
+const jQuery = require("jquery");
 
-// import jQuery from "jquery";
 global.$ = global.jQuery = jQuery;
 window.$ = window.jQuery = jQuery;
 
@@ -22,7 +20,8 @@ require("backbone");
 //
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
+
 import SPA from "./SPA.js"
-$(()=> {
-	new SPA();
-})
+
+global.SPA = SPA;
+window.SPA = SPA;
