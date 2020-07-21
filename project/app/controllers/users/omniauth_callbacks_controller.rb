@@ -7,14 +7,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       @user = User.from_omniauth(request.env["omniauth.auth"])
 
       if @user.persisted?
-          debug "user persisted true"
-          debug session.to_json
           sign_in_and_redirect @user, :event => :authentication
           set_flash_message(:notice, :success, :kind => "42") if is_navigational_format?
       else
           session["devise.marvin_data"] = request.env["omniauth.auth"]
-          debug "new user registration"
-          debug session.to_json
           redirect_to new_user_registration_url
       end
   end
@@ -29,7 +25,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   # GET|POST /users/auth/marvin/callback
   def failure
-    super
+    flash[:alert] = "Failed to Sign in 42"
+    redirect_to root_path
   end
 
   protected
