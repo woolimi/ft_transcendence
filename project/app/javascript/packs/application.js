@@ -22,6 +22,9 @@ require("backbone");
 // const imagePath = (name) => images(name, true)
 
 import SPA from "./SPA.js"
+import Helper from "./Helper.js"
 
 global.SPA = SPA;
 window.SPA = SPA;
+global.Helper = Helper;
+window.Helper = Helper;
