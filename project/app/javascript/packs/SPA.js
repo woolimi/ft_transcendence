@@ -1,11 +1,9 @@
-import Backbone from "backbone"
-import Router from "./Router.js";
+import Views from "./Views.js";
+import Models from "./Models.js"
 
-class SPA {
-	constructor() {
-		new Router();
-		Backbone.history.start();		
-	}
+const SPA = {
+	Views: Views,
+	Models: Models
 }
 
 export default SPA;
