@@ -22,11 +22,10 @@
 
 <% if user_signed_in? %>
 <script>
-let user_profile_model;
-$(()=> {
+$(() => {
 	/* model setting */
 	const route_model = new SPA.Models.Route();
-	user_profile_model = new SPA.Models.UserProfile();
+	const my_profile_model = new SPA.Models.UserProfile({id: "me"});
 
 	/* view setting */
 	const game_content_view = new SPA.Views.GameContent({
@@ -34,7 +33,7 @@ $(()=> {
 	});
 	const profile_content_view = new SPA.Views.ProfileContent({
 		el: $("#view-content"),
-		model: user_profile_model,
+		model: my_profile_model,
 		route_model: route_model,
 	});
 	const guild_content_view = new SPA.Views.GuildContent({
@@ -46,7 +45,7 @@ $(()=> {
 	})
 	const nav_user_view = new SPA.Views.NavUser({
 		el: $("#view-nav-user"),
-		model: user_profile_model,
+		model: my_profile_model,
 	})
 
 	/* router setting */
@@ -69,7 +68,7 @@ $(()=> {
 	});
 	const router = new SPA_Router();
 	router.on("route", function(route, params) {
-    route_model.set({ route: route });
+    	route_model.set({ route: route });
 	});
 	Backbone.history.start();
 })

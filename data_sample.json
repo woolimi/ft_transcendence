@@ -1,0 +1,21 @@
+https://github.com/fakenine/omniauth-marvin#auth-hash
+{
+	"provider": "marvin",
+	"uid": 12345,
+	"info": { 
+		"name": "Samy KACIMI",
+		"email": "skacimi@student.42.fr",
+		"nickname": "skacimi",
+		"location": null,
+		"image": "https://cdn.42.fr/userprofil/profilview/skacimi.jpg",
+		"phone": null,
+		"urls": {
+			"Profile": "https://api.intrav2.42.fr/v2/users/skacimi"
+		}
+	},
+	"credentials": {
+		"token": "a1b2c3d4e5f6...",
+		"expires_at": 1443035254,
+		"expires": true
+	},
+	...

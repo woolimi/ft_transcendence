@@ -10,12 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_19_142010) do
+ActiveRecord::Schema.define(version: 2020_07_21_220134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "nickname"
+    t.string "avatar_url"
+    t.uuid "user_id"
+    t.index ["user_id"], name: "index_user_profiles_on_user_id"
+  end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "ft_id", null: false
@@ -28,4 +36,5 @@ ActiveRecord::Schema.define(version: 2020_07_19_142010) do
     t.index ["ft_id"], name: "index_users_on_ft_id", unique: true
   end
 
+  add_foreign_key "user_profiles", "users"
 end
