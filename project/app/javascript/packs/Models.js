@@ -11,18 +11,19 @@ Models.Route = Backbone.Model.extend({
 
 Models.UserProfile = Backbone.Model.extend({
 	defaults: {
-		user_name: "null",
-		display_name: "null",
-		display_name: "null",
-		guild_id: "null",
-		two_factor: false,
+		name: "undefined",
+		nickname: "undefined",
 		avatar_url: "#",
-		friend_list: {},
-		block_list: {},
-		is_owner: false,
-		is_officer: false,
-		is_admin: false,	
-	}
+	},
+	urlRoot: "/api/user_profiles/",
+	url: function () {
+		const base = this.urlRoot || (this.collection && this.collection.url) || "/";
+		if (this.isNew()) return base;
+		return base + encodeURIComponent(this.id);
+	},
+	initialize: function() {
+		this.fetch();
+	},
 }) 
 
 export default Models;
