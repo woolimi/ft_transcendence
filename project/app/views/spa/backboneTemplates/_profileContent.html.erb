@@ -14,14 +14,14 @@
   <div class="form-group row">
     <label for="name" class="col-sm-5 col-form-label">Name</label>
     <div class="col-sm-7">
-			<input class="form-control" type="text" value="Woolim PARK" id="name" readonly>
+			<input class="form-control" type="text" value="<%%= name %>" id="name" readonly>
     </div>
   </div>
 
   <div class="form-group row">
     <label for="nickname" class="col-sm-5 col-form-label">Nickname</label>
     <div class="col-sm-7">
-      <input type="text" class="form-control" id="nickname" value="<%%=display_name%>">
+      <input type="text" class="form-control" id="nickname" value="<%%= nickname %>">
     </div>
   </div>
 
@@ -29,8 +29,8 @@
     <div class="col-sm-5">2 Factor Authentication</div>
     <div class="col-sm-7">
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck1">
-        <label class="form-check-label" for="gridCheck1">
+        <input class="form-check-input" type="checkbox" id="twofactor">
+        <label class="form-check-label" for="twofactor">
           on / off
         </label>
       </div>
