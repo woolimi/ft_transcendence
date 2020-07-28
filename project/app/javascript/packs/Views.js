@@ -65,4 +65,65 @@ Views.NavUser = Backbone.View.extend({
 	}
 });
 
+Views.FriendsList = Backbone.View.extend({
+  templates: {
+		friendsList: _.template($("script[name='tmpl-friends-list']").html()),
+		modal: _.template($("script[name='tmpl-friends-list-modal']").html()),
+	},
+	events: {
+		"submit": "searchUsers",
+		"click .addFriendBtn": "addFriend",
+		"click .removeFriendBtn": "removeFriend"
+	},
+  initialize: function () {
+		this.listenTo(this.collection.friendsList, "update", this.renderFriendsList);
+		const self = this;
+		this.collection.friendsList.fetch({
+			success: function (collection, response, options) {
+				self.renderFriendsList();
+			},
+		});
+		this.renderSearchedUsers();
+  },
+	renderFriendsList: function() {
+		this.$el.find('#myfriends').html(this.templates.friendsList({ friends: this.collection.friendsList.toJSON() }));
+	},
+	renderSearchedUsers: function() {
+		this.$el.find('#searchUsersModal').html(this.templates.modal({ users: this.collection.searchedUsers.toJSON() }))
+	},
+	searchUsers: function (e) {
+		e.preventDefault();
+		const name = $("#searchUser").val();
+		if (!name)
+			return;
+		const self = this;
+		this.collection.searchedUsers.fetch({
+			data: $.param({ search: name }),
+			success: function (collection, response, options) {
+				self.renderSearchedUsers();
+			},
+		});
+	},
+	addFriend: function (e) {
+		const friend = $(e.target).data();
+		this.collection.friendsList.create({
+			id: friend.userId,
+			user_id: friend.userId,
+			name: friend.name,
+			nickname: friend.nickname,
+			avatar_url: friend.avatar_url
+		})
+	},
+	removeFriend: function(e) {
+		const friend = $(e.target).data();
+		const c = this.collection.friendsList;
+		let res = confirm("Do you want to remove " + friend.nickname + "(" + friend.name +") ?");
+		if (res === true) {
+			const tmp = c.where({ user_id: friend.userId })[0];
+			tmp.destroy();
+			console.log("res", c.toJSON());
+		}
+	}
+});
+
 export default Views;

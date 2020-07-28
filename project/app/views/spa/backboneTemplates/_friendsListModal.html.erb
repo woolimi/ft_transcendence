@@ -1,0 +1,23 @@
+<!-- add friend modal -->
+<script type="text/template" name="tmpl-friends-list-modal">
+<form class="form-inline">
+	<input class="form-control mr-sm-2" type="search" placeholder="type username or nickname" aria-label="Search" id="searchUser">
+	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+<br>
+<div>
+	<ul class="list-group list-group-flush" id="searchedUser">
+		<%% _.each(users, function(user, i) { %>
+			<li class="list-group-item"><%%= user.nickname %> (<%%= user.name %>)
+				<button class="btn btn-danger btn-sm float-right addFriendBtn"
+					data-user-id="<%%= user.user_id %>"
+					data-name="<%%= user.name %>"
+					data-nickname="<%%= user.nickname %>"
+					data-avatar-url="<%%= user.avatar_url %>">
+					add
+				</button>
+			</li>
+		<%% }) %>
+	</ul>
+</div>
+</script>

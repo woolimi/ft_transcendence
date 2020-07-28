@@ -25,7 +25,7 @@
 $(() => {
 	/* model setting */
 	const route_model = new SPA.Models.Route();
-	const my_profile_model = new SPA.Models.UserProfile({id: "me"});
+	const my_profile_model = new SPA.Models.UserProfile();
 
 	/* view setting */
 	const game_content_view = new SPA.Views.GameContent({
@@ -42,11 +42,28 @@ $(() => {
 	const nav_item_view = new SPA.Views.NavItem({
 		el: $("#view-nav-item"),
 		model: route_model,
-	})
+	});
 	const nav_user_view = new SPA.Views.NavUser({
 		el: $("#view-nav-user"),
 		model: my_profile_model,
-	})
+	});
+
+	/* friends */
+	const FriendsListCollection = Backbone.Collection.extend({
+		model: SPA.Models.FriendProfile,
+		url: "/api/my_friends/"
+	});
+	const SearchedUsersCollection = Backbone.Collection.extend({
+		model: SPA.Models.UserProfile,
+		url: "/api/user_profiles/",
+	});
+	const friends_list_view = new SPA.Views.FriendsList({
+		el: $("#view-friends-list"),
+		collection: {
+			friendsList: new FriendsListCollection(),
+			searchedUsers: new SearchedUsersCollection(),
+		}
+	});
 
 	/* router setting */
 	const SPA_Router = Backbone.Router.extend({

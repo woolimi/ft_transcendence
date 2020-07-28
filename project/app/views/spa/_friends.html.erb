@@ -1,11 +1,29 @@
-<div class="card side-list">
+<!-- view-friends-list -->
+<div class="card side-list" id="view-friends-list">
 	<div class="card-header bg-dark text-white">
 		My friends
-		<span class="oi oi-plus float-right"></span>
+		<span class="oi oi-plus float-right cursor" data-toggle="modal" data-target="#addFriendModal"></span>
 	</div>
 	<div class="card-body bg-secondary text-white">
-		<ul class="list-group" id="view-friends-list">
-			<!-- view-friends-list -->
+		<ul class="list-group" id="myfriends">
+			<!-- tmpl-friends-list -->
 		</ul>
+	</div>
+
+<!-- Modal -->
+	<div class="modal" id="addFriendModal" tabindex="-1" role="dialog" aria-labelledby="addFriendModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addFriendModalLabel">Add Friend</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="searchUsersModal">
+					<!-- tmpl-add-friend-modal -->
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
