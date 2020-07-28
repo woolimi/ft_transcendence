@@ -17,6 +17,7 @@
 			</div>
 		</div>
 	</div>
+	<%= render "userInfoModal" %>
 <% end %>
 </div>
 
@@ -26,6 +27,7 @@ $(() => {
 	/* model setting */
 	const route_model = new SPA.Models.Route();
 	const my_profile_model = new SPA.Models.UserProfile();
+	const user_info_model = new SPA.Models.FriendProfile();
 
 	/* view setting */
 	const game_content_view = new SPA.Views.GameContent({
@@ -46,6 +48,11 @@ $(() => {
 	const nav_user_view = new SPA.Views.NavUser({
 		el: $("#view-nav-user"),
 		model: my_profile_model,
+	});
+
+	const user_info_modal_view = new SPA.Views.UserInfoModal({
+		el: $("#app"),
+		model: user_info_model,
 	});
 
 	/* friends */

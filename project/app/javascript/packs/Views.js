@@ -1,5 +1,5 @@
 import _ from "underscore"
-import Backbone from "backbone"
+import Backbone, { View } from "backbone"
 
 const Views = {};
 
@@ -77,6 +77,7 @@ Views.FriendsList = Backbone.View.extend({
 	},
   initialize: function () {
 		this.listenTo(this.collection.friendsList, "update", this.renderFriendsList);
+		this.listenTo(this.collection.searchedUsers, "remove", this.renderSearchedUsers);
 		const self = this;
 		this.collection.friendsList.fetch({
 			success: function (collection, response, options) {
@@ -89,7 +90,10 @@ Views.FriendsList = Backbone.View.extend({
 		this.$el.find('#myfriends').html(this.templates.friendsList({ friends: this.collection.friendsList.toJSON() }));
 	},
 	renderSearchedUsers: function() {
-		this.$el.find('#searchUsersModal').html(this.templates.modal({ users: this.collection.searchedUsers.toJSON() }))
+		this.$el.find('#searchUsersModal').html(this.templates.modal({ 
+			users: this.collection.searchedUsers.toJSON(), 
+			friends: this.collection.friendsList.toJSON()
+		}))
 	},
 	searchUsers: function (e) {
 		e.preventDefault();
@@ -112,18 +116,46 @@ Views.FriendsList = Backbone.View.extend({
 			name: friend.name,
 			nickname: friend.nickname,
 			avatar_url: friend.avatar_url
-		})
+		});
+		const c = this.collection.searchedUsers;
+		c.remove(c.where({ user_id: friend.userId})[0]);
 	},
 	removeFriend: function(e) {
+		e.stopImmediatePropagation();
 		const friend = $(e.target).data();
 		const c = this.collection.friendsList;
 		let res = confirm("Do you want to remove " + friend.nickname + "(" + friend.name +") ?");
 		if (res === true) {
 			const tmp = c.where({ user_id: friend.userId })[0];
 			tmp.destroy();
-			console.log("res", c.toJSON());
 		}
 	}
+});
+
+// el: $('#app')
+Views.UserInfoModal = Backbone.View.extend({
+	template: _.template($("script[name='tmpl-user-info-modal']").html()),
+	initialize: function() {
+		this.listenTo(this.model, "change:user_id", this.fetchAndRender);
+	},
+	events: {
+		"click .userInfoModal": "changeUid"
+	},
+	render() {
+		$('#view-user-info-modal').html(this.template({ user: this.model.toJSON() }));
+	},
+	changeUid: function(e) {
+		const user_id = $(e.currentTarget).data().userId;
+		this.model.set({user_id: user_id});
+	},
+	fetchAndRender: function() {
+		const self = this;
+		this.model.fetch({
+			success: function() {
+				self.render();
+			}
+		});
+	},
 });
 
 export default Views;

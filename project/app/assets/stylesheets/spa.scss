@@ -59,6 +59,15 @@ html, body, #app{
   cursor: pointer;
 }
 
+.userinfo-avatar {
+  height: 150px;
+  width: 150px;
+}
+
+.fit-content {
+  min-width: fit-content;
+}
+
 @media (max-width: 767px) {
   .side-list {
     width: 50%;

@@ -1,9 +1,10 @@
 <!-- friends -->
 <script type="text/template" name="tmpl-friends-list">
 <%% _.each(friends, function(item, i) { %>
-	<li class="list-group-item d-flex justify-content-between align-items-center side-list-item">
+	<li class="userInfoModal list-group-item d-flex justify-content-between align-items-center side-list-item cursor" data-user-id="<%%= item.user_id %>"
+		data-toggle="modal" data-target="#userInfoModal">
 		<%%= item.nickname %> (<%%= item.name %>)
-		<span class="oi oi-trash removeFriendBtn"
+		<span class="oi oi-trash removeFriendBtn cursor"
 			data-user-id="<%%= item.user_id %>"
 			data-name="<%%= item.name %>"
 			data-nickname="<%%= item.nickname %>">
