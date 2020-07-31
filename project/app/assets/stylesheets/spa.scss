@@ -51,8 +51,21 @@ html, body, #app{
   background-color: #00000036;
 }
 
-.list-group-item {
+.card .list-group-item {
   padding: 0 5px 0 5px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.userinfo-avatar {
+  height: 150px;
+  width: 150px;
+}
+
+.fit-content {
+  min-width: fit-content;
 }
 
 @media (max-width: 767px) {

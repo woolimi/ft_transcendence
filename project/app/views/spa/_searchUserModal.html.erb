@@ -1,0 +1,23 @@
+<!-- search user modal -->
+<div class="modal" id="addFriendModal" tabindex="-1" role="dialog" aria-labelledby="addFriendModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addFriendModalLabel">Add Friend</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" id="view-searched-users">
+				<form class="form-inline">
+					<input class="form-control mr-sm-2" type="search" placeholder="type username or nickname" aria-label="Search" id="searchUserName">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				</form>
+				<br>
+				<ul class="list-group list-group-flush" id="searchedUserList">
+					<!-- tmpl-searched-users -->
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

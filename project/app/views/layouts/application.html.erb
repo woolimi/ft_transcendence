@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-is-login="<%= user_signed_in? %>" <% if user_signed_in? %> data-user-id=<%= current_user[:id] %> <% end %> >
   <head>
     <title>42 Pong</title>
     <%= csrf_meta_tags %>
@@ -7,12 +7,14 @@
 
     <%= render "spa/backboneTemplates/channelsList"%>
     <%= render "spa/backboneTemplates/friendsList"%>
+    <%= render "spa/backboneTemplates/searchedUsersModal"%>
     <%= render "spa/backboneTemplates/gameContent"%>
     <%= render "spa/backboneTemplates/profileContent"%>
     <%= render "spa/backboneTemplates/guildContent"%>
     <%= render "spa/backboneTemplates/login"%>
     <%= render "spa/backboneTemplates/navbarItems"%>
     <%= render "spa/backboneTemplates/navbarUser"%>
+    <%= render "spa/backboneTemplates/userInfoModal"%>
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_pack_tag 'application' %>

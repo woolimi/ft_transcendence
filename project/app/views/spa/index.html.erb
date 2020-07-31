@@ -17,62 +17,7 @@
 			</div>
 		</div>
 	</div>
+	<%= render "userInfoModal" %>
+	<%= render "searchUserModal" %>
 <% end %>
 </div>
-
-<% if user_signed_in? %>
-<script>
-$(() => {
-	/* model setting */
-	const route_model = new SPA.Models.Route();
-	const my_profile_model = new SPA.Models.UserProfile({id: "me"});
-
-	/* view setting */
-	const game_content_view = new SPA.Views.GameContent({
-		el: $("#view-content")
-	});
-	const profile_content_view = new SPA.Views.ProfileContent({
-		el: $("#view-content"),
-		model: my_profile_model,
-		route_model: route_model,
-	});
-	const guild_content_view = new SPA.Views.GuildContent({
-		el: $("#view-content")
-	});
-	const nav_item_view = new SPA.Views.NavItem({
-		el: $("#view-nav-item"),
-		model: route_model,
-	})
-	const nav_user_view = new SPA.Views.NavUser({
-		el: $("#view-nav-user"),
-		model: my_profile_model,
-	})
-
-	/* router setting */
-	const SPA_Router = Backbone.Router.extend({
-		routes: {
-			"": "game",
-			"game": "game",
-			"profile": "profile",
-			"guild": "guild"
-		},
-		game: function() {
-			game_content_view.render();
-		},
-		profile: function() {
-			profile_content_view.render();
-		},
-		guild: function() {
-			guild_content_view.render();
-		}
-	});
-	const router = new SPA_Router();
-	router.on("route", function(route, params) {
-    	route_model.set({ route: route });
-	});
-	Backbone.history.start();
-})
-
-</script>
-<% end %>
-
