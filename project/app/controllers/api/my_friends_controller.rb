@@ -15,7 +15,7 @@ class Api::MyFriendsController < ApplicationController
 
 	# GET
 	def show
-		friend_info = UserProfile.find_by(user_id: params[:id]).as_json(only: [:user_id, :name, :nickname, :avatar_url])
+		friend_info = UserProfile.find_by(user_id: params[:user_id]).as_json(only: [:user_id, :name, :nickname, :avatar_url])
 		render json: friend_info
 	end
 
@@ -23,21 +23,21 @@ class Api::MyFriendsController < ApplicationController
 	def update
 		# validation check
 		friend_id_list = UserProfile.find_by(user_id: current_user[:id])[:friend_list];
-		if params[:id] == current_user[:id] || friend_id_list.include?(params[:id])
+		if params[:user_id] == current_user[:id] || friend_id_list.include?(params[:user_id])
 			return
 		end
-		if UserProfile.find_by(user_id: params[:id]).blank?
+		if UserProfile.find_by(user_id: params[:user_id]).blank?
 			return
 		end
 		me = UserProfile.find_by(user_id: current_user[:id])
-		me.friend_list.push(params[:id])
+		me.friend_list.push(params[:user_id])
 		me.save()
 	end
 
 	# DELETE
 	def destroy
 		me = UserProfile.find_by(user_id: current_user[:id])
-		me.friend_list.delete(params[:id])
+		me.friend_list.delete(params[:user_id])
 		me.save()
 	end
 end

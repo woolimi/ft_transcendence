@@ -1,0 +1,15 @@
+<!-- add friend modal -->
+<script type="text/template" name="tmpl-searched-users-modal">
+	<%% _.each(users, function(user, i) { %>
+		<li class="list-group-item"><%%= user.nickname %> (<%%= user.name %>)
+			<button class="btn btn-danger btn-sm float-right addFriendBtn"
+				<%%= _.find(friends, (f) => { return (f.user_id === user.user_id)}) ? "disabled" : "" %>
+				data-user-id="<%%= user.user_id %>"
+				data-name="<%%= user.name %>"
+				data-nickname="<%%= user.nickname %>"
+				data-avatar-url="<%%= user.avatar_url %>">
+				add
+			</button>
+		</li>
+	<%% }) %>
+</script>
