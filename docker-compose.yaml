@@ -27,8 +27,8 @@ services:
     image: postgres:12.1
     env_file: .env
     # restart: unless-stopped
-    volumes:
-      - db_data:/var/lib/postgresql/data
+    # volumes:
+      # - db_data:/var/lib/postgresql/data
 
   pgadmin:
     image: "dpage/pgadmin4"
@@ -44,6 +44,6 @@ services:
       
 volumes:
   gem_cache:
-  db_data:
+  # db_data:
   node_modules:
   pgadmin-data:

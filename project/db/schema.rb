@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2020_07_21_220134) do
     t.string "name"
     t.string "nickname"
     t.string "avatar_url"
+    t.string "friend_list", default: [], array: true
     t.uuid "user_id"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
@@ -31,6 +32,8 @@ ActiveRecord::Schema.define(version: 2020_07_21_220134) do
     t.string "access_token"
     t.string "refresh_token"
     t.datetime "token_expires_in"
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["ft_id"], name: "index_users_on_ft_id", unique: true

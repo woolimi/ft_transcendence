@@ -4,7 +4,7 @@ class User < ApplicationRecord
 #  devise :database_authenticatable, :registerable,
 #         :recoverable, :rememberable, :trackable, :validatable,
 #         :omniauthable, omniauth_providers: [:marvin]
-  devise :omniauthable, omniauth_providers: [:marvin]
+  devise :database_authenticatable,:registerable, :validatable, :omniauthable, omniauth_providers: [:marvin]
   has_one :user_profile
   def self.from_omniauth(auth, session_id)
     user = User.find_by(ft_id: auth[:uid])
@@ -13,7 +13,10 @@ class User < ApplicationRecord
       small_img[small_img.rindex("/")] = "/small_"
       user = User.create(
         ft_id: auth[:uid], 
-        session_id: session_id)
+        session_id: session_id,
+        email: auth[:info][:email],
+        password: "asdfas"
+      )
       user.create_user_profile(
         name: auth[:info][:name],
         nickname: auth[:info][:nickname],
