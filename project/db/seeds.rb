@@ -6,20 +6,22 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-u = User.create(
+u = User.find_or_create_by(
 	ft_id: 1, 
 	email: "doby@asdf.com",
-	password: "asdfas");
-u.create_user_profile(
+	encrypted_password: Digest::SHA1.hexdigest("asdfas"));
+UserProfile.find_or_create_by(
 name: "dongbin",
 nickname: "doby",
-avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",)
+avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",
+user_id: u[:user_id])
 
-j = User.create(
+j = User.find_or_create_by(
 	ft_id: 2, 
 	email: "jai@asdf.com",
-	password: "asdfas");
-j.create_user_profile(
+	encrypted_password: Digest::SHA1.hexdigest("asdfas"));
+UserProfile.find_or_create_by(
 name: "jaeseok lee",
 nickname: "jai",
-avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",)
+avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
+user_id: j[:user_id])

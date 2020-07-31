@@ -1,11 +1,16 @@
 import _ from "underscore"
+import $ from "jquery"
 import Backbone, { View } from "backbone"
 
 const Views = {};
 
+$(() => {
+
 Views.GameContent = Backbone.View.extend({
+	el: $("#view-content"),
 	template: _.template($("script[name='tmpl-content-game']").html()),
-	render: function() {
+	render: function () {
+		console.log("here", this.$el)
 		const content = this.template(/* this.model.toJSON() */);
 		this.$el.html(content);
 		return this;
@@ -66,26 +71,26 @@ Views.NavUser = Backbone.View.extend({
 });
 
 Views.FriendsList = Backbone.View.extend({
-  templates: {
-		friendsList: _.template($("script[name='tmpl-friends-list']").html()),
-		modal: _.template($("script[name='tmpl-friends-list-modal']").html()),
+	templates: {
+			friendsList: _.template($("script[name='tmpl-friends-list']").html()),
+			modal: _.template($("script[name='tmpl-friends-list-modal']").html()),
+		},
+		events: {
+			"submit": "searchUsers",
+			"click .addFriendBtn": "addFriend",
+			"click .removeFriendBtn": "removeFriend"
+		},
+	initialize: function () {
+			this.listenTo(this.collection.friendsList, "update", this.renderFriendsList);
+			this.listenTo(this.collection.searchedUsers, "remove", this.renderSearchedUsers);
+			const self = this;
+			this.collection.friendsList.fetch({
+				success: function (collection, response, options) {
+					self.renderFriendsList();
+				},
+			});
+			this.renderSearchedUsers();
 	},
-	events: {
-		"submit": "searchUsers",
-		"click .addFriendBtn": "addFriend",
-		"click .removeFriendBtn": "removeFriend"
-	},
-  initialize: function () {
-		this.listenTo(this.collection.friendsList, "update", this.renderFriendsList);
-		this.listenTo(this.collection.searchedUsers, "remove", this.renderSearchedUsers);
-		const self = this;
-		this.collection.friendsList.fetch({
-			success: function (collection, response, options) {
-				self.renderFriendsList();
-			},
-		});
-		this.renderSearchedUsers();
-  },
 	renderFriendsList: function() {
 		this.$el.find('#myfriends').html(this.templates.friendsList({ friends: this.collection.friendsList.toJSON() }));
 	},
@@ -157,5 +162,7 @@ Views.UserInfoModal = Backbone.View.extend({
 		});
 	},
 });
+
+}) // window.onload
 
 export default Views;
