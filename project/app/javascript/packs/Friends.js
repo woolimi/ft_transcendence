@@ -13,6 +13,7 @@ if ($('html').data().isLogin) {
 				name: "undefined",
 				nickname: "undefined",
 				avatar_url: "#",
+				status: 0
 			},
 			urlRoot: "/api/my_friends/",
 			idAttribute: 'user_id',
@@ -123,6 +124,7 @@ if ($('html').data().isLogin) {
 
 		Friends.list = new ListView();
 		Friends.searchUserModal = new SerchedUsersView();
+		Friends.friends = friends;
 	}) // window.onload
 
 } // if logged in

@@ -68,6 +68,29 @@ html, body, #app{
   min-width: fit-content;
 }
 
+.user-status-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.user-status {
+  height: 16px;
+  width: 16px;
+  border-radius: 8px;
+  border: 1px black solid;
+  margin-left: 5px;
+}
+
+.offline {
+  background-color: #929292;
+}
+.online {
+  background-color: #00ff66;
+}
+.game {
+  background-color: #ef4a4a;
+}
+
 @media (max-width: 767px) {
   .side-list {
     width: 50%;

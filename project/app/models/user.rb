@@ -6,6 +6,7 @@ class User < ApplicationRecord
 #         :omniauthable, omniauth_providers: [:marvin]
   devise :database_authenticatable,:registerable, :validatable, :omniauthable, omniauth_providers: [:marvin]
   has_one :user_profile
+  has_one :user_status
   def self.from_omniauth(auth, session_id)
     user = User.find_by(ft_id: auth[:uid])
     if user.blank?
@@ -15,12 +16,13 @@ class User < ApplicationRecord
         ft_id: auth[:uid], 
         session_id: session_id,
         email: auth[:info][:email],
-        password: "asdfas"
-      )
+        password: "asdfas")
       user.create_user_profile(
         name: auth[:info][:name],
         nickname: auth[:info][:nickname],
         avatar_url: small_img)
+      user.create_user_status(
+        status: 0)
     end
     return user
   end

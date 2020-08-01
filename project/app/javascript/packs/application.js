@@ -13,6 +13,7 @@
 require("@rails/ujs").start()
 require("@rails/activestorage").start()
 require("channels")
+
 const $ = require("jquery");
 global.$ = global.jQuery = $;
 window.$ = window.jQuery = $;
@@ -28,3 +29,5 @@ import SPA from "./SPA.js"
 if ($("html").data().isLogin) {
 	SPA.start();
 }
+
+
