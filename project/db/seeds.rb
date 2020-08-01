@@ -6,22 +6,38 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-u = User.find_or_create_by(
-	ft_id: 1, 
-	email: "doby@asdf.com",
-	encrypted_password: Digest::SHA1.hexdigest("asdfas"));
-UserProfile.find_or_create_by(
-name: "dongbin",
-nickname: "doby",
-avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",
-user_id: u[:user_id])
+if User.find_by({ email: "doby@asdf.com" }).blank?
+	u = User.create!(
+		ft_id: 1, 
+		email: "doby@asdf.com",
+		password: "asdfas",
+		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
+	)
+	UserProfile.create!(
+		name: "dongbin",
+		nickname: "doby",
+		avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",
+		user_id: u[:id])
+	UserStatus.create!(
+		status: 0,
+		user_id: u[:id]
+	)
+end
 
-j = User.find_or_create_by(
-	ft_id: 2, 
-	email: "jai@asdf.com",
-	encrypted_password: Digest::SHA1.hexdigest("asdfas"));
-UserProfile.find_or_create_by(
-name: "jaeseok lee",
-nickname: "jai",
-avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
-user_id: j[:user_id])
+if User.find_by({ email: "jai@asdf.com"}).blank?
+	j = User.create!(
+		ft_id: 2, 
+		email: "jai@asdf.com",
+		password: "asdfas",
+		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
+	)
+	UserProfile.create!(
+		name: "jaeseok lee",
+		nickname: "jai",
+		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
+		user_id: j[:id])
+	UserStatus.create!(
+		status: 0,
+		user_id: j[:id]
+	)
+end
