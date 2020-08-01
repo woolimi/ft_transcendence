@@ -30,15 +30,16 @@ SPA.start = function() {
 			}
 		});
 		const router = new Router();
+		router.on("route", function (curRoute) {
+			Navbar.currentRoute.set({ route: curRoute });
+		});
 		Backbone.history.start();
+		Backbone.history.loadUrl(Backbone.history.fragment);
 
 		/* navbar user */
 		Navbar.user.render();
 		/* navbar items */
 		Navbar.items.render();
-		router.on("route", function (curRoute) {
-			Navbar.currentRoute.set({ route: curRoute });
-		});
 		/* user info modal */
 		UserModal.content.render();
 		/* friend list */
