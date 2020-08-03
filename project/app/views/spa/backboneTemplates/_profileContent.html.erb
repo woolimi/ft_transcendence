@@ -83,5 +83,9 @@
 		</ul>
 	</div>
 </div>
-
+ <% if flash[:alert] %>
+        Helper.flash_message("danger", "<%=flash[:alert]%>");
+    <% elsif flash[:notice] %>
+      Helper.flash_message("success", "<%=flash[:notice]%>");
+<% end %>
 </script>

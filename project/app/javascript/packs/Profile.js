@@ -3,6 +3,7 @@ import _ from "underscore"
 import Backbone from "backbone"
 import Navbar from "./Navbar.js"
 
+
 const Profile = {};
 
 if ($('html').data().isLogin) {

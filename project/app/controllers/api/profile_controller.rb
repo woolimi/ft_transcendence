@@ -22,6 +22,7 @@ class Api::ProfileController < ApplicationController
 		unless params[:avatar_url].empty?
 			Cloudinary::Uploader.upload(me.avatar_url)
 			me.avatar_url = params[:avatar_url]
+			Helper.flash_message(:success, 'Successfully updated');
 		end
 		me.save()
 	end
