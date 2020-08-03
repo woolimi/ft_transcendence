@@ -1,6 +1,6 @@
 development:
-  cloud_name: "sample"
+  cloud_name: "forty-two-pong"
   api_key: "263716728832848"
   api_secret: "aWq7yDOTdAaaFW-u1PpcY4eoabM"
-  secure: true
-  cdn_subdomain: true
+  enhance_image_tag: true
+  static_file_support: false
