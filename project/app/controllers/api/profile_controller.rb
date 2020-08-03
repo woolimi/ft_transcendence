@@ -14,6 +14,16 @@ class Api::ProfileController < ApplicationController
 
 	# PATCH / PUT
 	def update
+		me = UserProfile.find_by(user_id: current_user[:id])
+		puts me.as_json()
+		if (params[:nickname] <=> me.nickname)
+			me.nickname = params[:nickname]
+		end
+		unless params[:avatar_url].empty?
+			Cloudinary::Uploader.upload(me.avatar_url)
+			me.avatar_url = params[:avatar_url]
+		end
+		me.save()
 	end
 
 end

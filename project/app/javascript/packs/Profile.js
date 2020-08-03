@@ -46,6 +46,18 @@ $(() => {
 				this.render();
 			}
 		},
+		events: {
+			"submit": "onSubmit",
+		},
+		
+		onSubmit: function(e) {
+			this.model.set('nickname', $('.nickname-update').val());
+        	this.model.set('name', $('.name-update').val());
+			this.model.set('avatar_url', $('.avatar_url-update').val());
+			console.log(this.model.toJSON());
+			e.preventDefault();
+			this.model.save();
+		}
 	});
 
 	Profile.content = new ProfileContentView();
