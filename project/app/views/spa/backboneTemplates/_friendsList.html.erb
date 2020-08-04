@@ -5,12 +5,13 @@
 		data-toggle="modal" data-target="#userInfoModal">
 		<div class="user-status-wrapper">
 			<%%= friend.nickname %> (<%%= friend.name %>)
-			<%% if (friend.status === 0) %>
+			<%% if (friend.status === 0) { %>
 			<span class="user-status offline"></span>			
-			<%% else if (friend.status === 1) %>
+			<%% } else if (friend.status === 1) { %>
 			<span class="user-status online"></span>			
-			<%% else if (friend.status === 2) %>
+			<%% } else if (friend.status === 2) { %>
 			<span class="user-status game"></span>
+			<%% } %>
 		</div>
 		<span class="oi oi-trash removeFriendBtn cursor"
 			data-user-id="<%%= friend.user_id %>"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_31_210929) do
+ActiveRecord::Schema.define(version: 2020_07_21_220134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -22,14 +22,9 @@ ActiveRecord::Schema.define(version: 2020_07_31_210929) do
     t.string "nickname"
     t.string "avatar_url"
     t.string "friend_list", default: [], array: true
+    t.integer "status", default: 0
     t.uuid "user_id"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
-  end
-
-  create_table "user_statuses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "status", default: 0, null: false
-    t.uuid "user_id"
-    t.index ["user_id"], name: "index_user_statuses_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -46,5 +41,4 @@ ActiveRecord::Schema.define(version: 2020_07_31_210929) do
   end
 
   add_foreign_key "user_profiles", "users"
-  add_foreign_key "user_statuses", "users"
 end

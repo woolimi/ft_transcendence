@@ -8,20 +8,16 @@ class Api::MyFriendsController < ApplicationController
 		friend_id_list = UserProfile.find_by(user_id: current_user[:id])[:friend_list];
 		res = []
 		friend_id_list.each do |id|
-			friend = UserProfile.find_by(user_id: id).as_json(only: [:name, :nickname, :avatar_url])
-			status = UserStatus.find_by(user_id: id)
-			fin = friend.merge(status.to_json)
-			res.push(fin)
+			friend = UserProfile.select("user_id, name, nickname, avatar_url, status").find_by(user_id: id)
+			res.push(friend)
 		end
 		render json: res
 	end
 
 	# GET
 	def show
-		friend = UserProfile.find_by(user_id: params[:user_id]).as_json(only: [:name, :nickname, :avatar_url])
-		status = UserStatus.find_by(user_id:  params[:user_id])	
-		fin = friend.to_json + status.to_json
-		render json: fin
+		friend = UserProfile.select("user_id, name, nickname, avatar_url, status").find_by(user_id: params[:user_id])
+		render json: friend
 	end
 
 	# PUT | PATCH

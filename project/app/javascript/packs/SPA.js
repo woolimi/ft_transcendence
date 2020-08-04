@@ -7,11 +7,23 @@ import Guild from "./Guild.js"
 import Profile from "./Profile.js"
 import UserModal from "./UserModal.js"
 import Friends from "./Friends.js"
+import Helper from "./Helper.js"
 
 const SPA = {}
 
 SPA.start = function() {
 	$(()=> {
+		// please don't remove
+		// const redirectToLogin = function () {
+		// 	window.location.href = '/';
+		// };
+		// $.ajaxSetup({
+		// 	statusCode: {
+		// 		401: redirectToLogin,
+		// 		403: redirectToLogin
+		// 	}
+		// });
+
 		const Router = Backbone.Router.extend({
 			routes: {
 				"": "game",
@@ -30,15 +42,17 @@ SPA.start = function() {
 			}
 		});
 		const router = new Router();
+		router.on("route", function (curRoute) {
+			Navbar.currentRoute.set({ route: curRoute });
+		});
+
 		Backbone.history.start();
+		Backbone.history.loadUrl(Backbone.history.fragment);
 
 		/* navbar user */
 		Navbar.user.render();
 		/* navbar items */
 		Navbar.items.render();
-		router.on("route", function (curRoute) {
-			Navbar.currentRoute.set({ route: curRoute });
-		});
 		/* user info modal */
 		UserModal.content.render();
 		/* friend list */

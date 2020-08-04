@@ -6,7 +6,6 @@ class User < ApplicationRecord
 #         :omniauthable, omniauth_providers: [:marvin]
   devise :database_authenticatable,:registerable, :validatable, :omniauthable, omniauth_providers: [:marvin]
   has_one :user_profile
-  has_one :user_status
   def self.from_omniauth(auth, session_id)
     user = User.find_by(ft_id: auth[:uid])
     if user.blank?
@@ -21,9 +20,14 @@ class User < ApplicationRecord
         name: auth[:info][:name],
         nickname: auth[:info][:nickname],
         avatar_url: small_img)
-      user.create_user_status(
-        status: 0)
     end
     return user
+  end
+  def self.check_already_logged_in(user)
+      status = UserProfile.find_by(user_id: user.id).status;
+      if (status != 0)
+        return true   
+      end
+        return false
   end
 end
