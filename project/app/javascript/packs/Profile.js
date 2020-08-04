@@ -16,6 +16,7 @@ $(() => {
 			name: "undefined",
 			nickname: "undefined",
 			avatar_url: "#",
+			friend_list: "{}",
 		},
 		urlRoot: "/api/profile/",
 		idAttribute: 'user_id',
@@ -40,6 +41,7 @@ $(() => {
 		render: function () {
 			const content = this.template(this.model.toJSON());
 			this.$el.html(content);
+			console.log(this.model.toJSON());
 			return this;
 		},
 		change: function () {

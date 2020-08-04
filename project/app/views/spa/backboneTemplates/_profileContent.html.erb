@@ -45,14 +45,20 @@
 </div>
 
 <div class="m-3">
-	<h2>Block list</h2>
+	<h2> Block List
+	
+		<span class="oi oi-plus  btn-lg" ></span>
+
+	</h2>
 	<div class="overflow-auto" style="height: 200px">
 		<ul class="list-group">
+		<%% _.each(friend_list, function(friend_list) { %>	
 			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Cras justo odio
+				<%%= friend_list.nickname %>
 				<button type="button" class="btn btn-danger btn-sm">delete</button>
 			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
+		<%% }) %>
+			<%# <li class="list-group-item d-flex justify-content-between align-items-center">
 				Dapibus ac facilisis in
 				<button type="button" class="btn btn-danger btn-sm">delete</button>
 			</li>
@@ -79,8 +85,10 @@
 			<li class="list-group-item d-flex justify-content-between align-items-center">
 				Dapibus ac facilisis in
 				<button type="button" class="btn btn-danger btn-sm">delete</button>
-			</li>
+			</li> %>
 		</ul>
+		<br>
+
 	</div>
 </div>
  <% if flash[:alert] %>
