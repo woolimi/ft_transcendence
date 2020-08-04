@@ -49,6 +49,7 @@ $(() => {
 	});
 
 	Profile.content = new ProfileContentView();
+	Profile.user = user;
 })
 
 } // if logged in

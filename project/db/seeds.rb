@@ -18,10 +18,6 @@ if User.find_by({ email: "doby@asdf.com" }).blank?
 		nickname: "doby",
 		avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",
 		user_id: u[:id])
-	UserStatus.create!(
-		status: 0,
-		user_id: u[:id]
-	)
 end
 
 if User.find_by({ email: "jai@asdf.com"}).blank?
@@ -36,9 +32,4 @@ if User.find_by({ email: "jai@asdf.com"}).blank?
 		nickname: "jai",
 		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
 		user_id: j[:id])
-	UserStatus.create!(
-		status: 0,
-		user_id: j[:id]
-	)
 end
-
