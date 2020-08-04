@@ -8,15 +8,16 @@ class Api::MyFriendsController < ApplicationController
 		friend_id_list = UserProfile.find_by(user_id: current_user[:id])[:friend_list];
 		res = []
 		friend_id_list.each do |id|
-			res.push(UserProfile.find_by(user_id: id).as_json(only: [:user_id, :name, :nickname, :avatar_url]))
+			friend = UserProfile.select("user_id, name, nickname, avatar_url, status").find_by(user_id: id)
+			res.push(friend)
 		end
 		render json: res
 	end
 
 	# GET
 	def show
-		friend_info = UserProfile.find_by(user_id: params[:user_id]).as_json(only: [:user_id, :name, :nickname, :avatar_url])
-		render json: friend_info
+		friend = UserProfile.select("user_id, name, nickname, avatar_url, status").find_by(user_id: params[:user_id])
+		render json: friend
 	end
 
 	# PUT | PATCH
@@ -40,4 +41,5 @@ class Api::MyFriendsController < ApplicationController
 		me.friend_list.delete(params[:user_id])
 		me.save()
 	end
+
 end

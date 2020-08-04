@@ -13,15 +13,14 @@ if ($('html').data().isLogin) {
 				name: "undefined",
 				nickname: "undefined",
 				avatar_url: "#",
+				status: 0
 			},
 			urlRoot: "/api/my_friends/",
 			idAttribute: 'user_id',
 			url: function () {
 				return this.urlRoot + encodeURIComponent(this.get('user_id'));
 			},
-			initialize: function () {
-				this.fetch();
-			},
+			initialize: function () {},
 		})
 
 		const User = Backbone.Model.extend({
@@ -84,15 +83,15 @@ if ($('html').data().isLogin) {
 				});
 			},
 			add_friend: function (e) {
-				const friend = $(e.target).data();
-				friends.create({
-					id: friend.userId,
-					user_id: friend.userId,
-					name: friend.name,
-					nickname: friend.nickname,
-					avatar_url: friend.avatar_url
+				const id = $(e.target).data().userId;
+				const new_friend = new Friend({ user_id: id });
+				new_friend.fetch({
+					success: function() {
+						friends.add(new_friend);
+						new_friend.save();
+						searchedUsers.remove(searchedUsers.where({ user_id: id })[0]);
+					}
 				});
-				searchedUsers.remove(searchedUsers.where({ user_id: friend.userId })[0]);
 			},
 		});
 
@@ -101,7 +100,7 @@ if ($('html').data().isLogin) {
 			template: _.template($("script[name='tmpl-friends-list']").html()),
 			collection: friends,
 			events: {
-				"click .removeFriendBtn": "removeFriend"
+				"click .removeFriendBtn": "remove_friend"
 			},
 			initialize: function () {
 				this.listenTo(this.collection, "update", this.render);
@@ -110,7 +109,7 @@ if ($('html').data().isLogin) {
 			render: function () {
 				this.$el.html(this.template({ friends: this.collection.toJSON() }));
 			},
-			removeFriend: function (e) {
+			remove_friend: function (e) {
 				e.stopImmediatePropagation();
 				const friend = $(e.target).data();
 				let res = confirm("Do you want to remove " + friend.nickname + "(" + friend.name + ") ?");
@@ -123,6 +122,7 @@ if ($('html').data().isLogin) {
 
 		Friends.list = new ListView();
 		Friends.searchUserModal = new SerchedUsersView();
+		Friends.friends = friends;
 	}) // window.onload
 
 } // if logged in

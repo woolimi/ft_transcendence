@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2020_07_21_220134) do
     t.string "nickname"
     t.string "avatar_url"
     t.string "friend_list", default: [], array: true
+    t.integer "status", default: 0
     t.uuid "user_id"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
