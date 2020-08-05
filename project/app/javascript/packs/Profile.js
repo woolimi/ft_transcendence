@@ -17,6 +17,7 @@ $(() => {
 			nickname: "undefined",
 			avatar_url: "#",
 			friend_list: "{}",
+			two_factor: "undefined"
 		},
 		urlRoot: "/api/profile/",
 		idAttribute: 'user_id',
@@ -41,7 +42,7 @@ $(() => {
 		render: function () {
 			const content = this.template(this.model.toJSON());
 			this.$el.html(content);
-			console.log(this.model.toJSON());
+			// console.log(this.model.toJSON());
 			return this;
 		},
 		change: function () {
@@ -54,9 +55,20 @@ $(() => {
 		},
 		
 		onSubmit: function(e) {
+			console.log(document.getElementById("twofactor").checked);
 			this.model.set('nickname', $('.nickname-update').val());
         	this.model.set('name', $('.name-update').val());
 			this.model.set('avatar_url', $('.avatar_url-update').val());
+			// var tmp = "unchecked";
+			// if (document.getElementById("twofactor").checked == true)
+			// {
+			// 	tmp = "checked";
+			// }
+			// console.log(tmp);
+			if (!document.getElementById("twofactor").checked)
+				this.model.set('two_factor', "off");
+			else
+				this.model.set('two_factor', "on");
 			console.log(this.model.toJSON());
 			e.preventDefault();
 			this.model.save();
@@ -69,3 +81,13 @@ $(() => {
 } // if logged in
 
 export default Profile;
+
+
+/*
+
+
+"checked or unchecked"
+
+
+
+*/
