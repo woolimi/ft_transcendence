@@ -31,9 +31,9 @@
   <div class="form-group row">
     <div class="col-sm-5">2 Factor Authentication</div>
     <div class="col-sm-7">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="twofactor">
-        <label class="form-check-label" for="twofactor">
+      <div class="custom-control custom-switch">
+        <input class="custom-control-input two-factor-update" type="checkbox" id="twofactor" <%%= (two_factor == "on" )? "checked" : "unchecked" %>>
+        <label class="custom-control-label" for="twofactor">
           on / off
         </label>
       </div>
