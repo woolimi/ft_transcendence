@@ -55,22 +55,15 @@ $(() => {
 		},
 		
 		onSubmit: function(e) {
-			console.log(document.getElementById("twofactor").checked);
-			this.model.set('nickname', $('.nickname-update').val());
-        	this.model.set('name', $('.name-update').val());
-			this.model.set('avatar_url', $('.avatar_url-update').val());
-			// var tmp = "unchecked";
-			// if (document.getElementById("twofactor").checked == true)
-			// {
-			// 	tmp = "checked";
-			// }
-			// console.log(tmp);
-			if (!document.getElementById("twofactor").checked)
-				this.model.set('two_factor', "off");
-			else
-				this.model.set('two_factor', "on");
-			console.log(this.model.toJSON());
 			e.preventDefault();
+			const two_factor = document.getElementById("twofactor").checked ? "on" : "off";
+			this.model.set({
+				nickname: $('.nickname-update').val(),
+				name: $('.name-update').val(),
+				avatar_url: $('.avatar_url-update').val(),
+				two_factor: two_factor
+			});
+			const self = this;
 			this.model.save();
 		}
 	});
