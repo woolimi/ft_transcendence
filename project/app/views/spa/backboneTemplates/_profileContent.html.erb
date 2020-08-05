@@ -2,8 +2,11 @@
 <%# https://cdn.intra.42.fr/users/small_wpark.jpg %>
 
 <script type="text/template" name="tmpl-content-profile">
+<div class="m-3">
+	<h2>User Profile</h2>
+</div>
 <div class="container p-3">
-<form>
+<form class="border-bottom">
   <div class="form-group row">
     <label for="avatar" class="col-sm-5 col-form-label">Avatar</label>
     <div class="col-sm-7">
@@ -45,11 +48,9 @@
 </div>
 
 <div class="m-3">
-	<h2> Block List
-	
-		<span class="oi oi-plus  btn-lg" ></span>
+	<h2>Block List&nbsp&nbsp&nbsp <button type="button" class="btn btn-warning">Add</button></h2>
 
-	</h2>
+
 	<div class="overflow-auto" style="height: 200px">
 		<ul class="list-group">
 		<%% _.each(friend_list, function(friend_list) { %>	
