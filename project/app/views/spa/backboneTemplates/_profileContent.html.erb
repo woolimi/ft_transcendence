@@ -53,10 +53,13 @@
 
 	<div class="overflow-auto" style="height: 200px">
 		<ul class="list-group">
-		<%% _.each(friend_list, function(friend_list) { %>	
+		<%% _.each(block_list, function(block_list) { %>	
 			<li class="list-group-item d-flex justify-content-between align-items-center">
-				<%%= friend_list.nickname %>
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
+				<%%= block_list.nickname %>
+				(<%%= block_list.name %>)
+
+				<button type="button" class="btn btn-danger btn-sm unblock" data-user_id="<%%= block_list.user_id %>" data-name="<%%= block_list.name %>"
+			data-nickname="<%%= block_list.nickname %>">delete</button>
 			</li>
 		<%% }) %>
 			<%# <li class="list-group-item d-flex justify-content-between align-items-center">

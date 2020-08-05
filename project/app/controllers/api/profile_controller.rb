@@ -4,16 +4,14 @@ class Api::ProfileController < ApplicationController
 
 	# GET api/profile/:user_id
 	def show
-		puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 		if (params[:user_id] == current_user[:id])
 			profile = UserProfile.find_by(user_id: current_user[:id]).as_json(only: [:user_id, :name, :nickname, :avatar_url])
-			friend_id_list = UserProfile.find_by(user_id: current_user[:id])[:friend_list];
+			block_id_list = UserProfile.find_by(user_id: current_user[:id])[:block_list];
 			res = []
-			friend_id_list.each do |id|
-				res.push(UserProfile.find_by(user_id: id).as_json(only: [:nickname]))
+			block_id_list.each do |id|
+				res.push(UserProfile.find_by(user_id: id).as_json(only: [:user_id, :nickname, :name]))
 			end
-			profile[:friend_list] = res
-			puts "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+			profile[:block_list] = res
 			render json: profile
 		else
 			render json: {}
@@ -24,13 +22,22 @@ class Api::ProfileController < ApplicationController
 	def update
 		me = UserProfile.find_by(user_id: current_user[:id])
 		puts me.as_json()
+		puts params
 		if (params[:nickname] <=> me.nickname)
 			me.nickname = params[:nickname]
 		end
-		unless params[:avatar_url].empty?
+		arr =  params[:block_list].as_json();
+		res = []
+		arr.each do |blocked_users|
+			res.push(blocked_users["user_id"])
+		end
+		if (res <=> me.block_list)
+			me.block_list = res
+		end
+			unless params[:avatar_url].empty?
 			Cloudinary::Uploader.upload(me.avatar_url)
 			me.avatar_url = params[:avatar_url]
-			Helper.flash_message(:success, 'Successfully updated');
+			# Helper.flash_message(:success, 'Successfully updated');
 		end
 		me.save()
 	end
