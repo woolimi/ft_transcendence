@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_21_220134) do
+ActiveRecord::Schema.define(version: 2020_08_05_100430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 2020_07_21_220134) do
     t.string "avatar_url"
     t.string "friend_list", default: [], array: true
     t.uuid "user_id"
+    t.boolean "two_factor", default: false
+    t.string "block_list", default: [], array: true
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
 
