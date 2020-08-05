@@ -1,3 +1,59 @@
 <script type="text/template" name="tmpl-content-chat">
-	chat content with <%%= opponent.user_id %>
+<div class="container-fluid" style="height: 100%; padding: 1em">
+	<div class="row chat-wrapper">
+		<div class="w-100 d-flex shadow chat-header" style="justify-content:space-between">
+			<h5 class="m-0 pl-3 text-white">chat with [username]</h5>
+			<button type="button" id="show-members" class="btn btn-dark btn"><span class="oi oi-people"></span></button>
+		</div>
+		<div class="chat-content shadow w-100 border rounded">
+		
+			<div class="chat-box d-flex">
+				<div class="chat-avatar">
+					<img class="rounded-circle nav-avatar" src="https://cdn.intra.42.fr/users/small_doby.jpg">
+				</div>
+				<div class="chat-message-wrapper">
+					<div class="chat-message">
+						Hello woolim, how are you ?
+					</div>
+					<div class="chat-date text-muted">2020-06-01 17:10</div>
+				</div>
+			</div>
+
+			<!-- 내 꺼면 flex row reverse -->
+			<div class="chat-box d-flex flex-row-reverse">
+				<div class="chat-avatar">
+					<img class="rounded-circle nav-avatar" src="https://cdn.intra.42.fr/users/small_wpark.jpg">
+				</div>
+				<div class="chat-message-wrapper">
+					<div class="chat-message">
+						Hello doby ?
+					</div>
+					<div class="chat-date text-right text-muted">2020-06-01 17:10</div>
+				</div>
+			</div>
+
+			<div id="chat-members" class="char-members border rounded collapse">
+				<div class="chat-members-header w-100">Members</div>
+			</div>
+		</div> <!-- chat content -->
+
+	</div> <!-- chat wrapper -->
+
+	<div class="row chat-submit">
+		<form class="w-100 shadow">
+			<div style="display:flex">
+				<label for="message" class="sr-only">message</label>
+				<input type="text" class="form-control" placeholder="write message here..." id="message">
+				<button type="submit" class="btn btn-primary"><span class="oi oi-pencil"></span></button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+    $("#show-members").click(function () {
+          $('#chat-members').toggle("slide", { direction: "right" }, 300);
+    });
+</script>
+
 </script>
