@@ -5,6 +5,8 @@ class CreateUserProfiles < ActiveRecord::Migration[6.0]
       t.string  :nickname
       t.string  :avatar_url
       t.string  :friend_list, array: true, default: []
+      t.string  :two_factor, default: 'off'
+      t.string  :block_list, array: true, default: []
       t.references :user, type: :uuid, foreign_key: true
     end
   end
