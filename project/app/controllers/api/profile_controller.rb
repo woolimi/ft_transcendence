@@ -14,12 +14,6 @@ class Api::ProfileController < ApplicationController
 				res.push(UserProfile.find_by(user_id: id).as_json(only: [:user_id, :nickname, :name]))
 			end
 			profile[:block_list] = res
-			if (profile["two_factor"].eql? "on")
-				profile[:two_factor] = "checked"
-			end
-			if (profile["two_factor"].eql? "off")
-				profile[:two_factor] = "unchecked"
-			end
 			render json: profile
 			puts json: profile
 		else
