@@ -27,7 +27,9 @@ ActiveRecord::Schema.define(version: 2020_08_04_151918) do
   end
 
   create_table "chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.jsonb "members"
+    t.string "name", null: false
+    t.jsonb "members", null: false, array: true
+    t.index ["name"], name: "index_chats_on_name"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
