@@ -11,7 +11,7 @@
 		<div>wins: 10</div>
 		<div>loss: 10</div>
 		<%% if (user.user_id !== $('html').data().userId) { %>
-		<button type="button" class="btn btn-success btn-sm btnChat" data-user-id="<%%= user.user_id %>">send message</button>
+		<button type="button" class="btn btn-success btn-sm" id="start-chat" data-room="<%%= Helper.make_room(user.user_id, $('html').data().userId) %>">send message</button>
 		<%% } %>
 	</div>
 	</div>

@@ -106,17 +106,11 @@ html, body, #app{
   background-color: #6c757d;
   border-radius: 3px;
   align-items: center;
-}
-
-.chat-members-header {
-  background-color: #343a40;
-  color: white;
-  font-size: 16px;
-  padding: 5px;
-}
-
-.chat-content {
+  height: 2.5em;
   position: relative;
+}
+
+#chat-content {
   overflow-y: scroll;
   overflow-x: hidden;
   height: 70vh;
@@ -145,12 +139,26 @@ html, body, #app{
   background-color: #ececec;
   border-radius: 10px;
   overflow-wrap: break-word;
+  width: fit-content;
+  display: inline-flex;
+}
+
+.chat-my-message {
+  text-align: right;
+  flex-direction: row-reverse;
 }
 
 .chat-date {
   font-size: 13px;
 }
 
+#chat-members {
+  background-color: #000000b3;
+  position: absolute;
+  top: 2.5em;
+  right: 0;
+  height: calc(70vh - 2.5em);
+}
 
 @media (max-width: 767px) {
   .side-list {

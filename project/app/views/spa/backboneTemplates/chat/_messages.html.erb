@@ -1,0 +1,15 @@
+<script type="text/template" name="tmpl-chat-messages">
+<%% _.each(messages, function(message, index) { %>
+	<div class="chat-box d-flex <%%= message.user_id === $('html').data().userId ? "chat-my-message" : "" %>">
+		<div class="chat-avatar">
+			<img class="rounded-circle nav-avatar" src=<%%= message.avatar_url %>>
+		</div>
+		<div class="chat-message-wrapper">
+			<div class="chat-message">
+				<%%= message.content %>
+			</div>
+			<div class="chat-date text-muted"><%%= new Date(message.created_at).toLocaleString() %></div>
+		</div>
+	</div>
+<%% }) %>
+</script>

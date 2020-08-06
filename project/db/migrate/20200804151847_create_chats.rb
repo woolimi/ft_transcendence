@@ -4,6 +4,6 @@ class CreateChats < ActiveRecord::Migration[6.0]
       t.string  :room, null: false
       t.jsonb :members, null: false, array: true
     end
-    add_index :chats, :room
+    add_index :chats, :room, unique: true
   end
 end

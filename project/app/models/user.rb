@@ -6,6 +6,7 @@ class User < ApplicationRecord
 #         :omniauthable, omniauth_providers: [:marvin]
   devise :database_authenticatable,:registerable, :validatable, :omniauthable, omniauth_providers: [:marvin]
   has_one :user_profile
+  has_many :chat_messages
   def self.from_omniauth(auth, session_id)
     user = User.find_by(ft_id: auth[:uid])
     if user.blank?

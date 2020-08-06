@@ -2,14 +2,8 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Navbar from "./Navbar.js"
-import Game from "./Game.js"
-import Guild from "./Guild.js"
-import Profile from "./Profile.js"
 import UserModal from "./UserModal.js"
 import Friends from "./Friends.js"
-import Chat from "./Chat.js"
-import Helper from "./Helper.js"
-import Router from "./Router.js"
 
 const SPA = {}
 
@@ -26,9 +20,6 @@ SPA.start = function() {
 		// 	}
 		// });
 
-		Router.router.on("route", function (curRoute) {
-			Navbar.currentRoute.set({ route: curRoute });
-		});
 
 		Backbone.history.start();
 		Backbone.history.loadUrl(Backbone.history.fragment);
