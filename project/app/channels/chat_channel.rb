@@ -1,21 +1,17 @@
 class ChatChannel < ApplicationCable::Channel
   def subscribed
-    reject if current_user[:id] == params[:opponent_id]
-    op = User.find_by(id: params[:opponent_id])
-    reject if op.blank?
-
-    room_name = make_room_name(current_user[:id], params[:opponent_id])
-    chat = Chat.find_by(name: room_name);
+    reject if !is_valide_room?(params[:room])
+    chat = Chat.find_by(room: params[:room])
     if chat.blank?
       chat = Chat.create({
-        name: room_name,
+        room: params[:room],
         members: [
-          {user_id: current_user[:id], timestamp: Time.now.to_i},
-          {user_id: params[:opponent_id], timestamp: Time.now.to_i}
+          {user_id: @u0.user_id, name: @u0.name, nickname: @u0.nickname, avatar_url: @u0.avatar_url, timestamp: Time.now.to_i},
+          {user_id: @u1.user_id, name: @u1.name, nickname: @u1.nickname, avatar_url: @u1.avatar_url, timestamp: Time.now.to_i}
         ]
       });
     end
-    stream_from "chat_#{room_name}_channel"
+    stream_from "chat_#{params[:room]}_channel"
   end
 
   def unsubscribed
@@ -23,10 +19,16 @@ class ChatChannel < ApplicationCable::Channel
   end
 
   private
-  def make_room_name s1, s2
-    if (s1 < s2)
-      return s1 + "_" + s2
+  def is_valide_room? room
+    users = room.split("_");
+    if !users.include?(current_user[:id])
+      return false;
     end
-    return s2 + "_" + s1
+    @u0 = UserProfile.find_by(user_id: users[0]);
+    @u1 = UserProfile.find_by(user_id: users[1]);
+    if @u0.blank? || @u1.blank?
+      return false;
+    end
+    return true
   end
 end

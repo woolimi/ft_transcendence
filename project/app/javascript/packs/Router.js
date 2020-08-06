@@ -5,7 +5,8 @@ import Game from "./Game.js"
 import Guild from "./Guild.js"
 import Profile from "./Profile.js"
 import Chat from "./Chat.js"
-
+import Navbar from "./Navbar.js"
+import ChatChannel from "../channels/chat_channel.js"
 const Router = {};
 if ($('html').data().isLogin) {
 	$(() => {
@@ -15,7 +16,7 @@ if ($('html').data().isLogin) {
 				"game": "game",
 				"profile": "profile",
 				"guild": "guild",
-				"chat/:user_id": "chat"
+				"chats/:room": "chat"
 			},
 			game: function () {
 				Game.content.render();
@@ -26,12 +27,20 @@ if ($('html').data().isLogin) {
 			guild: function () {
 				Guild.content.render();
 			},
-			chat: function (user_id) {
-				Chat.content.render(user_id);
+			chat: function (room) {
+				if (Chat.content) {
+					Chat.content.undelegateEvents();
+				}
+				Chat.content = new Chat.Content({room: room});
 			}
 		});
 		const router = new RouterClass();
 		Router.router = router;
+
+		Router.router.on("route", function (curRoute, params) {
+			Navbar.currentRoute.set({ route: curRoute });
+		});
+
 	});
 }
 
