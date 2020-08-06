@@ -45,7 +45,6 @@ $(() => {
 		},
 		initialize: function () {
 			this.fetch();
-			console.log(this.toJSON());
 		},
 	})
 
@@ -67,7 +66,6 @@ $(() => {
 		render: function () {
 			const content = this.template(this.model.toJSON());
 			this.$el.html(content);
-			// console.log(this.model.toJSON());
 			return this;
 		},
 		change: function () {
@@ -99,7 +97,6 @@ $(() => {
 				let res = confirm("Do you want to remove " + block_user.nickname + "(" + block_user.name + ")?");
 				if (res === true) {
 					var arr = this.model.get("block_list");
-					console.log(arr);
 					var i
 					for (i = 0; i < arr.length; i++)
 					{
@@ -110,11 +107,8 @@ $(() => {
 						}
 					}
 					this.model.set('block_list', arr);
-					console.log(this.model.get("block_list"));
 					this.model.save();
 					this.render();
-					// console.log(i);
-					// this.model.set('block_list', '');
 				}
 		} 
 	});
@@ -127,7 +121,6 @@ $(() => {
 			"click .blockUserBtn": "block_user",
 		},
 		initialize: function() {
-			console.log(searchedBlockUsers.toJSON());
 			this.listenTo(searchedBlockUsers, "remove", this.render);
 		},
 		render: function () {
@@ -152,12 +145,28 @@ $(() => {
 		block_user: function (e) {
 			const block_user = $(e.target).data();
 			const block_list_arr = user.toJSON().block_list;
-			console.log("ADD TO BLOCK LIST");
-			// if(block_list_arr.includes(block_user.user_id) == false)
-			// 	block_list_arr.push(block_user.user_id);
-			// user.set('block_list', 'block_list_arr');
-
-			
+			var present = false;
+			var i = 0;
+			for(i = 0; i < block_list_arr.length; i++)
+			{
+				if(block_list_arr[i].user_id == block_user.userId)
+				{
+					present = true;
+					break;
+				}	
+			}
+			if(present == false)
+			{
+				const new_user = {};
+				new_user.name = block_user.name;
+				new_user.nickname = block_user.nickname;
+				new_user.user_id = block_user.userId;
+				block_list_arr.push(new_user);
+				user.set('block_list', block_list_arr);
+				user.save();
+				searchedBlockUsers.remove(searchedBlockUsers.where({ user_id: block_user.userId })[0]);
+				new ProfileContentView().render();
+			}
 		},
 	});
 
