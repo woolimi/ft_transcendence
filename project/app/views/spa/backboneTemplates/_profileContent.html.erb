@@ -1,6 +1,20 @@
 <!-- profile content -->
 <%# https://cdn.intra.42.fr/users/small_wpark.jpg %>
 
+<script type="text/template" name="tmpl-block-searched-users-modal">
+	<%% _.each(users, function(user, i) { %>
+		<li class="list-group-item"><%%= user.nickname %> (<%%= user.name %>)
+			<button class="btn btn-danger btn-sm float-right blockUserBtn"
+				data-user-id="<%%= user.user_id %>"
+				data-name="<%%= user.name %>"
+				data-nickname="<%%= user.nickname %>"
+				data-avatar-url="<%%= user.avatar_url %>">
+				block
+			</button>
+		</li>
+	<%% }) %>
+</script>
+
 <script type="text/template" name="tmpl-content-profile">
 <div class="m-3">
 	<h2>User Profile</h2>
@@ -48,7 +62,7 @@
 </div>
 
 <div class="m-3">
-	<h2>Block List&nbsp&nbsp&nbsp <button type="button" class="btn btn-warning">Add</button></h2>
+	<h2>Block List&nbsp&nbsp&nbsp <button type="button" class="btn btn-warning blockBtn" data-toggle="modal" data-target="#searchBlockUserModal">Add</button></h2>
 
 
 	<div class="overflow-auto" style="height: 200px">

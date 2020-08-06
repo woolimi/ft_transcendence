@@ -31,6 +31,31 @@ $(() => {
 
 	const user = new User();
 
+	const AllUsers = Backbone.Model.extend({
+		defaults: {
+			user_id: "undefined",
+			name: "undefined",
+			nickname: "undefined",
+			avatar_url: "#",
+		},
+		urlRoot: "/api/user_info/",
+		idAttribute: 'user_id',
+		url: function () {
+			return this.urlRoot + encodeURIComponent(this.get('user_id'));
+		},
+		initialize: function () {
+			this.fetch();
+			console.log(this.toJSON());
+		},
+	})
+
+	const SearchedBlockUsers = Backbone.Collection.extend({
+		model: AllUsers,
+		url: "/api/user_info/",
+	});
+
+	const searchedBlockUsers = new SearchedBlockUsers();
+
 	/* View */
 	const ProfileContentView = Backbone.View.extend({
 		template: _.template($("script[name='tmpl-content-profile']").html()),
@@ -94,7 +119,50 @@ $(() => {
 		} 
 	});
 
+	const SearchedBlockUsersView = Backbone.View.extend({
+		el: $("#view-block-searched-users"),
+		template: _.template($("script[name='tmpl-block-searched-users-modal']").html()),
+		events: {
+			"submit": "search_users",
+			"click .blockUserBtn": "block_user",
+		},
+		initialize: function() {
+			console.log(searchedBlockUsers.toJSON());
+			this.listenTo(searchedBlockUsers, "remove", this.render);
+		},
+		render: function () {
+			this.$el.find('#searchedBlockUserList').html(this.template({
+				users: searchedBlockUsers.toJSON(),
+			// 	// friends: friends.toJSON() // to check if user is in friends of not
+			}))
+		},
+		search_users: function (e) {
+			e.preventDefault();
+			const name = $("#searchBlockUserName").val();
+			if (!name)
+				return;
+			const self = this;
+			searchedBlockUsers.fetch({
+				data: $.param({ search: name }),
+				success: function (collection, response, options) {
+					self.render();
+				},
+			});
+		},
+		block_user: function (e) {
+			const block_user = $(e.target).data();
+			const block_list_arr = user.toJSON().block_list;
+			console.log("ADD TO BLOCK LIST");
+			// if(block_list_arr.includes(block_user.user_id) == false)
+			// 	block_list_arr.push(block_user.user_id);
+			// user.set('block_list', 'block_list_arr');
+
+			
+		},
+	});
+
 	Profile.content = new ProfileContentView();
+	Profile.searchBlockUserModal = new SearchedBlockUsersView();
 })
 
 } // if logged in

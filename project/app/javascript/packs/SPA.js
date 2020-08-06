@@ -24,6 +24,7 @@ SPA.start = function() {
 			},
 			profile: function () {
 				Profile.content.render();
+				Profile.searchBlockUserModal.render();
 			},
 			guild: function () {
 				Guild.content.render();
