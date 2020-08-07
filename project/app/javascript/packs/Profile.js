@@ -126,7 +126,7 @@ $(() => {
 		render: function () {
 			this.$el.find('#searchedBlockUserList').html(this.template({
 				users: searchedBlockUsers.toJSON(),
-			// 	// friends: friends.toJSON() // to check if user is in friends of not
+				blocked_list: user.toJSON().block_list, // to check if user is in block_list or not
 			}))
 		},
 		search_users: function (e) {
