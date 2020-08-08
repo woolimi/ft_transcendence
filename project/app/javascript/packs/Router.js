@@ -28,9 +28,10 @@ if ($('html').data().isLogin) {
 				Guild.content.render();
 			},
 			chat: function (room) {
-				if (Chat.content) {
+				if (Chat.content)
 					Chat.content.undelegateEvents();
-				}
+				if (ChatChannel.channel)
+					ChatChannel.unsubscribe();
 				Chat.content = new Chat.Content({room: room});
 			}
 		});
