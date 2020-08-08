@@ -30,10 +30,11 @@ class Api::ChatMessagesController < ApplicationController
 
 		chat = Chat.find_by(room: params[:chat_room]);
 		if chat.present?
-			chat.chat_messages.create(
+			message = chat.chat_messages.create(
 				user_id: params[:user_id],
 				content: params[:content]
 			)
+			ActionCable.server.broadcast "chat_#{params[:chat_room]}_channel", message
 			render json: nil, status: :ok
 		else
 			render plain: "Page not found", status: :not_found

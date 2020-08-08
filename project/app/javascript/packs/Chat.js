@@ -1,7 +1,6 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
-import Router from "./Router.js"
 import ChatChannel from "../channels/chat_channel.js"
 import Helper from "./Helper.js"
 
@@ -16,13 +15,7 @@ if ($('html').data().isLogin) {
 				View.apply(this, arguments);
 			}
 		});
-
-		Chat.room_name = function(s1, s2) {
-			if (s1 < s2)
-				return s1 + "_" + s2;
-			return s2 + "_" + s2;
-		}
-
+		
 		const Message = Backbone.Model.extend({
 			initialize: function (attrs) {
 				this.url = function() {
@@ -74,7 +67,10 @@ if ($('html').data().isLogin) {
 					await Helper.fetch(this.members);
 					this.render_messages();
 					this.render_members();
+					// ChatChannel.unsubscribe();
+					ChatChannel.subscribe(options.room, this.recv_callback)
 				} catch (error) {
+					console.log(error);
 					Helper.flash_message("danger", error.statusText);
 				}
 			},
@@ -118,6 +114,19 @@ if ($('html').data().isLogin) {
 				}
 				contentEl.val("");
 			},
+			recv_callback: function(data) {
+				if (data.user_id == $('html').data().userId)
+					return;
+				const member = Chat.content.members.find((model) => {
+					return model.get("user_id") == data.user_id
+				});
+				console.log(member.toJSON())
+				data.nickname = member.get("nickname");
+				data.avatar_url = member.get("avatar_url");
+				const new_message = new Message(data);
+				Chat.content.messages.add(new_message);
+				Chat.content.render_messages();
+			}
 		});
 
 	});
