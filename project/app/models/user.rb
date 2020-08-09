@@ -15,13 +15,19 @@ class User < ApplicationRecord
         ft_id: auth[:uid], 
         session_id: session_id,
         email: auth[:info][:email],
-        password: "asdfas"
-      )
+        password: "asdfas")
       user.create_user_profile(
         name: auth[:info][:name],
         nickname: auth[:info][:nickname],
         avatar_url: small_img)
     end
     return user
+  end
+  def self.check_already_logged_in(user)
+      status = UserProfile.find_by(user_id: user.id).status;
+      if (status != 0)
+        return true   
+      end
+        return false
   end
 end

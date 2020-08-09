@@ -221,6 +221,7 @@ $(() => {
 
 	Profile.content = new ProfileContentView();
 	Profile.searchBlockUserModal = new SearchedBlockUsersView();
+	Profile.user = user;
 })
 
 } // if logged in
