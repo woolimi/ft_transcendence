@@ -23,12 +23,11 @@ if ($('html').data().isLogin)
     consumer.subscriptions.create("UserStatusChannel", {
       connected() {
         // Called when the subscription is ready for use on the server
-        console.log("user connected");
       },
 
       disconnected() {
         // Called when the subscription has been terminated by the server
-        console.log("disconnected by server");
+        this.unsubscribe();
       },
 
       received(data) {
@@ -47,7 +46,8 @@ if ($('html').data().isLogin)
 
       rejected() {
         // Called when the subscription is rejected by the server.
-        console.log("connection refused")
+        console.log("rejected by server")
+        this.unsubscribe();
       },
     });
 

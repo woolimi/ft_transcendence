@@ -11,5 +11,13 @@ Rails.application.routes.draw do
     resources :profile, only: [:show, :update], param: :user_id
     resources :my_friends, only: [:index, :show, :update, :destroy], param: :user_id
     resources :user_status, only: [:show, :update], param: :user_id
+    resources :chats, param: :room, only: [:index] do
+      resources :chat_messages, only: [:index, :create]
+      get "/members", to: 'chat_members#index'
+    end
+    resources :channels, param: :room, only: [:index] do
+      put "/last_visited", to: 'channels#update_last_visited'
+      put "/display", to: "channels#update_display", param: :display
+    end
   end
 end

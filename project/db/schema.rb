@@ -10,12 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_21_220134) do
+ActiveRecord::Schema.define(version: 2020_08_04_151918) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "chat_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "timestamp", null: false
+    t.uuid "chat_id"
+    t.uuid "user_id"
+    t.index ["chat_id"], name: "index_chat_messages_on_chat_id"
+    t.index ["user_id"], name: "index_chat_messages_on_user_id"
+  end
+
+  create_table "chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "room", null: false
+    t.integer "unread", null: false
+    t.jsonb "members", null: false, array: true
+    t.index ["room"], name: "index_chats_on_room", unique: true
+  end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
@@ -42,5 +58,7 @@ ActiveRecord::Schema.define(version: 2020_07_21_220134) do
     t.index ["ft_id"], name: "index_users_on_ft_id", unique: true
   end
 
+  add_foreign_key "chat_messages", "chats"
+  add_foreign_key "chat_messages", "users"
   add_foreign_key "user_profiles", "users"
 end

@@ -16,5 +16,47 @@ Helper.flash_message = function (type, message) {
 		});
 	}, 1000);
 }
+Helper.make_room = function (s1, s2) {
+	if (s1 < s2)
+		return s1 + "_" + s2;
+	return s2 + "_" + s1;
+}
+Helper.fetch = function (collection) {
+	return new Promise((resolve, reject) => {
+		collection.fetch({
+			success: function (collection) {
+				resolve(collection);
+			},
+			error: function (collection, response) {
+				reject(response);
+			}
+		});
+	})
+}
+
+Helper.save = function (model) {
+	return new Promise((resolve, reject) => {
+		model.save({}, {
+			success: function(model) {
+				resolve(model);
+			},
+			error: function(model, response) {
+				reject(response);
+			}
+		});
+	})
+}
+
+Helper.ajax = function(url, data, method) {
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			url: url,
+			type: method,
+			data: data
+		})
+		.done(resolve)
+		.fail(reject);
+	})
+}
 
 export default Helper;

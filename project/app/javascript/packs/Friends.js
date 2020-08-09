@@ -111,7 +111,7 @@ if ($('html').data().isLogin) {
 			},
 			remove_friend: function (e) {
 				e.stopImmediatePropagation();
-				const friend = $(e.target).data();
+				const friend = $(e.currentTarget).data();
 				let res = confirm("Do you want to remove " + friend.nickname + "(" + friend.name + ") ?");
 				if (res === true) {
 					const tmp = this.collection.where({ user_id: friend.userId })[0];
