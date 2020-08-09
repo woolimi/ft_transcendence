@@ -10,14 +10,15 @@ if ($('html').data().isLogin) {
 $(() => {
 
 	/* Model */
-	const User = Backbone.Model.extend({
+	const UserProfile = Backbone.Model.extend({
 		defaults: {
 			user_id: $('html').data().userId,
 			name: "undefined",
 			nickname: "undefined",
 			avatar_url: "#",
 			block_list: "{}",
-			two_factor: "undefined"
+			two_factor: "undefined",
+			photo: new File([""], "filename")
 		},
 		urlRoot: "/api/profile/",
 		idAttribute: 'user_id',
@@ -27,9 +28,27 @@ $(() => {
 		url: function () {
 			return this.urlRoot + encodeURIComponent(this.get('user_id'));
 		},
+		readAvatar : function (file, callback) {
+			var reader = new FileReader(); // File API object for reading a file locally
+			reader.onload = (function (theFile, self) {
+			  return function (e) {
+				console.log(self.toJSON());
+				self.set({
+					photo: file
+				});
+				self.save
+				// Set the file data correctly on the Backbone model
+				// self.set({avatar_file_name : "photo", avatar_data : this.file});
+
+				// Handle anything else you want to do after parsing the file and setting up the model.
+				callback();
+			 };
+			})(file, this);
+			reader.readAsDataURL(file); // Reads file into memory Base64 encoded
+		  }
 	})
 
-	const user = new User();
+	const userProfile = new UserProfile();
 
 	const AllUsers = Backbone.Model.extend({
 		defaults: {
@@ -59,7 +78,7 @@ $(() => {
 	const ProfileContentView = Backbone.View.extend({
 		template: _.template($("script[name='tmpl-content-profile']").html()),
 		el: $("#view-content"),
-		model: user,
+		model: userProfile,
 		initialize: function (options) {
 			this.listenTo(this.model, "change", this.change);
 		},
@@ -74,21 +93,51 @@ $(() => {
 			}
 		},
 		events: {
+			// "change .avatar": "upload_image",
 			"submit": "onSubmit",
 			"click .unblock": "unblock",
 		},
-		
+		upload_image: function()
+		{
+			const file = document.getElementById("avatar"); //file
+			console.log(file.files[0]);
+			var reader = new FileReader();
+			(function (self) {
+				reader.addEventListener("load", function () {
+					  self.model.set({
+						photo: this.result
+					  });
+					self.model.save({}, {
+						success: function(model) {
+							Navbar.userModel.fetch();
+						},
+					});
+				}, false);
+			}) (this);	
+			reader.readAsDataURL(file.files[0]);
+		},
 		onSubmit: function(e) {
 			e.preventDefault();
 			const two_factor = document.getElementById("twofactor").checked ? "on" : "off";
+			const file = document.getElementById("avatar"); //file
+			if (file.files[0])
+				this.upload_image();
 			this.model.set({
 				nickname: $('.nickname-update').val(),
 				name: $('.name-update').val(),
-				avatar_url: $('.avatar_url-update').val(),
-				two_factor: two_factor
-			});
+				two_factor: two_factor,
+			});			
+			console.log(this.model.toJSON());
 			const self = this;
-			this.model.save();
+			this.model.save({}, {
+				success: function() {
+					Helper.flash_message("success", "Profile updated successfully!");
+				},
+				failure: function() {
+					Helper.flash_message("danger", "Error while updating profile!");
+				}
+			});
+			this.render();
 		},
 
 		unblock: function(e) {
@@ -126,7 +175,7 @@ $(() => {
 		render: function () {
 			this.$el.find('#searchedBlockUserList').html(this.template({
 				users: searchedBlockUsers.toJSON(),
-				blocked_list: user.toJSON().block_list, // to check if user is in block_list or not
+				blocked_list: userProfile.toJSON().block_list, // to check if user is in block_list or not
 			}))
 		},
 		search_users: function (e) {
@@ -144,7 +193,7 @@ $(() => {
 		},
 		block_user: function (e) {
 			const block_user = $(e.target).data();
-			const block_list_arr = user.toJSON().block_list;
+			const block_list_arr = userProfile.toJSON().block_list;
 			var present = false;
 			var i = 0;
 			for(i = 0; i < block_list_arr.length; i++)
@@ -162,8 +211,8 @@ $(() => {
 				new_user.nickname = block_user.nickname;
 				new_user.user_id = block_user.userId;
 				block_list_arr.push(new_user);
-				user.set('block_list', block_list_arr);
-				user.save();
+				userProfile.set('block_list', block_list_arr);
+				userProfile.save();
 				searchedBlockUsers.remove(searchedBlockUsers.where({ user_id: block_user.userId })[0]);
 				new ProfileContentView().render();
 			}
