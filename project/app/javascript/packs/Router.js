@@ -28,6 +28,7 @@ if ($('html').data().isLogin) {
 				if (ChatChannel.channel)
 					ChatChannel.unsubscribe();
 				Profile.content.render();
+				Profile.searchBlockUserModal.render();
 			},
 			guild: function () {
 				if (ChatChannel.channel)

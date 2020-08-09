@@ -1,36 +1,54 @@
 <!-- profile content -->
 <%# https://cdn.intra.42.fr/users/small_wpark.jpg %>
 
+<script type="text/template" name="tmpl-block-searched-users-modal">
+	<%% _.each(users, function(user, i) { %>
+		<li class="list-group-item"><%%= user.nickname %> (<%%= user.name %>)
+			<button class="btn btn-danger btn-sm float-right blockUserBtn"
+				<%%= _.find(blocked_list, (f) => { return (f.user_id === user.user_id)}) ? "disabled" : "" %>
+				data-user-id="<%%= user.user_id %>"
+				data-name="<%%= user.name %>"
+				data-nickname="<%%= user.nickname %>"
+				data-avatar-url="<%%= user.avatar_url %>">
+				block
+			</button>
+		</li>
+	<%% }) %>
+</script>
+
 <script type="text/template" name="tmpl-content-profile">
+<div class="m-3">
+	<h2>User Profile</h2>
+</div>
 <div class="container p-3">
-<form>
+<form class="border-bottom" enctype="multipart/form-data">
   <div class="form-group row">
     <label for="avatar" class="col-sm-5 col-form-label">Avatar</label>
     <div class="col-sm-7">
-    	<input type="file" class="form-control-file" id="avatar">
+    	<input type="file" class="form-control-file avatar" id="avatar" accept="image/*">
     </div>
   </div>
 
   <div class="form-group row">
     <label for="name" class="col-sm-5 col-form-label">Name</label>
     <div class="col-sm-7">
-			<input class="form-control" type="text" value="<%%= name %>" id="name" readonly>
+			<input class="form-control name-update" type="text" value="<%%= name %>" id="name" readonly>
     </div>
   </div>
 
   <div class="form-group row">
     <label for="nickname" class="col-sm-5 col-form-label">Nickname</label>
     <div class="col-sm-7">
-      <input type="text" class="form-control" id="nickname" value="<%%= nickname %>">
+      <input type="text" class="form-control nickname-update" id="nickname" value="<%%= nickname %>">
     </div>
   </div>
 
   <div class="form-group row">
     <div class="col-sm-5">2 Factor Authentication</div>
     <div class="col-sm-7">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="twofactor">
-        <label class="form-check-label" for="twofactor">
+      <div class="custom-control custom-switch">
+        <input class="custom-control-input two-factor-update" type="checkbox" id="twofactor" <%%= (two_factor === "on" ) ? "checked" : "" %>>
+        <label class="custom-control-label" for="twofactor">
           on / off
         </label>
       </div>
@@ -45,43 +63,23 @@
 </div>
 
 <div class="m-3">
-	<h2>Block list</h2>
+	<h2>Block List&nbsp&nbsp&nbsp <button type="button" class="btn btn-warning blockBtn" data-toggle="modal" data-target="#searchBlockUserModal">Add</button></h2>
+
+
 	<div class="overflow-auto" style="height: 200px">
 		<ul class="list-group">
+		<%% _.each(block_list, function(block_list) { %>	
 			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Cras justo odio
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
+				<%%= block_list.nickname %>
+				(<%%= block_list.name %>)
+
+				<button type="button" class="btn btn-danger btn-sm unblock" data-user_id="<%%= block_list.user_id %>" data-name="<%%= block_list.name %>"
+			data-nickname="<%%= block_list.nickname %>">delete</button>
 			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Dapibus ac facilisis in
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Dapibus ac facilisis in
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Dapibus ac facilisis in
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Dapibus ac facilisis in
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Dapibus ac facilisis in
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Dapibus ac facilisis in
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Dapibus ac facilisis in
-				<button type="button" class="btn btn-danger btn-sm">delete</button>
-			</li>
+		<%% }) %>
 		</ul>
+		<br>
+
 	</div>
 </div>
-
 </script>
