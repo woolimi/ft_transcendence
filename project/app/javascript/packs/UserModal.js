@@ -18,9 +18,6 @@ if ($('html').data().isLogin) {
 			},
 			urlRoot: "/api/user_info/",
 			idAttribute: 'user_id',
-			initialize: function () {
-				this.fetch();
-			},
 			url: function () {
 				return this.urlRoot + encodeURIComponent(this.get('user_id'));
 			},

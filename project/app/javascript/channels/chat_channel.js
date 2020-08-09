@@ -1,4 +1,5 @@
 import consumer from "./consumer"
+import Helper from "../packs/Helper";
 
 const ChatChannel = {};
 ChatChannel.channel = null;
@@ -10,7 +11,6 @@ if ($('html').data().isLogin)
       if (this.channel) {
         this.channel.unsubscribe();
         this.channel = null;
-        console.log("channel unsubscribed");
       }
     };
     ChatChannel.subscribe = function(room, recv_callback) {
@@ -22,21 +22,34 @@ if ($('html').data().isLogin)
       }, {
         connected() {
           // Called when the subscription is ready for use on the server
-          console.log("channel connected");
+
+          // update last_visited time
+          Helper.ajax(`/api/channels/${room}/last_visited`, "", "PUT")
+            .catch((err)=> {
+              console.error(err);
+            })
+          // remove badge          
+          const chat = $("#view-channels-list").find(`[data-room=${room}]`);
+          const badge = chat.find(".badge");
+          badge.html(0);
+          badge.addClass("d-none");
         },
 
         disconnected() {
           // Called when the subscription has been terminated by the server
-          console.log("channel disconnected");
         },
 
         received(data) {
           // Called when there's incoming data on the websocket for this channel
+
+          // update last_visited time
+          Helper.ajax(`/api/channels/${room}/last_visited`, "", "PUT")
+            .catch((err) => {
+              console.error(err);
+            })
           recv_callback(data);
         },
-
         rejected() {
-          console.log("rejected");
         }
       }); 
     }

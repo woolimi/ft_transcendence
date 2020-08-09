@@ -4,6 +4,8 @@ import Backbone from "backbone"
 import Navbar from "./Navbar.js"
 import UserModal from "./UserModal.js"
 import Friends from "./Friends.js"
+import MessageNotificationChannel from "../channels/message_notification_channel"
+import Channel from "./Channel"
 
 const SPA = {}
 
@@ -32,7 +34,11 @@ SPA.start = function() {
 		UserModal.content.render();
 		/* friend list */
 		Friends.list.render();
-		Friends.searchUserModal.render();
+		/* Channel & DM list */
+		Channel.channel_list = new Channel.V_ChannelList();
+		/* message notification channel */
+		MessageNotificationChannel.subscribe();
+
 	})
 }
 

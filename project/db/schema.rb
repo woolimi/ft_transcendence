@@ -19,8 +19,7 @@ ActiveRecord::Schema.define(version: 2020_08_04_151918) do
 
   create_table "chat_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "content", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "timestamp", null: false
     t.uuid "chat_id"
     t.uuid "user_id"
     t.index ["chat_id"], name: "index_chat_messages_on_chat_id"
@@ -29,6 +28,7 @@ ActiveRecord::Schema.define(version: 2020_08_04_151918) do
 
   create_table "chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "room", null: false
+    t.integer "unread", null: false
     t.jsonb "members", null: false, array: true
     t.index ["room"], name: "index_chats_on_room", unique: true
   end

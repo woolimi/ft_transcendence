@@ -37,9 +37,9 @@ if ($('html').data().isLogin) {
 			initialize: function(attrs) {
 				this.url = function() {
 					return "/api/chats/" + Backbone.history.fragment.split("/")[1] + "/members/";
-				}
-			}
-		})
+				};
+			},
+		});
 
 		const Members = Backbone.Collection.extend({
 			model: Member,
@@ -67,11 +67,12 @@ if ($('html').data().isLogin) {
 					await Helper.fetch(this.members);
 					this.render_messages();
 					this.render_members();
-					// ChatChannel.unsubscribe();
 					ChatChannel.subscribe(options.room, this.recv_callback)
 				} catch (error) {
-					console.log(error);
-					Helper.flash_message("danger", error.statusText);
+					if (error.statusText)
+						Helper.flash_message("danger", error.statusText);
+					else
+						console.error(error);
 				}
 			},
 			render_page() {
@@ -110,7 +111,10 @@ if ($('html').data().isLogin) {
 					await Helper.fetch(this.messages)
 					this.render_messages();
 				} catch (error) {
-					Helper.flash_message("danger", error.statusText);
+					if (error.statusText)
+						Helper.flash_message("danger", error.statusText);
+					else
+						console.error(error);
 				}
 				contentEl.val("");
 			},
@@ -120,12 +124,11 @@ if ($('html').data().isLogin) {
 				const member = Chat.content.members.find((model) => {
 					return model.get("user_id") == data.user_id
 				});
-				console.log(member.toJSON())
 				data.nickname = member.get("nickname");
 				data.avatar_url = member.get("avatar_url");
 				const new_message = new Message(data);
 				Chat.content.messages.add(new_message);
-				Chat.content.render_messages();
+				Chat.content.render_messages();				
 			}
 		});
 
