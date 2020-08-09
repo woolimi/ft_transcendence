@@ -13,10 +13,10 @@
 require("@rails/ujs").start()
 require("@rails/activestorage").start()
 require("channels")
-
 const $ = require("jquery");
 global.$ = global.jQuery = $;
 window.$ = window.jQuery = $;
+require("jquery-ui");
 require("bootstrap");
 require("backbone");
 

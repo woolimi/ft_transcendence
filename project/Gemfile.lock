@@ -112,6 +112,8 @@ GEM
       ruby-vips (>= 2.0.17, < 3)
     jbuilder (2.10.0)
       activesupport (>= 5.0.0)
+    jquery-ui-rails (6.0.1)
+      railties (>= 3.2.16)
     jwt (2.2.1)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -274,6 +276,7 @@ DEPENDENCIES
   hirb (~> 0.7.3)
   i18n (~> 1.8)
   jbuilder (~> 2.7)
+  jquery-ui-rails (~> 6.0)
   listen (~> 3.2)
   omniauth-marvin
   omniauth-oauth2 (~> 1.3.1)

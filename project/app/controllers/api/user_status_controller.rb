@@ -19,13 +19,3 @@ class Api::UserStatusController < ApplicationController
 		render json: params[:status]
 	end
 end
-
-      # check = User.where({ ft_id: env['warden'].user[:uid] })
-      #   .select("users.id, user_profiles.status")
-      #   .joins("INNER JOIN user_profiles ON users.id = user_profiles.user_id")[0]
-      # if (check[:status] > 0)
-      #   flash[:alert] = "Please close other session first"
-      #   redirect_to root_path
-      # if check[:status] == 1
-      #   redirect_to destroy_user_session_path
-      # sign_out_and_redirect(resource_or_scope)
