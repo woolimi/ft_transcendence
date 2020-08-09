@@ -22,7 +22,6 @@ SPA.start = function() {
 		// 	}
 		// });
 
-
 		Backbone.history.start();
 		Backbone.history.loadUrl(Backbone.history.fragment);
 

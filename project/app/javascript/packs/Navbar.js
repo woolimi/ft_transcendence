@@ -33,6 +33,8 @@ $(() => {
 	/* export currentRoute model for binding with route event */
 	Navbar.currentRoute = new CurrentRoute();
 	const user = new User();
+	Navbar.userModel = user;
+
 
 	/* View */
 	const NavItemsView = Backbone.View.extend({

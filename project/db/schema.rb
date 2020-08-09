@@ -38,6 +38,8 @@ ActiveRecord::Schema.define(version: 2020_08_04_151918) do
     t.string "nickname"
     t.string "avatar_url"
     t.string "friend_list", default: [], array: true
+    t.string "two_factor", default: "off"
+    t.string "block_list", default: [], array: true
     t.integer "status", default: 0
     t.uuid "user_id"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
