@@ -21,11 +21,11 @@
 	<h2>User Profile</h2>
 </div>
 <div class="container p-3">
-<form class="border-bottom">
+<form class="border-bottom" enctype="multipart/form-data">
   <div class="form-group row">
     <label for="avatar" class="col-sm-5 col-form-label">Avatar</label>
     <div class="col-sm-7">
-    	<input type="file" class="form-control-file avatar_url-update" id="avatar">
+    	<input type="file" class="form-control-file avatar" id="avatar" accept="image/*">
     </div>
   </div>
 
@@ -82,9 +82,4 @@
 
 	</div>
 </div>
- <% if flash[:alert] %>
-        Helper.flash_message("danger", "<%=flash[:alert]%>");
-    <% elsif flash[:notice] %>
-      Helper.flash_message("success", "<%=flash[:notice]%>");
-<% end %>
 </script>
