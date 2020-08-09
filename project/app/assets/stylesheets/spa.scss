@@ -110,6 +110,10 @@ html, body, #app{
   position: relative;
 }
 
+#chat-wrapper {
+  overflow-x: hidden;
+}
+
 #chat-content {
   overflow-y: scroll;
   overflow-x: hidden;
@@ -158,6 +162,14 @@ html, body, #app{
   top: 2.5em;
   right: 0;
   height: calc(70vh - 2.5em);
+}
+
+.private-channel {
+  color: #ff8585;
+}
+
+.d-none {
+  display: none !important;
 }
 
 @media (max-width: 767px) {

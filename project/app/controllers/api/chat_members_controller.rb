@@ -6,7 +6,7 @@ class Api::ChatMembersController < ApplicationController
 	def index
 		chat = Chat.find_by(room: params[:chat_room]);
 		if chat.present?
-			render json: chat.members;
+			render json: chat.members
 		else
 			render json: nil, status: :forbidden
 		end

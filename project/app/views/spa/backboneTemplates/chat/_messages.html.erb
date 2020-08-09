@@ -8,7 +8,7 @@
 			<div class="chat-message">
 				<%%= message.content %>
 			</div>
-			<div class="chat-date text-muted"><%%= new Date(message.created_at).toLocaleString() %></div>
+			<div class="chat-date text-muted"><%%= new Date(message.timestamp).toLocaleString() %></div>
 		</div>
 	</div>
 <%% }) %>
