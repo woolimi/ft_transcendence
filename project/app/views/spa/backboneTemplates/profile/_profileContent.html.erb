@@ -38,7 +38,7 @@
   <div class="form-group row">
     <label for="nickname" class="col-sm-5 col-form-label">Nickname</label>
     <div class="col-sm-7">
-      <input type="text" class="form-control nickname-update" id="nickname" value="<%%= nickname %>">
+      <input type="text" class="form-control nickname-update" id="nickname" value="<%%= nickname %>" pattern="[A-Za-z]{3,8}" title="Nickname should contain only alphabets without spaces and special characters. Length [3-8] characters">
     </div>
   </div>
 

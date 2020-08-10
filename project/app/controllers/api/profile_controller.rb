@@ -25,6 +25,10 @@ class Api::ProfileController < ApplicationController
 		me = UserProfile.find_by(user_id: current_user[:id])
 		# puts me.photo.as_json()
 		if (params[:nickname] <=> me.nickname)
+			user = UserProfile.find_by(:nickname => params[:nickname])
+			if (user.present?)
+				render plain: "nickname already exists, please use a unique nickname#" + me.nickname, status: :ok
+			end
 			me.nickname = params[:nickname]
 		end
 		arr =  params[:block_list].as_json();
@@ -41,8 +45,15 @@ class Api::ProfileController < ApplicationController
 		if (params[:photo] <=> "")
 			result = Cloudinary::Uploader.upload(params[:photo])
 			me.avatar_url = result["url"]
-		end
+		end		
 		me.save()
+		# validates = me.save()
+		# puts validates
+		# if (validates == true)
+		# 	puts "true"
+		# 	render plain: "", status: :ok
+		# else
+		# 	render json: nil, status: :internal_server_error
+		# end
 	end
-
 end
