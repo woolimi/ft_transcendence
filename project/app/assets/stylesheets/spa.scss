@@ -172,6 +172,23 @@ html, body, #app{
   display: none !important;
 }
 
+#chat-message-loader-wrapper {
+  position: absolute;
+  z-index: 1;
+  background-color: #c7c7c775;
+  height: 70vh;
+  width: calc(100% - 33px);
+}
+
+#chat-message-loader {
+  position: absolute;
+  z-index: 2;
+  top: calc(50% - 20px);
+  left: calc(50% - 20px);
+  height: 40px;
+  width: 40px;
+}
+
 @media (max-width: 767px) {
   .side-list {
     width: 50%;

@@ -2,21 +2,21 @@ class Api::ChatMessagesController < ApplicationController
 	protect_from_forgery
 	before_action :authenticate_user!
 
-	# GET /api/chats/:chat_room/chat_messages/
+	# GET /api/chats/:chat_room/chat_messages/?last_message
 	def index
 		chat = Chat.find_by(room: params[:chat_room]);
 		if chat.present?
-			render json: messages_with_user(chat.chat_messages);
+			render json: messages_with_user(chat.chat_messages, params[:first_id]);
 		elsif is_valide_room? params[:chat_room]
 			chat = Chat.create({
 				room: params[:chat_room],
 				unread: 0,
 				members: [
-					{user_id: @u0.user_id, name: @u0.name, nickname: @u0.nickname, avatar_url: @u0.avatar_url, display: true, timestamp: Time.now},
-					{user_id: @u1.user_id, name: @u1.name, nickname: @u1.nickname, avatar_url: @u1.avatar_url, display: true, timestamp: Time.now}
+					{user_id: @u0.user_id, name: @u0.name, display: true, timestamp: Time.now},
+					{user_id: @u1.user_id, name: @u1.name, display: true, timestamp: Time.now}
 				]
 			});
-			render json: messages_with_user(chat.chat_messages);
+			render json: messages_with_user(chat.chat_messages, params[:first_id]);
 		else
 			render plain: "Page not found", status: :not_found
 		end
@@ -63,9 +63,18 @@ class Api::ChatMessagesController < ApplicationController
 		return true
 	end
 
-	def messages_with_user messages
-		return messages.select("chat_messages.*, user_profiles.nickname, user_profiles.avatar_url")
-				.joins("INNER JOIN user_profiles ON chat_messages.user_id = user_profiles.user_id")
-				.order("chat_messages.timestamp ASC")
+	def messages_with_user(messages, first_id)
+		if first_id
+			return messages.select("chat_messages.*, user_profiles.nickname, user_profiles.avatar_url")
+					.joins("INNER JOIN user_profiles ON chat_messages.user_id = user_profiles.user_id")
+					.where("chat_messages.id < ?", first_id)
+					.order("chat_messages.timestamp DESC")
+					.limit(20).reverse
+		else
+			return messages.select("chat_messages.*, user_profiles.nickname, user_profiles.avatar_url")
+					.joins("INNER JOIN user_profiles ON chat_messages.user_id = user_profiles.user_id")
+					.order("chat_messages.timestamp DESC")
+					.limit(20).reverse
+		end
 	end
 end

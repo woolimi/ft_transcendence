@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 2020_08_04_151918) do
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
-  create_table "chat_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "chat_messages", force: :cascade do |t|
     t.text "content", null: false
     t.datetime "timestamp", null: false
     t.uuid "chat_id"
