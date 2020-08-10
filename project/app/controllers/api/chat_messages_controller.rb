@@ -12,8 +12,8 @@ class Api::ChatMessagesController < ApplicationController
 				room: params[:chat_room],
 				unread: 0,
 				members: [
-					{user_id: @u0.user_id, name: @u0.name, display: true, timestamp: Time.now},
-					{user_id: @u1.user_id, name: @u1.name, display: true, timestamp: Time.now}
+					{user_id: @u0.user_id, display: true, timestamp: Time.now},
+					{user_id: @u1.user_id, display: true, timestamp: Time.now}
 				]
 			});
 			render json: messages_with_user(chat.chat_messages, params[:first_id]);
@@ -38,9 +38,13 @@ class Api::ChatMessagesController < ApplicationController
 			)
 			ActionCable.server.broadcast "chat_#{params[:chat_room]}_channel", message
 			chat.members.each { |m| 
-				data = {:type => "chats", :room => chat.room }
 				if m["user_id"] != current_user[:id]
-					ActionCable.server.broadcast "message_notification_#{m["user_id"]}_channel", data
+					block_list = UserProfile.find_by(:user_id => m["user_id"]).block_list
+					is_blocked = block_list.detect { |b| b == current_user[:id] }
+					if !is_blocked
+						data = {:type => "chats", :room => chat.room }
+						ActionCable.server.broadcast "message_notification_#{m["user_id"]}_channel", data
+					end
 				end
 			}
 			render json: nil, status: :ok
@@ -65,13 +69,13 @@ class Api::ChatMessagesController < ApplicationController
 
 	def messages_with_user(messages, first_id)
 		if first_id
-			return messages.select("chat_messages.*, user_profiles.nickname, user_profiles.avatar_url")
+			return messages.select("chat_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url")
 					.joins("INNER JOIN user_profiles ON chat_messages.user_id = user_profiles.user_id")
 					.where("chat_messages.id < ?", first_id)
 					.order("chat_messages.timestamp DESC")
 					.limit(20).reverse
 		else
-			return messages.select("chat_messages.*, user_profiles.nickname, user_profiles.avatar_url")
+			return messages.select("chat_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url")
 					.joins("INNER JOIN user_profiles ON chat_messages.user_id = user_profiles.user_id")
 					.order("chat_messages.timestamp DESC")
 					.limit(20).reverse

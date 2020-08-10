@@ -18,6 +18,12 @@ class Api::ChannelsController < ApplicationController
 			unread = messages.where("chat_messages.timestamp > ?", me["timestamp"]).size
 			# chat[:unread]
 			chat[:unread] = unread
+			chat.members.each { |m|
+				user_profile = UserProfile.find_by(:user_id => m["user_id"])
+				m["name"] = user_profile[:name]
+				m["nickname"] = user_profile[:nickname]
+				m["avatar_url"] = user_profile[:avatar_url]
+			}
 		}
 		render json: {
 			# channels: channels.to_json, 

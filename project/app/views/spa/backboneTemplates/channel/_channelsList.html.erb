@@ -2,7 +2,9 @@
 <%% _.each(chats, function(chat, i) { %>
 	<%% const me = _.find(chat.members, (member) => { return member.user_id === $('html').data().userId }) %>
 	<%% const opponent = _.find(chat.members, (member) => { return member.user_id !== $('html').data().userId }) %>
-	<li data-room="<%%= chat.room %>" class="<%%= chat.unread > 0 ? "" : "d-none" %> channel-list-chat list-group-item d-flex justify-content-between align-items-center side-list-item cursor">
+	<%% const is_blocked = _.find(block_list, (u) => { return u.user_id === opponent.user_id }) %>
+	<li data-room="<%%= chat.room %>"
+		class="<%%= !is_blocked && (chat.unread > 0 || me.display) ? "" : "d-none" %> channel-list-chat list-group-item d-flex justify-content-between align-items-center side-list-item cursor">
 		<div>
 			<%%= opponent.nickname %>
 		</div>
