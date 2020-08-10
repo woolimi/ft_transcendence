@@ -1,8 +1,10 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
-import ChatChannel from "../channels/chat_channel.js"
-import Helper from "./Helper.js"
+import ChatChannel from "../channels/chat_channel"
+import Helper from "./Helper"
+import Profile from "./Profile"
+import Channel from "./Channel"
 
 const Chat = {};
 
@@ -50,6 +52,7 @@ if ($('html').data().isLogin) {
 			},
 		});
 
+		Chat.Messages = Messages;
 		Chat.Content = Backbone.View.extend({
 			el: $("#app"),
 			page_template: _.template($("script[name='tmpl-chat-content']").html()),
@@ -59,13 +62,37 @@ if ($('html').data().isLogin) {
 				"submit #send-message-form": "send_message",
 			},
 			initialize: async function (options) {
+				this.options = options;
 				this.render_page();
+				$("#chat-content").on("scroll", this.scroll_event_callback);
 				this.messages = new Messages([], options);
 				this.members = new Members([], options);
 				try {
+					await Helper.fetch(Profile.userProfile);
 					await Helper.fetch(this.messages);		
 					await Helper.fetch(this.members);
-					this.render_messages();
+					await Helper.ajax(`/api/channels/${options.room}/display`, "display=true", "PUT");
+					await Helper.fetch(Channel.m_channel_list);
+					Channel.channel_list.render();
+					this.opponent = this.find_opponent(this.members.toJSON());
+					this.block_list = Profile.userProfile.get("block_list");
+					const is_blocked = _.find(this.block_list, (u) => {
+						return u.user_id === this.opponent.user_id
+					});
+
+					if (is_blocked) {
+						$("#chat-message-loader-wrapper").removeClass("d-none");
+						$("#chat-message-loader-wrapper")
+							.html("<h1>Blocked user</h1><p>To chat with this user, please remove from block list</p>");
+						const form = $("#send-message-form")
+						form.find("button[type='submit']").attr("disabled", true);
+						const input = form.find("#message");
+						input.attr("readonly", true);
+						input.attr("placeholder", "");
+					}
+					else
+						this.render_messages();
+					this.scroll_down();
 					this.render_members();
 					ChatChannel.subscribe(options.room, this.recv_callback)
 				} catch (error) {
@@ -82,18 +109,21 @@ if ($('html').data().isLogin) {
 				$("#chat-messages").html(this.messages_template({
 					messages: this.messages.toJSON(),
 				}))
-				const content = document.getElementById("chat-content");
-				content.scrollTop = content.scrollHeight;
 			},
 			render_members() {
-				const jmembers = this.members.toJSON();
 				$('#chat-members').html(this.members_template({
-					members: jmembers,
+					members: this.members.toJSON(),
 				}))
-				if (jmembers[0].user_id !== $('html').data().userId)
-					$("#chat-title").html(jmembers[0].nickname);
-				else
-					$("#chat-title").html(jmembers[1].nickname);
+				$("#chat-title").html(this.opponent.nickname);
+			},
+			find_opponent(members) {
+				if (members[0].user_id !== $('html').data().userId)
+					return members[0];
+				return members[1];				
+			},
+			scroll_down() {
+				const content = document.getElementById("chat-content");
+				content.scrollTop = content.scrollHeight;
 			},
 			send_message: async function(e) {
 				e.preventDefault();
@@ -121,14 +151,46 @@ if ($('html').data().isLogin) {
 			recv_callback: function(data) {
 				if (data.user_id == $('html').data().userId)
 					return;
-				const member = Chat.content.members.find((model) => {
-					return model.get("user_id") == data.user_id
-				});
-				data.nickname = member.get("nickname");
-				data.avatar_url = member.get("avatar_url");
+				data.nickname = Chat.content.opponent.nickname;
+				data.avatar_url = Chat.content.opponent.avatar_url;
 				const new_message = new Message(data);
 				Chat.content.messages.add(new_message);
 				Chat.content.render_messages();				
+				Chat.content.scroll_down();
+			},
+			scroll_event_callback(e) {
+				const t = e.currentTarget;
+				if (t.scrollTop === 0) {
+					const prev_messages = new Chat.Messages([], Chat.content.options);
+					const id = Chat.content.messages.toJSON()[0].id;
+					if (id === 1) {
+						Helper.flash_message("danger", "no more messages");
+						return;
+					}
+					Chat.content.toggle_message_loader();
+					window.setTimeout(Chat.content.toggle_message_loader, 600);
+					const content = document.getElementById("chat-content");
+					const current_scroll_pos = content.scrollTop;
+					const old_scroll = content.scrollHeight - content.clientHeight;
+
+					prev_messages.fetch({
+						data: $.param({ first_id: id }),
+						success: function (collection, response, options) {
+							collection.add(Chat.content.messages.models);
+							Chat.content.messages = collection;
+							Chat.content.render_messages();
+							const new_scroll = content.scrollHeight - content.clientHeight;
+							content.scrollTop = current_scroll_pos + (new_scroll - old_scroll);
+						},
+						error: function() {
+							Helper.flash_message("danger", "Internal server error");
+						}
+					});
+				}
+			},
+			toggle_message_loader() {
+				$("#chat-message-loader-wrapper").toggleClass("d-none");
+				$("#chat-message-loader").toggleClass("d-none");
 			}
 		});
 

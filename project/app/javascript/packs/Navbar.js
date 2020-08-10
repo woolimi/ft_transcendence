@@ -19,6 +19,7 @@ $(() => {
 			name: "undefined",
 			nickname: "undefined",
 			avatar_url: "#",
+			block_list: [],
 		},
 		urlRoot: "/api/user_info/",
 		idAttribute: 'user_id',
