@@ -91,6 +91,87 @@ html, body, #app{
   background-color: #ef4a4a;
 }
 
+/* chat */
+
+#chat-members {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  min-width: 200px;
+  height: inherit;
+  background-color: #6c757d;
+}
+.chat-header {
+  background-color: #6c757d;
+  border-radius: 3px;
+  align-items: center;
+  height: 2.5em;
+  position: relative;
+}
+
+#chat-wrapper {
+  overflow-x: hidden;
+}
+
+#chat-content {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 70vh;
+}
+
+.chat-submit {
+  height: 60px;
+  align-items: center;
+}
+
+.chat-box {
+  margin: 1em;
+}
+
+.chat-avatar {
+  width: 50px;
+  height: 50px;
+}
+
+.chat-message-wrapper {
+  max-width: calc(100% - 50px - 40px);
+}
+
+.chat-message {
+  padding: 10px;
+  background-color: #ececec;
+  border-radius: 10px;
+  overflow-wrap: break-word;
+  width: fit-content;
+  display: inline-flex;
+}
+
+.chat-my-message {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+.chat-date {
+  font-size: 13px;
+}
+
+#chat-members {
+  background-color: #000000b3;
+  position: absolute;
+  top: 2.5em;
+  right: 0;
+  height: calc(70vh - 2.5em);
+}
+
+.private-channel {
+  color: #ff8585;
+}
+
+.d-none {
+  display: none !important;
+}
+
 @media (max-width: 767px) {
   .side-list {
     width: 50%;

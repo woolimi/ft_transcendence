@@ -1,0 +1,35 @@
+<script type="text/template" name="tmpl-chat-content">
+<div class="container-fluid" style="height: 100%; padding: 1em">
+	<div id="chat-wrapper" class="row">
+		<div class="w-100 d-flex shadow chat-header" style="justify-content:space-between">
+			<h5 class="m-0 pl-3 text-white">chat with <span id="chat-title"><span></h5>
+			<button type="button" id="show-members" class="btn btn-dark btn"><span class="oi oi-people"></span></button>
+			<div id="chat-members" class="border rounded collapse">
+				<!-- chat/members.html.erb-->
+			</div>
+		</div>
+		<div id="chat-content" class="shadow w-100 border rounded">
+			<div id="chat-messages">
+				<!-- chat/messages.html.erb -->
+			</div>
+		</div>
+	</div>
+
+	<div class="row chat-submit">
+		<form class="w-100 shadow" id="send-message-form">
+			<div style="display:flex">
+				<label for="message" class="sr-only">message</label>
+				<input type="text" class="form-control" placeholder="write message here..." id="message">
+				<button type="submit" class="btn btn-primary"><span class="oi oi-pencil"></span></button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+    $("#show-members").click(function () {
+          $('#chat-members').toggle("slide", { direction: "right" }, 300);
+    });
+</script>
+
+</script>

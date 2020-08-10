@@ -1,6 +1,7 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
+import Router from "./Router.js"
 
 const UserModal = {};
 
@@ -17,9 +18,6 @@ if ($('html').data().isLogin) {
 			},
 			urlRoot: "/api/user_info/",
 			idAttribute: 'user_id',
-			initialize: function () {
-				this.fetch();
-			},
 			url: function () {
 				return this.urlRoot + encodeURIComponent(this.get('user_id'));
 			},
@@ -36,7 +34,8 @@ if ($('html').data().isLogin) {
 			el: $("#app"),
 			model: user,
 			events: {
-				"click .userInfoModal": "change_uid"
+				"click .userInfoModal": "change_uid",
+				"click #start-chat": "start_chat",
 			},
 			render() {
 				$('#view-user-info-modal').html(this.template({ user: this.model.toJSON() }));
@@ -53,6 +52,11 @@ if ($('html').data().isLogin) {
 					}
 				});
 			},
+			start_chat(e) {
+				const room = $(e.currentTarget).data().room;
+				Router.router.navigate("/chats/" + room, { trigger: true });
+				$('#userInfoModal').modal('toggle');
+			}
 		});
 
 		UserModal.content = new UserModalView();

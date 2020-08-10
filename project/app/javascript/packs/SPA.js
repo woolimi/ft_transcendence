@@ -2,12 +2,10 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Navbar from "./Navbar.js"
-import Game from "./Game.js"
-import Guild from "./Guild.js"
-import Profile from "./Profile.js"
 import UserModal from "./UserModal.js"
 import Friends from "./Friends.js"
-import Helper from "./Helper.js"
+import MessageNotificationChannel from "../channels/message_notification_channel"
+import Channel from "./Channel"
 
 const SPA = {}
 
@@ -24,29 +22,6 @@ SPA.start = function() {
 		// 	}
 		// });
 
-		const Router = Backbone.Router.extend({
-			routes: {
-				"": "game",
-				"game": "game",
-				"profile": "profile",
-				"guild": "guild"
-			},
-			game: function () {
-				Game.content.render();
-			},
-			profile: function () {
-				Profile.content.render();
-				Profile.searchBlockUserModal.render();
-			},
-			guild: function () {
-				Guild.content.render();
-			}
-		});
-		const router = new Router();
-		router.on("route", function (curRoute) {
-			Navbar.currentRoute.set({ route: curRoute });
-		});
-
 		Backbone.history.start();
 		Backbone.history.loadUrl(Backbone.history.fragment);
 
@@ -56,9 +31,14 @@ SPA.start = function() {
 		Navbar.items.render();
 		/* user info modal */
 		UserModal.content.render();
+		/* user profile block user modal */
+
 		/* friend list */
 		Friends.list.render();
-		Friends.searchUserModal.render();
+		/* Channel & DM list */
+		Channel.channel_list = new Channel.V_ChannelList();
+		/* message notification channel */
+		MessageNotificationChannel.subscribe();
 	})
 }
 
