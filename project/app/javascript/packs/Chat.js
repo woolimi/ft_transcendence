@@ -129,9 +129,11 @@ if ($('html').data().isLogin) {
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				const contentEl = $(e.currentTarget).find('input#message');
-				const content = contentEl.val();
+				const content = _.escape(contentEl.val());
 				if (content === "")
 					return;
+				if (content.length > 300)
+					return Helper.flash_message("danger", "message is too long");
 				const new_msg = new Message({
 					user_id: $('html').data().userId,
 					content: content,
@@ -163,6 +165,7 @@ if ($('html').data().isLogin) {
 				if (t.scrollTop === 0) {
 					const prev_messages = new Chat.Messages([], Chat.content.options);
 					const id = Chat.content.messages.toJSON()[0].id;
+					console.log(Chat.content.messages.toJSON());
 					if (id === 1) {
 						Helper.flash_message("danger", "no more messages");
 						return;

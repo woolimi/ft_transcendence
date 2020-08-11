@@ -5,6 +5,7 @@ import Game from "./Game.js"
 import Guild from "./Guild.js"
 import Profile from "./Profile.js"
 import Chat from "./Chat.js"
+import Channel from "./Channel.js"
 import Navbar from "./Navbar.js"
 import ChatChannel from "../channels/chat_channel.js"
 
@@ -17,7 +18,8 @@ if ($('html').data().isLogin) {
 				"game": "game",
 				"profile": "profile",
 				"guild": "guild",
-				"chats/:room": "chat"
+				"chats/:room": "chat",
+				"channels/:room": "channel"
 			},
 			game: function () {
 				if (ChatChannel.channel)
@@ -39,7 +41,10 @@ if ($('html').data().isLogin) {
 					Chat.content.undelegateEvents();
 				if (ChatChannel.channel)
 					ChatChannel.unsubscribe();
-				Chat.content = new Chat.Content({room: room});
+				Chat.content = new Chat.Content({ room: room });
+			},
+			channel: function (room) {
+				Channel.content = new Channel.Content({ room: room });
 			}
 		});
 		const router = new RouterClass();

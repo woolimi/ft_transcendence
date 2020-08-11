@@ -1,4 +1,19 @@
 <script type="text/template" name="tmpl-channels-list">
+<%% _.each(channels, function(channel, i) { %>
+	<%% const me = _.find(channel.members, (member) => { return member.user_id === $('html').data().userId }) %>
+	<li data-room="<%%= channel.room %>" class="list-group-item d-flex justify-content-between align-items-center side-list-item">
+		<div>
+			# <span class="<%%= channel.channel_type === "private" ? "private-channel" : ""%>">
+				<%%= channel.room %>
+			</span>
+			<%% if (me.unread > 0) { %>
+			<span class="badge badge-danger badge-pill"><%%= me.unread %></span>
+			<%% } else { %>
+			<span class="badge badge-danger badge-pill d-none">0</span>
+			<%% } %>
+		</div>
+	</li>
+<%% }) %>	
 <%% _.each(chats, function(chat, i) { %>
 	<%% const me = _.find(chat.members, (member) => { return member.user_id === $('html').data().userId }) %>
 	<%% const opponent = _.find(chat.members, (member) => { return member.user_id !== $('html').data().userId }) %>
@@ -9,8 +24,8 @@
 			<%%= opponent.nickname %>
 		</div>
 		<div>
-			<%% if (chat.unread > 0) { %>
-			<span class="badge badge-danger badge-pill"><%%= chat.unread %></span>
+			<%% if (me.unread > 0) { %>
+			<span class="badge badge-danger badge-pill"><%%= me.unread %></span>
 			<%% } else { %>
 			<span class="badge badge-danger badge-pill d-none">0</span>
 			<%% } %>

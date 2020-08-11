@@ -10,12 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_04_151918) do
+ActiveRecord::Schema.define(version: 2020_08_11_170924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "channel_messages", force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "timestamp", null: false
+    t.uuid "channel_id"
+    t.uuid "user_id"
+    t.index ["channel_id"], name: "index_channel_messages_on_channel_id"
+    t.index ["user_id"], name: "index_channel_messages_on_user_id"
+  end
+
+  create_table "channels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "room", null: false
+    t.string "channel_type", null: false
+    t.string "password"
+    t.jsonb "owner", null: false
+    t.jsonb "admins"
+    t.jsonb "members"
+    t.jsonb "bans"
+    t.jsonb "mutes"
+    t.index ["room"], name: "index_channels_on_room", unique: true
+  end
 
   create_table "chat_messages", force: :cascade do |t|
     t.text "content", null: false
@@ -28,7 +49,6 @@ ActiveRecord::Schema.define(version: 2020_08_04_151918) do
 
   create_table "chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "room", null: false
-    t.integer "unread", null: false
     t.jsonb "members", null: false, array: true
     t.index ["room"], name: "index_chats_on_room", unique: true
   end
@@ -58,6 +78,8 @@ ActiveRecord::Schema.define(version: 2020_08_04_151918) do
     t.index ["ft_id"], name: "index_users_on_ft_id", unique: true
   end
 
+  add_foreign_key "channel_messages", "channels"
+  add_foreign_key "channel_messages", "users"
   add_foreign_key "chat_messages", "chats"
   add_foreign_key "chat_messages", "users"
   add_foreign_key "user_profiles", "users"

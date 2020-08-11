@@ -53,7 +53,8 @@ if ($('html').data().isLogin)
         }
       }); 
     }
-  });
+    
+  }); // window.onload
 }
 
 export default ChatChannel;

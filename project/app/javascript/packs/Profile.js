@@ -116,8 +116,7 @@ $(() => {
 			if (file.files[0])
 				this.upload_image();
 			this.model.set({
-				nickname: $('.nickname-update').val(),
-				name: $('.name-update').val(),
+				nickname: _.escape($('.nickname-update').val()),
 				two_factor: two_factor,
 			});
 			try {
@@ -165,7 +164,7 @@ $(() => {
 		},
 		search_users: function (e) {
 			e.preventDefault();
-			const name = $("#searchBlockUserName").val();
+			const name = _.escape($("#searchBlockUserName").val());
 			if (!name)
 				return;
 			const self = this;
