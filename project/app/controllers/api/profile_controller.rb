@@ -24,7 +24,7 @@ class Api::ProfileController < ApplicationController
 	def update
 		me = UserProfile.find_by(user_id: current_user[:id])
 		# puts me.photo.as_json()
-		if (params[:nickname] <=> me.nickname)
+		if ((params[:nickname] <=> me.nickname) != 0)
 			user = UserProfile.find_by(:nickname => params[:nickname])
 			if (user.present?)
 				render plain: "nickname already exists, please use a unique nickname#" + me.nickname, status: :ok
