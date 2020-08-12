@@ -201,7 +201,7 @@ $(() => {
 				block_list_arr.push(new_user);
 				try {
 					userProfile.set('block_list', block_list_arr);
-					await Helper.save(userProfile);					
+					await Helper.save(userProfile);
 					searchedBlockUsers.remove(searchedBlockUsers.where({ user_id: block_user.userId })[0]);
 					this.render();
 					Profile.content.render();
@@ -214,6 +214,7 @@ $(() => {
 
 	Profile.content = new ProfileContentView();
 	Profile.searchBlockUserModal = new SearchedBlockUsersView();
+	Profile.userProfile = userProfile;
 })
 
 } // if logged in

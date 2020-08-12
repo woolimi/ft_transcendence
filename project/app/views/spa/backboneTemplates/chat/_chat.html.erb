@@ -9,6 +9,12 @@
 			</div>
 		</div>
 		<div id="chat-content" class="shadow w-100 border rounded">
+			<div id="chat-message-loader-wrapper" class="d-none">
+				<div id="chat-message-loader" class="spinner-border d-none" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+			</div>
+
 			<div id="chat-messages">
 				<!-- chat/messages.html.erb -->
 			</div>
@@ -19,7 +25,7 @@
 		<form class="w-100 shadow" id="send-message-form">
 			<div style="display:flex">
 				<label for="message" class="sr-only">message</label>
-				<input type="text" class="form-control" placeholder="write message here..." id="message">
+				<input  autocomplete="off" type="text" class="form-control" placeholder="write message here..." id="message">
 				<button type="submit" class="btn btn-primary"><span class="oi oi-pencil"></span></button>
 			</div>
 		</form>

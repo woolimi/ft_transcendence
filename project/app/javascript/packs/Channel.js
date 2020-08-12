@@ -3,7 +3,7 @@ import _ from "underscore"
 import Backbone from "backbone"
 import Helper from "./Helper.js"
 import Router from "./Router.js"
-
+import Profile from "./Profile"
 const Channel = {};
 
 if ($('html').data().isLogin)
@@ -45,9 +45,11 @@ if ($('html').data().isLogin)
 				$("#view-channels-list").html(this.channel_list_template({
 					// channels: this.m_channel_list.channels,
 					chats: this.channel_list.toJSON().chats,
+					block_list: Profile.userProfile.get("block_list")
 				}))
 			},
 			render: function() {
+				console.log("render channel list")
 				this.render_channel_list();
 			},
 			start_chat: function(e) {
