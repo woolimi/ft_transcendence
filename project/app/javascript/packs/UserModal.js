@@ -36,6 +36,7 @@ if ($('html').data().isLogin) {
 			events: {
 				"click .userInfoModal": "change_uid",
 				"click #start-chat": "start_chat",
+				"click #start-match": "start_match",
 			},
 			render() {
 				$('#view-user-info-modal').html(this.template({ user: this.model.toJSON() }));
@@ -55,6 +56,11 @@ if ($('html').data().isLogin) {
 			start_chat(e) {
 				const room = $(e.currentTarget).data().room;
 				Router.router.navigate("/chats/" + room, { trigger: true });
+				$('#userInfoModal').modal('toggle');
+			},
+			start_match(e) {
+				const room = $(e.currentTarget).data().room;
+				Router.router.navigate("/match/" + room, { trigger: true });
 				$('#userInfoModal').modal('toggle');
 			}
 		});

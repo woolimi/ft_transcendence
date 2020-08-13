@@ -7,6 +7,7 @@ import Profile from "./Profile.js"
 import Chat from "./Chat.js"
 import Navbar from "./Navbar.js"
 import ChatChannel from "../channels/chat_channel.js"
+import Match from "./Match.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -17,7 +18,8 @@ if ($('html').data().isLogin) {
 				"game": "game",
 				"profile": "profile",
 				"guild": "guild",
-				"chats/:room": "chat"
+				"chats/:room": "chat",
+				"match/:room":"match"
 			},
 			game: function () {
 				if (ChatChannel.channel)
@@ -40,7 +42,10 @@ if ($('html').data().isLogin) {
 				if (ChatChannel.channel)
 					ChatChannel.unsubscribe();
 				Chat.content = new Chat.Content({room: room});
-			}
+			},
+			match: function() {
+				Match.content = new Match.Content();
+			} 
 		});
 		const router = new RouterClass();
 		Router.router = router;

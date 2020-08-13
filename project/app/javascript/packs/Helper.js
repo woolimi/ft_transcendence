@@ -21,6 +21,11 @@ Helper.make_room = function (s1, s2) {
 		return s1 + "_" + s2;
 	return s2 + "_" + s1;
 }
+
+Helper.make_match_room = function (s1, s2) {
+	return s1 + "_" + s2;
+}
+
 Helper.fetch = function (collection) {
 	return new Promise((resolve, reject) => {
 		collection.fetch({
