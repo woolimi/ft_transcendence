@@ -5,8 +5,7 @@ class TwoFactorsController < ApplicationController
         current_user.update(
             otp_secret: User.generate_otp_secret,
             otp_required_for_login: true
-        )
-
+            )
         @codes = current_user.generate_otp_backup_codes!
     end
 

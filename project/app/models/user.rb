@@ -33,4 +33,12 @@ class User < ApplicationRecord
       end
         return false
   end
+
+  def otp_qr_code
+    issuer = '42 Pong'
+    label = "#{issuer}:#{email}"
+    qrcode = RQRCode::QRCode.new(otp_provisioning_uri(label, issuer: issuer))
+    qrcode.as_svg(module_size: 4)
+  end
+
 end
