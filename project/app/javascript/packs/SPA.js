@@ -31,8 +31,6 @@ SPA.start = function() {
 		Navbar.items.render();
 		/* user info modal */
 		UserModal.content.render();
-		/* user profile block user modal */
-
 		/* friend list */
 		Friends.list.render();
 		/* Channel & DM list */

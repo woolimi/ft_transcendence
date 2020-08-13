@@ -1,7 +1,10 @@
 <div class="card side-list">
-	<div class="card-header bg-dark text-white">
+	<div class="card-header bg-dark text-white d-flex justify-content-between">
 		All channels
-		<span class="oi oi-plus float-right cursor" data-toggle="modal" data-target="#generateChannelModal"></span>
+		<div>
+			<span class="oi oi-magnifying-glass cursor mr-1" data-target="#searchChannelModal" id="searchChannelModalBtn"></span>
+			<span class="oi oi-plus float-right cursor" data-toggle="modal" data-target="#generateChannelModal"></span>		
+		</div>
 	</div>
 	<div class="card-body bg-secondary text-white">
 		<ul class="list-group" id="view-channels-list">

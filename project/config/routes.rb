@@ -15,7 +15,11 @@ Rails.application.routes.draw do
       resources :chat_messages, only: [:index, :create]
       get "/members", to: 'chat_members#index'
     end
-    resources :channels, param: :room, only: [:index, :create] do
+    resources :channels, param: :id, only: [:index, :create, :show] do
+      resources :channel_messages, only: [:index, :create]
+      get "/members", to: 'channel_members#index'
+      put "/members/:user_id", to: 'channel_members#update'
+      delete "/members/:user_id", to: 'channel_members#destroy'
       put "/last_visited", to: 'channels#update_last_visited'
       put "/display", to: "channels#update_display", param: :display
     end

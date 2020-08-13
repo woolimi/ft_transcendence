@@ -193,6 +193,12 @@ html, body, #app{
   width: 40px;
 }
 
+#found-channel-list {
+  overflow-x: unset;
+  overflow-y: scroll;
+  height: 50vh;
+}
+
 @media (max-width: 767px) {
   .side-list {
     width: 50%;

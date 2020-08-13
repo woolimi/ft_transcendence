@@ -19,7 +19,7 @@ if ($('html').data().isLogin) {
 				"profile": "profile",
 				"guild": "guild",
 				"chats/:room": "chat",
-				"channels/:room": "channel"
+				"channels/:channel_id": "channel"
 			},
 			game: function () {
 				if (ChatChannel.channel)
@@ -43,8 +43,8 @@ if ($('html').data().isLogin) {
 					ChatChannel.unsubscribe();
 				Chat.content = new Chat.Content({ room: room });
 			},
-			channel: function (room) {
-				Channel.content = new Channel.Content({ room: room });
+			channel: function (channel_id) {
+				Channel.content = new Channel.Content({ channel_id: channel_id });
 			}
 		});
 		const router = new RouterClass();
@@ -53,7 +53,6 @@ if ($('html').data().isLogin) {
 		Router.router.on("route", function (curRoute, params) {
 			Navbar.currentRoute.set({ route: curRoute });
 		});
-
 	});
 }
 

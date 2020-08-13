@@ -59,4 +59,10 @@ Helper.ajax = function(url, data, method) {
 	})
 }
 
+Helper.contain = function(collection, callback) {
+	if (collection.find(callback))
+		return true;
+	return false
+}
+
 export default Helper;

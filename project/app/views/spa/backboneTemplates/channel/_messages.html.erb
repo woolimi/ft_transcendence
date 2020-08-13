@@ -1,4 +1,4 @@
-<script type="text/template" name="tmpl-chat-messages">
+<script type="text/template" name="tmpl-channel-messages">
 <%% _.each(messages, function(message, index) { %>
 	<div class="chat-box d-flex <%%= message.user_id === $('html').data().userId ? "chat-my-message" : "" %>">
 		<div class="chat-avatar">

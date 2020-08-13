@@ -2,16 +2,20 @@ class Api::ChannelsController < ApplicationController
 	protect_from_forgery
 	before_action :authenticate_user!
 
-	# GET /api/channels/
+	# GET /api/channels/ & GET /api/channels/?search=public
 	def index
 		# find channels where user is
-		channels = Channel.where("members @> ?", [{"user_id": "#{current_user[:id]}" }].to_json)
+		if params[:search] && params[:search] == "public"
+			return render json: Channel.where(:channel_type => "public"), status: :ok
+		end
+		channels = Channel.where("members @> ?",[{"user_id": "#{current_user[:id]}" }].to_json)
 		ch_messages = channels.select("channels.*, channel_messages.*")
 				.joins("INNER JOIN channel_messages ON channels.id = channel_messages.channel_id")
 				.where.not("channel_messages.user_id = ?", current_user[:id])
 				.order("chat_messages.timestamp ASC")
 		channels.each { |channel|
 			me = channel.members.find { |m| m["user_id"] == current_user[:id] }
+			next if me.blank?
 			unread = ch_messages.where("channel_messages.timestamp > ?", me["timestamp"]).size
 			channel.members.each{ |m|
 				user_profile = UserProfile.find_by(:user_id => m["user_id"])
@@ -47,7 +51,17 @@ class Api::ChannelsController < ApplicationController
 		}
 	end
 
-	# POST /api/channels/:room
+	# GET /api/channels/:channel_id
+	def show
+		channel = Channel.find_by(id: params[:id]);
+		if channel.present?
+			return render json: channel, status: :ok
+		else
+			return render json: nil, status: :forbidden
+		end
+	end
+
+	# POST /api/channels/
 	def create
 		if params[:room].length == 0
 			return render plain: "Please type channel name", status: :forbidden
