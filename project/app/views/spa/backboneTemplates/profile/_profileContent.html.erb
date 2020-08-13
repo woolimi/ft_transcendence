@@ -50,17 +50,12 @@
         <label class="custom-control-label" for="twofactor">
           off / on
         </label>
-        <div id="two_factor">
-        <% if current_user.otp_required_for_login? %>
-    <div><%= link_to 'Disable', two_factor_path, method: :delete, remote: true, class: "btn btn-outline-danger" %></div>
-<% else %>
-    <div><%= link_to 'Enable', two_factor_path, method: :post, remote: true, class: "btn btn-outline-success" %></div>
-<% end %>
-          <!-- <%=j render partial: 'devise/registrations/two_factor' %> -->
-              <!-- <div><%= link_to 'Disable', two_factor_path, method: :delete, remote: true, class: "btn btn-outline-danger" %></div>&nbsp<div><%= link_to 'Enable', two_factor_path, method: :post, remote: true, class: "btn btn-outline-success" %></div> -->
-        </div>
       </div>
     </div>
+  </div>
+  <div id="two_factor">
+      <%= render partial: "devise/registrations/two_factor" %>
+          <!-- <div><%= link_to 'Disable', two_factor_path, method: :delete, remote: true, class: "btn btn-outline-danger" %></div>&nbsp<div><%= link_to 'Enable', two_factor_path, method: :post, remote: true, class: "btn btn-outline-success" %></div> -->
   </div>
   <div class="form-group row">
     <div class="col-sm-12 text-center">

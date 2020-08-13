@@ -1,5 +1,6 @@
 <% if current_user.otp_required_for_login? %>
-    <div><%= link_to 'Disable', two_factor_path, method: :delete, remote: true, class: "btn btn-outline-danger" %></div>
+    <div><%= link_to "Disable",two_factor_path, method: :delete, remote: true, class: "btn btn-outline-danger" %></div>
 <% else %>
-    <div><%= link_to 'Enable', two_factor_path, method: :post, remote: true, class: "btn btn-outline-success" %></div>
+     <p>When you login, you will be required to enter a one-time code along to one of your devices.</p>
+  <div><%= link_to "Enable", two_factor_path, method: :post, remote: true, class: "btn btn-outline-success" %></div>
 <% end %>
