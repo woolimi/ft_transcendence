@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
-  devise_for :users, :controllers => { omniauth_callbacks: 'users/omniauth_callbacks', sessions: "users/sessions" }
+  #Devise
+  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks", sessions: "users/sessions" }
   devise_scope :user do
     scope :users, as: :users do
       post 'pre_otp', to: 'users/sessions#pre_otp'
     end
   end
 
-  resource: two_factor
+  resource :two_factor
 
   root to: 'spa#index'
   # devise_scope :user do
