@@ -61,6 +61,25 @@ $(() => {
 		},
 	})
 
+	const TwoFactor  = Backbone.Model.extend({
+		defaults:
+		{
+			user_id: "undefined",
+			codes: [],
+			otp_required_for_login: false
+		}, 
+		urlRoot : "/api/two_factors/",
+		idAttribute: 'user_id',
+		url: function () {
+			return this.urlRoot + encodeURIComponent(this.get('user_id'));
+		},
+		initialize: function () {
+			this.fetch();
+			console.log(this.toJSON());
+		},
+
+	})
+
 	const SearchedBlockUsers = Backbone.Collection.extend({
 		model: AllUsers,
 		url: "/api/user_info/",
@@ -69,6 +88,8 @@ $(() => {
 	const searchedBlockUsers = new SearchedBlockUsers();
 
 	const userProfile = new UserProfile();
+
+	const twofa = new TwoFactor();
 	/* View */
 	const ProfileContentView = Backbone.View.extend({
 		template: _.template($("script[name='tmpl-content-profile']").html()),
@@ -91,6 +112,11 @@ $(() => {
 			// "change .avatar": "upload_image",
 			"submit #profile-form": "onSubmit",
 			"click .unblock": "unblock",
+			"click .enable": "enable_twofa"
+		},
+		enable_twofa: function()
+		{
+			twofa.create();
 		},
 		upload_image: function()
 		{
