@@ -64,7 +64,7 @@ $(() => {
 	const TwoFactor  = Backbone.Model.extend({
 		defaults:
 		{
-			user_id: "undefined",
+			user_id: $('html').data().userId,
 			codes: [],
 			otp_required_for_login: false
 		}, 
@@ -181,6 +181,35 @@ $(() => {
 				}
 			}
 		} 
+	});
+
+	const TwoFactorAuthenticationView = Backbone.View.extend({
+		el: $("#two_fa"),
+		model: twofa,
+		template: _.template($("script[name='tmpl-two-fa']").html()),
+		events: {
+			"click .enableTwoFaBtn": "enable_twofa",
+			"click .disableTwoFaBtn": "disable_twofa"
+		},
+		render: function () {
+			const content = this.template(this.model.toJSON());
+			this.$el.html(content);
+		},
+		enable_twofa: function () {
+			this.model.set({
+				otp_required_for_login: true
+			});
+			this.model.save();
+			this.model.fetch();
+			this.render();
+		},
+		disable_twofa: function () {
+			this.model.set({
+				otp_required_for_login: false
+			});
+			this.model.save();
+			this.render();
+		},
 	});
 
 	const SearchedBlockUsersView = Backbone.View.extend({
