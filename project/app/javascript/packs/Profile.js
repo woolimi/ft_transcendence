@@ -122,6 +122,7 @@ $(() => {
 				otp_required_for_login: false
 			});
 			this.model.save();
+			this.model.fetch();
 			this.render();
 		},
 	});
@@ -135,6 +136,7 @@ $(() => {
 		childView: new TwoFactorAuthenticationView(),
 		initialize: async function() {
 			try {
+				twofa.on('sync', this.render, this);
 				await Helper.fetch(this.model);
 				if (Backbone.history.fragment === "profile")
 					this.render();

@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   # delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
   # end
   namespace :api do
-    resources :two_factors, only: [:show, :create, :destroy], param: :user_id
+    resources :two_factors, only: [:show, :update], param: :user_id
     resources :user_info, only: [:index, :show], param: :user_id
     resources :profile, only: [:show, :update], param: :user_id
     resources :my_friends, only: [:index, :show, :update, :destroy], param: :user_id
