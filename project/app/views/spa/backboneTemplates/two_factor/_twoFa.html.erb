@@ -1,5 +1,5 @@
 <script type="text/template" name="tmpl-two-fa">
-	<% if current_user.otp_required_for_login? %>
+	<%% if(otp_required_for_login === true) {%>
 		<div><button class="btn btn-outline-danger disableTwoFaBtn">Disable</button></div>
 		<div class="row">
 			<div class="col-8">
@@ -18,10 +18,10 @@
 				<%= current_user.otp_qr_code.html_safe%>
 			</div>
 		</div>
-	<% else %>
+	<%% } else if(otp_required_for_login === false){%>
 		<p>When you login, you will be required to enter a one-time code along to one of your devices.</p>
 		<div>
 		  <button class="btn btn-outline-success enableTwoFaBtn">Enable</button>
 		</div>
-	<% end %>
+	<%% } %>
 </script>
