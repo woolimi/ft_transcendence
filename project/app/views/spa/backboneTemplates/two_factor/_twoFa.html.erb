@@ -1,3 +1,27 @@
 <script type="text/template" name="tmpl-two-fa">
-	Enable/Disable from template
+	<% if current_user.otp_required_for_login? %>
+		<div><button class="btn btn-outline-danger disableTwoFaBtn">Disable</button></div>
+		<div class="row">
+			<div class="col-8">
+				<ol class="mt-5">
+					<li>
+						Install Google Authenticator:
+						<%= link_to "Android", "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en", target: :blank %>
+						or
+						<%= link_to "iOS", "https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8", target: :blank %>
+					</li>
+					<li>In the app, select "Set up account" or the Plus (+) sign.</li>
+					<li>Choose "Scan barcode"</li>
+				</ol>
+			</div>
+			<div class="col-4 text-center">
+				<%= current_user.otp_qr_code.html_safe%>
+			</div>
+		</div>
+	<% else %>
+		<p>When you login, you will be required to enter a one-time code along to one of your devices.</p>
+		<div>
+		  <button class="btn btn-outline-success enable">Enable</button>
+		</div>
+	<% end %>
 </script>

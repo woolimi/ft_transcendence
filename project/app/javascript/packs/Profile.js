@@ -75,10 +75,12 @@ $(() => {
 		},
 		initialize: function () {
 			this.fetch();
-			console.log(this.toJSON());
+			// console.log(this.toJSON());
 		},
 
 	})
+
+	
 
 	const SearchedBlockUsers = Backbone.Collection.extend({
 		model: AllUsers,
@@ -91,10 +93,46 @@ $(() => {
 
 	const twofa = new TwoFactor();
 	/* View */
+
+	const TwoFactorAuthenticationView = Backbone.View.extend({
+		el: $("#two_fa"),
+		model: twofa,
+		template: _.template($("script[name='tmpl-two-fa']").html()),
+		events: {
+			"click .enableTwoFaBtn": "enable_twofa",
+			"click .disableTwoFaBtn": "disable_twofa"
+		},
+		initialize: function () {
+			this.render();
+		},
+		render: function () {
+			const content = this.template(this.model.toJSON());
+			this.$el.html(content);
+		},
+		enable_twofa: function () {
+			this.model.set({
+				otp_required_for_login: true
+			});
+			this.model.save();
+			this.model.fetch();
+			this.render();
+		},
+		disable_twofa: function () {
+			this.model.set({
+				otp_required_for_login: false
+			});
+			this.model.save();
+			this.render();
+		},
+	});
+
+	Profile.twofaView = new TwoFactorAuthenticationView();
+
 	const ProfileContentView = Backbone.View.extend({
 		template: _.template($("script[name='tmpl-content-profile']").html()),
 		el: $("#view-content"),
 		model: userProfile,
+		childView: new TwoFactorAuthenticationView(),
 		initialize: async function() {
 			try {
 				await Helper.fetch(this.model);
@@ -107,16 +145,14 @@ $(() => {
 		render: function () {
 			const content = this.template(this.model.toJSON());
 			this.$el.html(content);
+			this.childView.$el = this.$('#two_fa');
+			this.childView.render();
+			this.childView.delegateEvents();
 		},
 		events: {
 			// "change .avatar": "upload_image",
 			"submit #profile-form": "onSubmit",
 			"click .unblock": "unblock",
-			"click .enable": "enable_twofa"
-		},
-		enable_twofa: function()
-		{
-			twofa.create();
 		},
 		upload_image: function()
 		{
@@ -183,34 +219,7 @@ $(() => {
 		} 
 	});
 
-	const TwoFactorAuthenticationView = Backbone.View.extend({
-		el: $("#two_fa"),
-		model: twofa,
-		template: _.template($("script[name='tmpl-two-fa']").html()),
-		events: {
-			"click .enableTwoFaBtn": "enable_twofa",
-			"click .disableTwoFaBtn": "disable_twofa"
-		},
-		render: function () {
-			const content = this.template(this.model.toJSON());
-			this.$el.html(content);
-		},
-		enable_twofa: function () {
-			this.model.set({
-				otp_required_for_login: true
-			});
-			this.model.save();
-			this.model.fetch();
-			this.render();
-		},
-		disable_twofa: function () {
-			this.model.set({
-				otp_required_for_login: false
-			});
-			this.model.save();
-			this.render();
-		},
-	});
+	
 
 	const SearchedBlockUsersView = Backbone.View.extend({
 		el: $("#view-block-searched-users"),
