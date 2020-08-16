@@ -3,9 +3,13 @@
 	<%% const me = _.find(channel.members, (member) => { return member.user_id === $('html').data().userId }) %>
 	<li data-channel-id="<%%= channel.id %>" class="channel-list-channel list-group-item d-flex justify-content-between align-items-center side-list-item cursor">
 		<div>
-			# <span class="<%%= channel.channel_type === "private" ? "private-channel" : ""%>">
+			<span>#</span>
+			<span class="<%%= channel.channel_type === "private" ? "private-channel" : ""%>">
 				<%%= channel.room %>
 			</span>
+			<%% if (channel.password) { %>
+			<span class="oi oi-lock-locked"></span>
+			<%% } %>
 		</div>
 		<div>
 			<%% if (me.unread > 0) { %>
@@ -37,12 +41,3 @@
 	</li>
 <%% }) %>
 </script>
-
-<!-- 
-	<li class="list-group-item d-flex justify-content-between align-items-center side-list-item">
-		<div>
-			# protected channel <span class="oi oi-lock-locked"></span>
-		</div>
-		<span class="badge badge-danger badge-pill">14</span>
-	</li>
--->

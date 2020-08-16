@@ -6,6 +6,11 @@ html, body, #app{
   height: 100%;
 }
 
+.icon-box {
+  display: flex;
+  align-items: center;
+}
+
 #app {
   display: flex;
   flex-direction: column;
@@ -102,6 +107,16 @@ html, body, #app{
   height: inherit;
   background-color: #6c757d;
 }
+
+#chat-members-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px 0 5px;
+  height: 2em;
+  background-color: #343a40;
+}
+
 .chat-header {
   background-color: #6c757d;
   border-radius: 3px;
@@ -197,6 +212,31 @@ html, body, #app{
   overflow-x: unset;
   overflow-y: scroll;
   height: 50vh;
+}
+
+.list-hover:hover {
+  background-color: #ffffff24;
+}
+
+.ban-member-btn, .mute-member-btn, .admin-member-btn {
+  color: grey;
+}
+
+.ban-member-btn:hover, .ban-member {
+  color: red !important;
+}
+
+.mute-member-btn:hover, .mute-member {
+  color: orange !important;
+}
+
+.admin-member-btn:hover, .admin-member {
+  color: #8bc34a !important
+}
+
+.channel-admin-btn {
+  float: right;
+  margin-right: 5px;
 }
 
 @media (max-width: 767px) {

@@ -1,0 +1,12 @@
+<!-- add friend modal -->
+<script type="text/template" name="tmpl-channel-invite-list">
+	<%% _.each(searched, function(user, i) { %>
+		<li class="list-group-item"><%%= user.nickname %> (<%%= user.name %>)
+			<button class="btn btn-danger btn-sm float-right channelInviteBtn"
+				<%%= _.find(members, (m) => { return (m.user_id === user.user_id)}) ? "disabled" : "" %>
+				data-user-id="<%%= user.user_id %>">
+				invite
+			</button>
+		</li>
+	<%% }) %>
+</script>

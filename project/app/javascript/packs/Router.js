@@ -7,11 +7,24 @@ import Profile from "./Profile.js"
 import Chat from "./Chat.js"
 import Channel from "./Channel.js"
 import Navbar from "./Navbar.js"
-import ChatChannel from "../channels/chat_channel.js"
+import ChatChannel from "../channels/chat_channel"
+import ChannelChannel from "../channels/channel_channel"
 
 const Router = {};
 if ($('html').data().isLogin) {
 	$(() => {
+		const remove_channel = function() {
+			if (ChatChannel.channel)
+				ChatChannel.unsubscribe();
+			if (ChannelChannel.channel)
+				ChannelChannel.unsubscribe();
+				
+			if (Chat.content)
+				Chat.content.undelegateEvents();
+			if (Channel.content)
+				Channel.content.undelegateEvents();
+		};
+
 		const RouterClass = Backbone.Router.extend({
 			routes: {
 				"": "game",
@@ -22,28 +35,23 @@ if ($('html').data().isLogin) {
 				"channels/:channel_id": "channel"
 			},
 			game: function () {
-				if (ChatChannel.channel)
-					ChatChannel.unsubscribe();
+				remove_channel();
 				Game.content.render();
 			},
 			profile: function () {
-				if (ChatChannel.channel)
-					ChatChannel.unsubscribe();
+				remove_channel();
 				Profile.content.render();
 			},
 			guild: function () {
-				if (ChatChannel.channel)
-					ChatChannel.unsubscribe();
+				remove_channel();
 				Guild.content.render();
 			},
 			chat: function (room) {
-				if (Chat.content)
-					Chat.content.undelegateEvents();
-				if (ChatChannel.channel)
-					ChatChannel.unsubscribe();
+				remove_channel();
 				Chat.content = new Chat.Content({ room: room });
 			},
 			channel: function (channel_id) {
+				remove_channel();
 				Channel.content = new Channel.Content({ channel_id: channel_id });
 			}
 		});

@@ -69,6 +69,8 @@ class Api::ChannelsController < ApplicationController
 			return render plain: "Channel name has to be more than 4 letters", status: :forbidden
 		elsif params[:password].length > 0 && params[:password].length < 6
 			return render plain: "Password has to be at least 6 letters", status: :forbidden
+		elsif params[:password].length > 20
+			return render plain: "Password is too long", status: :forbidden
 		elsif params[:password] != params[:repassword]
 			return render plain: "Passwords are not same", status: :forbidden
 		end
@@ -80,7 +82,7 @@ class Api::ChannelsController < ApplicationController
 			room: params[:room],
 			channel_type: params[:channel_type],
 			password: (params[:password].length > 0 ? BCrypt::Password.create(params[:password]) : ""),
-			owner: {"user_id" => current_user[:id]},
+			owner: current_user[:id],
 			admins: [],
 			members: [{"user_id" => current_user[:id], "timestamp" => Time.now }],
 			bans: [],
@@ -89,34 +91,18 @@ class Api::ChannelsController < ApplicationController
 		render plain: nil, status: :ok
 	end
 
-	# GET /api/channels/:room/last_visited
-	def last_visited
-		chat = Chat.find_by(room: params[:channel_room])
-		me = chat.members.find { |m| m["user_id"] == current_user[:id] }
-		render json:  me["timestamp"]
-	end
-
-	# PUT /api/channels/:channel_room/last_visited
+	# PUT /api/channels/:channel_id/last_visited
 	def update_last_visited
-		chat = Chat.find_by(room: params[:channel_room])
-		me = chat.members.find { |m| m["user_id"] == current_user[:id] }
-		me["timestamp"] = Time.now
-		if chat.save()
-			render json: nil, status: :ok
-		else
-			render json: nil, status: :internal_server_error
-		end
-	end
+		channel = Channel.find_by(id: params[:channel_id])
+		me = channel.members.find { |m| m["user_id"] == current_user[:id] }
+		return render json: nil, status: :ok if me.blank?
 
-	# PUT /api/channels/:channel_room/display/:display
-	def update_display
-		chat = Chat.find_by(room: params[:channel_room])
-		me = chat.members.find { |m| m["user_id"] == current_user[:id] }
-		me["display"] = (params[:display] == "true") # string to boolean
-		if chat.save()
+		me["timestamp"] = Time.now
+		if channel.save()
 			render json: nil, status: :ok
 		else
 			render json: nil, status: :internal_server_error
 		end
 	end
+	
 end

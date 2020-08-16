@@ -12,7 +12,7 @@ class Api::ChannelMessagesController < ApplicationController
 		end
 	end
 
-	# POST /api/chats/:channel_id/chat_messages/
+	# POST /api/channels/:channel_id/chat_messages/
 	def create
 		if params[:user_id] != current_user[:id]
 			return render plain: "forbidden", status: :forbidden
@@ -27,17 +27,18 @@ class Api::ChannelMessagesController < ApplicationController
 				content: params[:content],
 				timestamp: Time.now
 			)
-			# ActionCable.server.broadcast "chat_#{params[:channel_id]}_channel", message
-			# channel.members.each { |m| 
-			# 	if m["user_id"] != current_user[:id]
-			# 		block_list = UserProfile.find_by(:user_id => m["user_id"]).block_list
-			# 		is_blocked = block_list.detect { |b| b == current_user[:id] }
-			# 		if !is_blocked
-			# 			data = {:type => "chats", :room => channel.room }
-			# 			ActionCable.server.broadcast "message_notification_#{m["user_id"]}_channel", data
-			# 		end
-			# 	end
-			# }
+			return render plain: "internal server error", status: :internal_server_error if message.blank?
+			data = {:message => message }
+			ActionCable.server.broadcast "channel_#{params[:channel_id]}_channel", data
+			channel.members.each { |m| 
+				if m["user_id"] != current_user[:id]
+					is_blocked = channel.bans.select{ |b| b == current_user[:id] }.present?
+					if !is_blocked
+						data = {:type => "channels", :channel_id => channel.id }
+						ActionCable.server.broadcast "message_notification_#{m["user_id"]}_channel", data
+					end
+				end
+			}
 			render json: nil, status: :ok
 		else
 			render plain: "Page not found", status: :not_found

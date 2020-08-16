@@ -4,7 +4,7 @@ class CreateChannels < ActiveRecord::Migration[6.0]
       t.string :room, null: false, uniqueness: true
       t.string :channel_type, null: false
       t.string :password
-      t.jsonb :owner, null: false
+      t.string :owner, null: false
       t.jsonb :admins
       t.jsonb :members
       t.jsonb :bans

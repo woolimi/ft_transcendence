@@ -71,7 +71,7 @@ if ($('html').data().isLogin) {
 					await Helper.fetch(Profile.userProfile);
 					await Helper.fetch(this.messages);		
 					await Helper.fetch(this.members);
-					await Helper.ajax(`/api/channels/${options.room}/display`, "display=true", "PUT");
+					await Helper.ajax(`/api/chats/${options.room}/display`, "display=true", "PUT");
 					await Helper.fetch(Channel.m_channel_list);
 					Channel.channel_list.render();
 					this.opponent = this.find_opponent(this.members.toJSON());
@@ -142,13 +142,14 @@ if ($('html').data().isLogin) {
 					await Helper.save(new_msg);
 					await Helper.fetch(this.messages)
 					this.render_messages();
+					this.scroll_down();
+					contentEl.val("");
 				} catch (error) {
 					if (error.statusText)
 						Helper.flash_message("danger", error.statusText);
 					else
 						console.error(error);
 				}
-				contentEl.val("");
 			},
 			recv_callback: function(data) {
 				if (data.user_id == $('html').data().userId)
@@ -165,7 +166,6 @@ if ($('html').data().isLogin) {
 				if (t.scrollTop === 0) {
 					const prev_messages = new Chat.Messages([], Chat.content.options);
 					const id = Chat.content.messages.toJSON()[0].id;
-					console.log(Chat.content.messages.toJSON());
 					if (id === 1) {
 						Helper.flash_message("danger", "no more messages");
 						return;

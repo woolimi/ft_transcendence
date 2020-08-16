@@ -22,9 +22,8 @@ if ($('html').data().isLogin)
       }, {
         connected() {
           // Called when the subscription is ready for use on the server
-
           // update last_visited time
-          Helper.ajax(`/api/channels/${room}/last_visited`, "", "PUT")
+          Helper.ajax(`/api/chats/${room}/last_visited`, "", "PUT")
             .catch((err)=> {
               console.error(err);
             })
@@ -39,11 +38,11 @@ if ($('html').data().isLogin)
           // Called when the subscription has been terminated by the server
         },
 
-        received(data) {
+        received: async function(data) {
           // Called when there's incoming data on the websocket for this channel
 
           // update last_visited time
-          Helper.ajax(`/api/channels/${room}/last_visited`, "", "PUT")
+          await Helper.ajax(`/api/chats/${room}/last_visited`, "", "PUT")
             .catch((err) => {
               console.error(err);
             })

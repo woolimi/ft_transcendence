@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2020_08_11_170924) do
     t.string "room", null: false
     t.string "channel_type", null: false
     t.string "password"
-    t.jsonb "owner", null: false
+    t.string "owner", null: false
     t.jsonb "admins"
     t.jsonb "members"
     t.jsonb "bans"

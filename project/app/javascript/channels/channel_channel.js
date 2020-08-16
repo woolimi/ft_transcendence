@@ -13,16 +13,26 @@ if ($('html').data().isLogin)
       }
     };
 
-    ChannelChannel.subscribe = function(room, recv_callback) {
+    ChannelChannel.subscribe = function(channel_id, recv_callback) {
       if (this.channel)
         return;
       this.channel = consumer.subscriptions.create({
         channel: "ChannelChannel",
-        room: room
+        channel_id: channel_id
       }, {
-        connected() {
+        connected: function() {
           // Called when the subscription is ready for use on the server
           console.log("channel connected");
+          // update last_visited time
+          Helper.ajax(`/api/channels/${channel_id}/last_visited`, "", "PUT")
+            .catch((err) => {
+              console.error(err);
+            })
+          // remove badge          
+          const chat = $("#view-channels-list").find(`[data-channel-id=${channel_id}]`);
+          const badge = chat.find(".badge");
+          badge.html(0);
+          badge.addClass("d-none");
         },
 
         disconnected() {
@@ -30,11 +40,19 @@ if ($('html').data().isLogin)
           console.log("channel disconnected");
         },
 
-        received(data) {
+        received: async function(data) {
           // Called when there's incoming data on the websocket for this channel
+          // update last_visited time
+          await Helper.ajax(`/api/channels/${channel_id}/last_visited`, "", "PUT")
+            .catch((err) => {
+              console.error(err);
+            })
+          recv_callback(data);
         }
       });
  
     }
   });// window.onload
 }
+
+export default ChannelChannel;
