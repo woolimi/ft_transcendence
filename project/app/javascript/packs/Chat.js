@@ -71,7 +71,7 @@ if ($('html').data().isLogin) {
 					await Helper.fetch(Profile.userProfile);
 					await Helper.fetch(this.messages);		
 					await Helper.fetch(this.members);
-					await Helper.ajax(`/api/channels/${options.room}/display`, "display=true", "PUT");
+					await Helper.ajax(`/api/chats/${options.room}/display`, "display=true", "PUT");
 					await Helper.fetch(Channel.m_channel_list);
 					Channel.channel_list.render();
 					this.opponent = this.find_opponent(this.members.toJSON());
@@ -129,9 +129,11 @@ if ($('html').data().isLogin) {
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				const contentEl = $(e.currentTarget).find('input#message');
-				const content = contentEl.val();
+				const content = _.escape(contentEl.val());
 				if (content === "")
 					return;
+				if (content.length > 300)
+					return Helper.flash_message("danger", "message is too long");
 				const new_msg = new Message({
 					user_id: $('html').data().userId,
 					content: content,
@@ -140,13 +142,14 @@ if ($('html').data().isLogin) {
 					await Helper.save(new_msg);
 					await Helper.fetch(this.messages)
 					this.render_messages();
+					this.scroll_down();
+					contentEl.val("");
 				} catch (error) {
 					if (error.statusText)
 						Helper.flash_message("danger", error.statusText);
 					else
 						console.error(error);
 				}
-				contentEl.val("");
 			},
 			recv_callback: function(data) {
 				if (data.user_id == $('html').data().userId)

@@ -2,7 +2,7 @@ class Api::UserInfoController < ApplicationController
 	protect_from_forgery
 	before_action :authenticate_user!
 
-	# GET /api/user_info/?serarch=:name_or_nickname
+	# GET /api/user_info/?search=:name_or_nickname
 	def index
 		if params[:search]
 			res = UserProfile

@@ -1,0 +1,23 @@
+<!-- search user modal -->
+<div class="modal" id="inviteUserModal" tabindex="-1" role="dialog" aria-labelledby="inviteUserModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="inviteUserModalLabel">Invite user</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form class="form-inline" id="invite-user-form">
+					<input class="form-control mr-sm-2" type="search" name="name" placeholder="type username or nickname" aria-label="Search">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				</form>
+				<br>
+				<ul class="list-group list-group-flush" id="channel-invite-list">
+					<!-- tmpl-channel-invite-list -->
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
