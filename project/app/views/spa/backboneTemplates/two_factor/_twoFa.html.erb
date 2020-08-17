@@ -14,9 +14,11 @@
 					<li>Choose "Scan barcode"</li>
 				</ol>
 			</div>
-			<div class="col-4 text-center">
-				<%= current_user.otp_qr_code.html_safe%>
-			</div>
+			<!--
+				1. show backup codes from the db 
+				2. qrcode -- only one loc 
+
+			-->
 		</div>
 	<%% } else if(otp_required_for_login === false){%>
 		<p>When you login, you will be required to enter a one-time code along to one of your devices.</p>

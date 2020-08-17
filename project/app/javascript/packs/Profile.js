@@ -103,6 +103,7 @@ $(() => {
 			"click .disableTwoFaBtn": "disable_twofa"
 		},
 		initialize: function () {
+			this.model.fetch();
 			this.render();
 		},
 		render: function () {
@@ -133,23 +134,26 @@ $(() => {
 		template: _.template($("script[name='tmpl-content-profile']").html()),
 		el: $("#view-content"),
 		model: userProfile,
-		childView: new TwoFactorAuthenticationView(),
 		initialize: async function() {
 			try {
-				twofa.on('sync', this.render, this);
-				await Helper.fetch(this.model);
-				if (Backbone.history.fragment === "profile")
+				await Helper.fetch(this.model); //synchro
+				this.nestedView = new TwoFactorAuthenticationView();
+				if (Backbone.history.fragment === "profile"){
 					this.render();
+				}
 			} catch (error) {
 				Helper.flash_message("danger", "Error while loading profile!");
 			}
 		},
+		renderNested: function(view, selector){
+			console.log("this is view" + view);
+			var $element = ( selector instanceof $ ) ? selector : this.$( selector );
+			view.setElement($element).render();
+		},
 		render: function () {
 			const content = this.template(this.model.toJSON());
 			this.$el.html(content);
-			this.childView.$el = this.$('#two_fa');
-			this.childView.render();
-			this.childView.delegateEvents();
+			this.renderNested(this.nestedView, '#two_fa');
 		},
 		events: {
 			// "change .avatar": "upload_image",
