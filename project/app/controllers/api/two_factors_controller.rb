@@ -2,13 +2,10 @@ class Api::TwoFactorsController < ApplicationController
     before_action :authenticate_user!
 
     def show
-        puts params[:user_id]
-        if (params[:user_id] == current_user[:id])
-            user = User.find_by(id: current_user[:id]).as_json(only: [:user_id, :otp_backup_codes, :otp_required_for_login])
-            render json: user
-        else
-            render json: {}
-        end
+        return render plain: "Forbidden", status: :forbidden if params[:user_id] != current_user[:id]
+        user = User.find_by(id: current_user[:id]).as_json(only: [:user_id, :otp_backup_codes, :otp_required_for_login])
+        return render plain: "Forbidden", status: :forbidden if user.blank?
+        return render json: user, status: :ok
     end
 
     def enable
@@ -28,11 +25,11 @@ class Api::TwoFactorsController < ApplicationController
     # PUT /api/two_factors/
     def update
         if (params[:user_id] == current_user[:id])
-            if (params[:otp_required_for_login] == true)
+            if (params[:otp_required_for_login] == "true")
                 enable()
             else
                 disable()
-            end        
+            end
         end
     end
 end

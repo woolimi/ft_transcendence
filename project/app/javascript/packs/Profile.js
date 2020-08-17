@@ -61,26 +61,6 @@ $(() => {
 		},
 	})
 
-	const TwoFactor  = Backbone.Model.extend({
-		defaults:
-		{
-			user_id: $('html').data().userId,
-			codes: [],
-			otp_required_for_login: false
-		}, 
-		urlRoot : "/api/two_factors/",
-		idAttribute: 'user_id',
-		url: function () {
-			return this.urlRoot + encodeURIComponent(this.get('user_id'));
-		},
-		initialize: function () {
-			this.fetch();
-			// console.log(this.toJSON());
-		},
-
-	})
-
-	
 
 	const SearchedBlockUsers = Backbone.Collection.extend({
 		model: AllUsers,
@@ -91,74 +71,49 @@ $(() => {
 
 	const userProfile = new UserProfile();
 
-	const twofa = new TwoFactor();
-	/* View */
-
-	const TwoFactorAuthenticationView = Backbone.View.extend({
-		el: $("#two_fa"),
-		model: twofa,
-		template: _.template($("script[name='tmpl-two-fa']").html()),
-		events: {
-			"click .enableTwoFaBtn": "enable_twofa",
-			"click .disableTwoFaBtn": "disable_twofa"
-		},
-		initialize: function () {
-			this.model.fetch();
-			this.render();
-		},
-		render: function () {
-			const content = this.template(this.model.toJSON());
-			this.$el.html(content);
-		},
-		enable_twofa: function () {
-			this.model.set({
-				otp_required_for_login: true
-			});
-			this.model.save();
-			this.model.fetch();
-			this.render();
-		},
-		disable_twofa: function () {
-			this.model.set({
-				otp_required_for_login: false
-			});
-			this.model.save();
-			this.model.fetch();
-			this.render();
-		},
-	});
-
-	Profile.twofaView = new TwoFactorAuthenticationView();
-
 	const ProfileContentView = Backbone.View.extend({
 		template: _.template($("script[name='tmpl-content-profile']").html()),
+		twofa_template: _.template($("script[name='tmpl-two-fa']").html()),
 		el: $("#view-content"),
 		model: userProfile,
 		initialize: async function() {
 			try {
-				await Helper.fetch(this.model); //synchro
-				this.nestedView = new TwoFactorAuthenticationView();
-				if (Backbone.history.fragment === "profile"){
+				// profile
+				this.user_id = $('html').data().userId;
+				await Helper.fetch(this.model);
+				if (Backbone.history.fragment === "profile")
 					this.render();
-				}
+				// get two factor data
+				const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
+				// insert twofa template into profile view
+				this.render_twofactor(data);
 			} catch (error) {
 				Helper.flash_message("danger", "Error while loading profile!");
 			}
 		},
-		renderNested: function(view, selector){
-			console.log("this is view" + view);
-			var $element = ( selector instanceof $ ) ? selector : this.$( selector );
-			view.setElement($element).render();
+		render_twofactor(data) {
+			$("#two_fa").html(this.twofa_template(data));
 		},
 		render: function () {
 			const content = this.template(this.model.toJSON());
 			this.$el.html(content);
-			this.renderNested(this.nestedView, '#two_fa');
 		},
 		events: {
 			// "change .avatar": "upload_image",
 			"submit #profile-form": "onSubmit",
 			"click .unblock": "unblock",
+			"click #enableTwoFaBtn": "enable_two_factor",
+			"click #disableTwoFaBtn": "disable_two_factor"
+		},
+		enable_two_factor: async function() {
+			await Helper.ajax(`/api/two_factors/${this.user_id}`, "otp_required_for_login=true", "PUT");
+			const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
+			this.render_twofactor(data);
+		},
+		disable_two_factor: async function() {
+			await Helper.ajax(`/api/two_factors/${this.user_id}`, "otp_required_for_login=false", "PUT");
+			const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
+			this.render_twofactor(data);
 		},
 		upload_image: function()
 		{

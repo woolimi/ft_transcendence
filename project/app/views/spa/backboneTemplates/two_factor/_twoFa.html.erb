@@ -1,6 +1,6 @@
 <script type="text/template" name="tmpl-two-fa">
 	<%% if(otp_required_for_login === true) {%>
-		<div><button class="btn btn-outline-danger disableTwoFaBtn">Disable</button></div>
+		<div><button class="btn btn-outline-danger" id="disableTwoFaBtn">Disable</button></div>
 		<div class="row">
 			<div class="col-8">
 				<ol class="mt-5">
@@ -14,16 +14,25 @@
 					<li>Choose "Scan barcode"</li>
 				</ol>
 			</div>
+			<div class="col-4 text-center">
+				<%= current_user.otp_qr_code.html_safe %>
+			  </div>
 			<!--
 				1. show backup codes from the db 
 				2. qrcode -- only one loc 
-
 			-->
 		</div>
 	<%% } else if(otp_required_for_login === false){%>
 		<p>When you login, you will be required to enter a one-time code along to one of your devices.</p>
 		<div>
-		  <button class="btn btn-outline-success enableTwoFaBtn">Enable</button>
+		  <button class="btn btn-outline-success" id="enableTwoFaBtn">Enable</button>
 		</div>
 	<%% } %>
 </script>
+
+<!-- 
+	Vue, react, angualar
+	if we need to fetch data often => better to use model, collection
+	if we need to use only one time, not many time => better to use ajax call manually
+	even though we use often, if url is not following REST API, do manually
+-->
