@@ -5,8 +5,8 @@
 			<h5 class="m-0 pl-3 text-white d-flex" style="align-items:center">
 				<span class="mr-1">#</span> 
 				<span id="chat-title" class="mr-1 <%%= channel_type === "private" ? "private-channel" : ""%>"></span>
-				<%% if (is_owner || is_admin ) { %>
-				<span data-channel-id="<%%= channel_id %>" data-position="<%%=(is_owner ? "owner" : "admin") %>" class="oi oi-cog cursor" data-toggle="modal" data-target="#channelPasswordModal"></span>
+				<%% if (is_owner) { %>
+				<span data-channel-id="<%%= channel_id %>" class="oi oi-cog cursor" data-toggle="modal" data-target="#channelPasswordModal"></span>
 				<%% } %>
 			</h5>
 			<button type="button" id="show-members" class="btn btn-dark btn"><span class="oi oi-people"></span></button>

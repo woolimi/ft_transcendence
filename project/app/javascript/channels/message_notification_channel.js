@@ -36,6 +36,8 @@ if ($('html').data().isLogin)
             // channel setting changed
             if (data.channel_password === "changed") {
               const cur_routes = Backbone.history.fragment.split("/")
+              await Helper.fetch(Channel.m_channel_list)
+              Channel.channel_list.render_channel_list();
               if (cur_routes[0] === "channels" && cur_routes[1] === data.channel_id)
                 Channel.content.render_login();
               return
