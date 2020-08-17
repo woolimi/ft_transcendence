@@ -11,7 +11,9 @@
 		<%% if (_.find(mutes, (m) => m.user_id === member.user_id)) { %>
 			<span class="oi oi-media-pause"></span>
 		<%% } %>
-
+		<%% if (_.find(bans, (b) => b === member.user_id)) { %>
+			<span class="oi oi-ban"></span>
+		<%% } %>
 		<%% if (is_owner && member.user_id !== owner) { %>
 		<div class="channel-admin-btn">
 			<span data-user-id="<%%= member.user_id %>" data-nickname="<%%= member.nickname %>" class="oi oi-key admin-member-btn <%%= (_.find(admins, (a) => a === member.user_id)) ? "admin-member" : ""%>"></span>

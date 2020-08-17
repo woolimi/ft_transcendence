@@ -247,12 +247,13 @@ if ($('html').data().isLogin)
 				}
 				catch (error) {
 					if (error.status === 401)
-						this.render_login();
+						return this.render_login();
 					if (error.responseText)
 						Helper.flash_message("danger", error.responseText);
 					else {
 						Helper.flash_message("danger", error);
 					}
+					window.location.hash = "";
 				}
 			},
 			render_login() {
@@ -262,7 +263,7 @@ if ($('html').data().isLogin)
 				e.preventDefault();
 				const data = $("#channel-login-form").serialize();
 				try {
-					await Helper.ajax(`/api/channels/${this.options.channel_id}/password/`, data, "POST");
+					await Helper.ajax(`/api/channels/${this.options.channel_id}/password`, data, "POST");
 					this.initialize(this.options);				
 				} catch (error) {
 					if (error.responseText)

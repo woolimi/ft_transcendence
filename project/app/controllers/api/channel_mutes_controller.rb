@@ -7,7 +7,7 @@ class Api::ChannelMutesController < ApplicationController
 		channel = Channel.find_by(id: params[:channel_id])
 		return render json: nil, status: :forbidden if channel.blank?
 		# Only owner or admin can ban user
-		return render json: nil, status: :forbidden if channel.owner != current_user[:id] && channel.admins.select{ |a| a.user_id == current_user[:id]}.blank?
+		return render json: nil, status: :forbidden if channel.owner != current_user[:id] && channel.admins.select{ |a| a == current_user[:id]}.blank?
 		# Add user into bans
 		channel.mutes.push({:user_id => params[:user_id], :timestamp => 1.minutes.from_now(Time.now) }) if channel.mutes.select{|b| b["user_id"] == params[:user_id]}.blank?
 		if channel.save()
@@ -25,7 +25,7 @@ class Api::ChannelMutesController < ApplicationController
 		channel = Channel.find_by(id: params[:channel_id])
 		return render json: nil, status: :forbidden if channel.blank?
 		# Only owner or admin can ban user
-		return render json: nil, status: :forbidden if channel.owner != current_user[:id] && channel.admins.select{ |a| a.user_id == current_user[:id]}.blank?
+		return render json: nil, status: :forbidden if channel.owner != current_user[:id] && channel.admins.select{ |a| a == current_user[:id]}.blank?
 		# Remove user form bans
 		channel.mutes.delete_if { |m| m["user_id"] == params[:user_id] }
 		if channel.save()
@@ -36,4 +36,8 @@ class Api::ChannelMutesController < ApplicationController
 			return render json: nil, status: :internal_server_error
 		end
 	end
+<<<<<<< HEAD
 end
+=======
+end
+>>>>>>> master
