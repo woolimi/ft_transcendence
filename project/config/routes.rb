@@ -19,8 +19,9 @@ Rails.application.routes.draw do
     end
     resources :channels, param: :id, only: [:index, :create, :show] do
       resources :channel_messages, only: [:index, :create]
-      get "/members", to: 'channel_members#index'
+      get "/members/", to: 'channel_members#index'
       put "/members/:user_id", to: 'channel_members#update'
+
       delete "/members/:user_id", to: 'channel_members#destroy'
       put "/admins/:user_id", to: 'channel_admins#update'
       delete "/admins/:user_id", to: 'channel_admins#destroy'

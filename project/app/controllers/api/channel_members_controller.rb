@@ -2,21 +2,22 @@ class Api::ChannelMembersController < ApplicationController
 	protect_from_forgery
 	before_action :authenticate_user!
 
-	# GET /api/channels/:channel_id/members
+	# GET /api/channels/:channel_id/members/
 	def index
 		channel = Channel.find_by(id: params[:channel_id])
-		if channel.present?
-			members = channel.members
-			members.each { |m| 
-				user_profile = UserProfile.find_by(:user_id => m["user_id"])
-				m["name"] = user_profile.name
-				m["nickname"] = user_profile.nickname
-				m["avatar_url"] = user_profile.avatar_url
-			}
-			render json: members, status: :ok
-		else
-			render json: nil, status: :forbidden
+		return render plain: "forbidden", status: :forbidden if channel.blank?
+		if channel.password.length > 0 && session[params[:channel_id]] != channel.password
+			return render plain: "Unauthorized", status: :unauthorized
 		end
+
+		members = channel.members
+		members.each { |m| 
+			user_profile = UserProfile.find_by(:user_id => m["user_id"])
+			m["name"] = user_profile.name
+			m["nickname"] = user_profile.nickname
+			m["avatar_url"] = user_profile.avatar_url
+		}
+		render json: members, status: :ok
 	end
 
 	# PUT /api/channels/:channel_id/members/:user_id

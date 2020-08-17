@@ -24,6 +24,7 @@ class Api::ChannelsController < ApplicationController
 				m["avatar_url"] = user_profile[:avatar_url]
 				m["unread"] = unread
 			}
+			channel.password = "true" if channel.password.length > 0
 		}
 		
 		# find user where user is

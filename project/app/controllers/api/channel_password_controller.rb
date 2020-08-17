@@ -4,15 +4,14 @@ class Api::ChannelPasswordController < ApplicationController
 
 	# POST /api/channels/:channel_id/password/
 	def login
-		# owner can pass without password
 		channel = Channel.find_by(id: params[:channel_id])
 		return render plain: "forbidden", status: :forbidden if channel.blank?
-		return render plain: "ok", status: :ok if channel.owner == current_user[:id]
 		# check password
-		if params[:password] == BCrypt::Password.new(channel.password)
+		if BCrypt::Password.new(channel.password) == params[:channel_password]
+			session[params[:channel_id]] = channel.password
 			return render plain: "ok", status: :ok
 		else
-			return render plain: "forbidden", status: :forbidden
+			return render plain: "Unauthorized", status: :unauthorized
 		end
 	end
 
@@ -36,6 +35,7 @@ class Api::ChannelPasswordController < ApplicationController
 			channel.members.each { |m|
 				ActionCable.server.broadcast "message_notification_#{m["user_id"]}_channel", data if m["user_id"] != channel.owner
 			}
+			session[params[:channel_id]] = channel.password
 			return render plain: "Successfully changed channel setting", status: :ok
 		else
 			return render json: nil, status: :internal_server_error
@@ -55,6 +55,7 @@ class Api::ChannelPasswordController < ApplicationController
 			channel.members.each { |m|
 				ActionCable.server.broadcast "message_notification_#{m["user_id"]}_channel", data if m["user_id"] != channel.owner
 			}
+			session[params[:channel_id]] = ""
 			return render plain: "Successfully changed channel setting", status: :ok
 		else
 			return render json: nil, status: :internal_server_error

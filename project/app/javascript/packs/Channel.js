@@ -186,7 +186,7 @@ if ($('html').data().isLogin)
 			model: Member,
 			initialize: function (attrs, options) {
 				this.url = function () {
-					return "/api/channels/" + options.channel_id + "/members";
+					return "/api/channels/" + options.channel_id + "/members/";
 				};
 			},
 		});
@@ -209,6 +209,7 @@ if ($('html').data().isLogin)
 			members_template: _.template($("script[name='tmpl-channel-members']").html()),
 			invite_template: _.template($("script[name='tmpl-channel-invite-list']").html()),
 			setting_template: _.template($("script[name='tmpl-channel-setting']").html()),
+			login_template: _.template($("script[name='tmpl-channel-login']").html()),
 			events: {
 				"submit #send-message-form": "send_message",
 				"click .mute-member-btn": "mute_unmute_member",
@@ -216,7 +217,8 @@ if ($('html').data().isLogin)
 				"click .admin-member-btn": "admin_unadmin_member",
 				"submit #invite-user-form": "search_for_inviting_user",
 				"click .channelInviteBtn": "channel_invite_user",
-				"submit #channel-setting-form": "change_channel_setting"
+				"submit #channel-setting-form": "change_channel_setting",
+				"submit #channel-login-form": "channel_login",
 			},
 			initialize: async function (options) {
 				this.options = options;
@@ -244,12 +246,29 @@ if ($('html').data().isLogin)
 					this.render_channel_setting(info);
 				}
 				catch (error) {
-					if (error.statusText)
-						Helper.flash_message("danger", error.statusText);
+					if (error.status === 401)
+						this.render_login();
+					if (error.responseText)
+						Helper.flash_message("danger", error.responseText);
 					else {
 						Helper.flash_message("danger", error);
 					}
-					window.location.hash = "";
+				}
+			},
+			render_login() {
+				$("#view-content").html(this.login_template());
+			},
+			channel_login: async function(e) {
+				e.preventDefault();
+				const data = $("#channel-login-form").serialize();
+				try {
+					await Helper.ajax(`/api/channels/${this.options.channel_id}/password/`, data, "POST");
+					this.initialize(this.options);				
+				} catch (error) {
+					if (error.responseText)
+						Helper.flash_message("danger", error.responseText);
+					else
+						Helper.flash_message("danger", error);
 				}
 			},
 			change_channel_setting: async function(e) {
@@ -280,7 +299,7 @@ if ($('html').data().isLogin)
 						Helper.flash_message("danger", error.statusText);
 					else
 						Helper.flash_message("danger", error);
-					window.location.hash = "";					
+					window.location.hash = "";			
 				}
 			},
 			render_channel_setting: function(info) {
@@ -361,7 +380,12 @@ if ($('html').data().isLogin)
 						await Channel.get_info_and_render_members();
 					}
 				} catch (error) {
-					Helper.flash_message("danger", error);
+					if (error.status === 401)
+						return Channel.content.render_login();
+					if (error.responseText)
+						Helper.flash_message("danger", error.responseText);
+					else
+						Helper.flash_message("danger", error);
 					window.location.hash = "";
 				}
 			},

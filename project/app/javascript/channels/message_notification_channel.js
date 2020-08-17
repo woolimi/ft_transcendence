@@ -34,9 +34,8 @@ if ($('html').data().isLogin)
 
           try {
             // channel setting changed
-            console.log(data)
-            if (data.channel_password) {
-              console.log("HERE")
+            if (data.channel_password === "changed") {
+              Channel.content.render_login();
               return
             }
             // invited

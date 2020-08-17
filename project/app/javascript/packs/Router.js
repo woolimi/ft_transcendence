@@ -32,7 +32,7 @@ if ($('html').data().isLogin) {
 				"profile": "profile",
 				"guild": "guild",
 				"chats/:room": "chat",
-				"channels/:channel_id": "channel"
+				"channels/:channel_id": "channel",
 			},
 			game: function () {
 				remove_channel();
