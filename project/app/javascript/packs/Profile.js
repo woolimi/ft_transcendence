@@ -77,15 +77,12 @@ $(() => {
 		el: $("#view-content"),
 		model: userProfile,
 		initialize: async function() {
+			console.log("profile initialized");
 			try {
-				// profile
 				this.user_id = $('html').data().userId;
 				await Helper.fetch(this.model);
-				if (Backbone.history.fragment === "profile")
-					this.render();
-				// get two factor data
+				this.render();
 				const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
-				// insert twofa template into profile view
 				this.render_twofactor(data);
 			} catch (error) {
 				Helper.flash_message("danger", "Error while loading profile!");
@@ -181,7 +178,6 @@ $(() => {
 	});
 
 	
-
 	const SearchedBlockUsersView = Backbone.View.extend({
 		el: $("#view-block-searched-users"),
 		template: _.template($("script[name='tmpl-block-searched-users-modal']").html()),
@@ -237,7 +233,7 @@ $(() => {
 		},
 	});
 
-	Profile.content = new ProfileContentView();
+	Profile.Content = ProfileContentView;
 	Profile.searchBlockUserModal = new SearchedBlockUsersView();
 	Profile.userProfile = userProfile;
 })

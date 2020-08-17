@@ -27,6 +27,7 @@ if ($('html').data().isLogin) {
 			profile: function () {
 				if (ChatChannel.channel)
 					ChatChannel.unsubscribe();
+				Profile.content = new Profile.Content();
 				Profile.content.render();
 			},
 			guild: function () {
