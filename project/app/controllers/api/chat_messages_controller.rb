@@ -10,7 +10,6 @@ class Api::ChatMessagesController < ApplicationController
 		elsif is_valide_room? params[:chat_room]
 			chat = Chat.create({
 				room: params[:chat_room],
-				unread: 0,
 				members: [
 					{user_id: @u0.user_id, display: true, timestamp: Time.now},
 					{user_id: @u1.user_id, display: true, timestamp: Time.now}
@@ -25,10 +24,11 @@ class Api::ChatMessagesController < ApplicationController
 	# POST /api/chats/:chat_room/chat_messages/
 	def create
 		if params[:user_id] != current_user[:id]
-			render plain: "Page not found", status: :not_found
-			return
+			return render plain: "forbidden", status: :forbidden
 		end
-
+		if params[:content].length > 300
+			return render plain: "message is too long", status: :forbidden
+		end
 		chat = Chat.find_by(room: params[:chat_room]);
 		if chat.present?
 			message = chat.chat_messages.create(

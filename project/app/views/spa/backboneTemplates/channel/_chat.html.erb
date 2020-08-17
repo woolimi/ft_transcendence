@@ -1,0 +1,53 @@
+<script type="text/template" name="tmpl-channel-content">
+<div class="container-fluid" style="height: 100%; padding: 1em">
+	<div id="chat-wrapper" class="row">
+		<div class="w-100 d-flex shadow chat-header" style="justify-content:space-between">
+			<h5 class="m-0 pl-3 text-white d-flex" style="align-items:center">
+				<span class="mr-1">#</span> 
+				<span id="chat-title" class="mr-1 <%%= channel_type === "private" ? "private-channel" : ""%>"></span>
+				<%% if (is_owner || is_admin ) { %>
+				<span data-channel-id="<%%= channel_id %>" data-position="<%%=(is_owner ? "owner" : "admin") %>" class="oi oi-cog cursor" data-toggle="modal" data-target="#channelPasswordModal"></span>
+				<%% } %>
+			</h5>
+			<button type="button" id="show-members" class="btn btn-dark btn"><span class="oi oi-people"></span></button>
+			<div id="chat-members" class="border rounded collapse">
+				<div id="chat-members-header" class="text-white">
+					<span>members</span>
+					<span class="oi oi-plus cursor" data-toggle="modal" data-target="#inviteUserModal"></span>
+				</div>
+				<div id="chat-members-list">
+					<!-- channel/members.html.erb-->
+				</div>
+			</div>
+		</div>
+		<div id="chat-content" class="shadow w-100 border rounded">
+			<div id="chat-message-loader-wrapper" class="d-none">
+				<div id="chat-message-loader" class="spinner-border d-none" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+			</div>
+
+			<div id="chat-messages">
+				<!-- chat/messages.html.erb -->
+			</div>
+		</div>
+	</div>
+
+	<div class="row chat-submit">
+		<form class="w-100 shadow" id="send-message-form">
+			<div style="display:flex">
+				<label for="message" class="sr-only">message</label>
+				<input  autocomplete="off" type="text" class="form-control" placeholder="write message here..." id="message">
+				<button type="submit" class="btn btn-primary"><span class="oi oi-pencil"></span></button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+    $("#show-members").click(function () {
+          $('#chat-members').toggle("slide", { direction: "right" }, 300);
+    });
+</script>
+
+</script>

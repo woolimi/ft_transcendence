@@ -1,0 +1,28 @@
+<script type="text/template" name="tmpl-channel-setting">
+<div class="form-group">
+	<div class="form-check">
+		<input class="form-check-input" name="channel_password_on" type="checkbox" id="channel-password-on" <%%= password ? "checked" : "" %>>
+		<label class="form-check-label" for="channel-password-on">
+			set password
+		</label>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label for="channel-password" class="col-sm-5 col-form-label">new password</label>
+	<div class="col-sm-7">
+		<input type="password" name="channel_password" class="form-control" id="channel-password" placeholder="<%%= password ? "new password" : "disabled" %>" <%%= password ? "" : "disabled" %>>
+	</div>
+</div>
+<div class="form-group row">
+	<label for="re-channel-password" class="d-none"></label>
+	<div class="col-sm-7 offset-sm-5">
+		<input type="password"  name="re_channel_password" class="form-control" id="re-channel-password" placeholder="<%%= password ? "verify password" : "disabled" %>" <%%= password ? "" : "disabled" %>>
+	</div>
+</div>
+<div class="form-group row">
+	<div class="col-sm-12 text-center">
+		<button type="submit" class="btn btn-primary">save</button>
+	</div>
+</div>
+</script>

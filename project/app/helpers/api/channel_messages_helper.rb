@@ -1,0 +1,2 @@
+module Api::ChannelMessagesHelper
+end

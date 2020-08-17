@@ -1,10 +1,12 @@
 <!-- view-friends-list -->
-<div class="card side-list">
-	<div class="card-header bg-dark text-white">
+<div class="card side-list h-50">
+	<div class="card-header bg-dark text-white d-flex justify-content-between">
 		My friends
-		<span class="oi oi-plus float-right cursor" data-toggle="modal" data-target="#addFriendModal"></span>
+		<div class="icon-box">
+			<span class="oi oi-plus float-right cursor" data-toggle="modal" data-target="#addFriendModal"></span>
+		</div>
 	</div>
-	<div class="card-body bg-secondary text-white">
+	<div class="card-body bg-secondary text-white overflow-auto">
 		<ul class="list-group" id="view-friends-list">
 			<!-- tmpl-friends-list -->
 		</ul>

@@ -1,0 +1,12 @@
+<script type="text/template" name="tmpl-found-channel-list">
+<%% _.each(public_channels, function(channel, index) { %>
+	<li class="list-group-item"><%%= channel.room %>
+		<button class="btn btn-danger btn-sm float-right joinChannelBtn"
+			<%% const user_id = $('html').data().userId; %>
+			<%%= _.find(channel.members, (m) => { return (m.user_id === user_id )}) ? "disabled" : "" %>
+			data-channel-id="<%%= channel.id %>">
+			join
+		</button>
+	</li>
+<%% }) %>
+</script>

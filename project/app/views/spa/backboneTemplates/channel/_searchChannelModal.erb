@@ -1,0 +1,46 @@
+<!-- search user modal -->
+<div class="modal" id="searchChannelModal" tabindex="-1" role="dialog" aria-labelledby="searchChannelModalModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="searchChannelModalModalLabel">search channel</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form class="form-inline">
+					<div class="input-group w-100">
+						<input type="text" class="form-control" placeholder="search public channel" id="search-channel-input">
+						<div class="input-group-append">
+							<button class="btn btn-secondary" type="button">
+								<span class="oi oi-magnifying-glass"></span>
+							</button>
+						</div>
+					</div>
+				</form>
+				<hr>
+				<h6 class="mt-3">currently opened public channel list</h6>
+				<ul class="list-group list-group-flush" id="found-channel-list">
+					<!-- tmpl-found-channel-list -->
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$("#search-channel-input").on("keyup", (e) => {
+		const key = $(e.currentTarget).val().trim().toLowerCase();
+		const list = _.map($("#found-channel-list").children(), (child) => {
+			return child;
+		});
+		_.each(list, (li) => {
+			const channel_name = li.childNodes[0].textContent.trim().toLowerCase();
+			if (channel_name.indexOf(key) > -1)
+				li.classList.remove("d-none");
+			else
+				li.classList.add("d-none");
+		})
+	})
+</script>

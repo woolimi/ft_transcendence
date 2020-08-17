@@ -16,6 +16,10 @@ require("channels")
 const $ = require("jquery");
 global.$ = global.jQuery = $;
 window.$ = window.jQuery = $;
+const _ = require("underscore")
+global._ = _;
+window._ = _;
+
 require("jquery-ui");
 require("bootstrap");
 require("backbone");
