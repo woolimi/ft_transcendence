@@ -22,7 +22,6 @@ if ($('html').data().isLogin)
       }, {
         connected: function() {
           // Called when the subscription is ready for use on the server
-          console.log("channel connected");
           // update last_visited time
           Helper.ajax(`/api/channels/${channel_id}/last_visited`, "", "PUT")
             .catch((err) => {
@@ -37,7 +36,6 @@ if ($('html').data().isLogin)
 
         disconnected() {
           // Called when the subscription has been terminated by the server
-          console.log("channel disconnected");
         },
 
         received: async function(data) {

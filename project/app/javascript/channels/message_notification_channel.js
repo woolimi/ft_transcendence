@@ -35,7 +35,9 @@ if ($('html').data().isLogin)
           try {
             // channel setting changed
             if (data.channel_password === "changed") {
-              Channel.content.render_login();
+              const cur_routes = Backbone.history.fragment.split("/")
+              if (cur_routes[0] === "channels" && cur_routes[1] === data.channel_id)
+                Channel.content.render_login();
               return
             }
             // invited
@@ -51,7 +53,7 @@ if ($('html').data().isLogin)
               if (data.type == "channels")
                 await Helper.ajax(`/api/channels/${data.channel_id}/last_visited`, "", "PUT");
               else
-                await Helper.ajax(`/api/channels/${data.channel_id}/last_visited`, "", "PUT");
+                await Helper.ajax(`/api/chats/${data.room}/last_visited`, "", "PUT");
               return;
             }
             // new message arrived when user out of channel

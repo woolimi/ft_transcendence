@@ -29,9 +29,11 @@ class Api::ChannelPasswordController < ApplicationController
 		elsif params[:channel_password] != params[:re_channel_password]
 			return render plain: "Passwords are not same", status: :forbidden
 		end
+		return render plain: :ok if BCrypt::Password.new(channel.password) == params[:channel_password]
+		
 		channel.password = BCrypt::Password.create(params[:channel_password]);
 		if channel.save()
-			data = {:channel_password => "changed" }
+			data = {:channel_password => "changed", :channel_id => params[:channel_id] }
 			channel.members.each { |m|
 				ActionCable.server.broadcast "message_notification_#{m["user_id"]}_channel", data if m["user_id"] != channel.owner
 			}
