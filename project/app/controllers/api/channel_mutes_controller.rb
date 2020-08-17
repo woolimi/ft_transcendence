@@ -36,8 +36,4 @@ class Api::ChannelMutesController < ApplicationController
 			return render json: nil, status: :internal_server_error
 		end
 	end
-<<<<<<< HEAD
 end
-=======
-end
->>>>>>> master
