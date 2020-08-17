@@ -262,7 +262,7 @@ if ($('html').data().isLogin)
 				e.preventDefault();
 				const data = $("#channel-login-form").serialize();
 				try {
-					await Helper.ajax(`/api/channels/${this.options.channel_id}/password/`, data, "POST");
+					await Helper.ajax(`/api/channels/${this.options.channel_id}/password`, data, "POST");
 					this.initialize(this.options);				
 				} catch (error) {
 					if (error.responseText)
