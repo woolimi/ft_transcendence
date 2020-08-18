@@ -17,12 +17,21 @@
 			<div class="col-4 text-center">
 				<%%= otp_qr_code %>
 			</div>
+			<div>
+			<br><br><br>
+				<b>Please save the below 5 backup codes. These are one time use codes in case of google authenticator being not available.</b><br>
+			<ol class="otp_backup_codes">
+			<%% _.each(otp_backup_codes, function(otp_backup_codes) { %>
+			<li><%%= otp_backup_codes %></li>
+			<%% }) %>
+			</ol>
+			</div>
 			<!--
 				1. show backup codes from the db 
 				2. qrcode -- only one loc 
 			-->
 		</div>
-	<%% } else if(otp_required_for_login === false){%>
+	<%% } else {%>
 		<p>When you login, you will be required to enter a one-time code along to one of your devices.</p>
 		<div>
 		  <button class="btn btn-outline-success" id="enableTwoFaBtn">Enable</button>
