@@ -40,6 +40,7 @@ if ($('html').data().isLogin) {
 			},
 			profile: function () {
 				remove_channel();
+				Profile.content = new Profile.Content();
 				Profile.content.render();
 			},
 			guild: function () {

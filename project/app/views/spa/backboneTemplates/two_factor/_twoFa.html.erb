@@ -1,0 +1,47 @@
+<script type="text/template" name="tmpl-two-fa">
+	<%% if(otp_required_for_login === true) {%>
+		<div><button class="btn btn-outline-danger" id="disableTwoFaBtn">Disable</button></div>
+		<div class="row">
+			<div class="col-8">
+				<ol class="mt-5">
+					<li>
+						Install Google Authenticator:
+						<%= link_to "Android", "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en", target: :blank %>
+						or
+						<%= link_to "iOS", "https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8", target: :blank %>
+					</li>
+					<li>In the app, select "Set up account" or the Plus (+) sign.</li>
+					<li>Choose "Scan barcode"</li>
+				</ol>
+			</div>
+			<div class="col-4 text-center">
+				<%%= otp_qr_code %>
+			</div>
+			<div>
+			<br><br>
+				<b>Please save the below backup codes. These are one time use codes in case of google authenticator being not available.</b><br>
+			<ol class="otp_backup_codes">
+			<%% _.each(otp_backup_codes, function(otp_backup_codes) { %>
+			<li><%%= otp_backup_codes %></li>
+			<%% }) %>
+			</ol>
+			</div>
+			<!--
+				1. show backup codes from the db 
+				2. qrcode -- only one loc 
+			-->
+		</div>
+	<%% } else {%>
+		<p>When you login, you will be required to enter a one-time code along to one of your devices.</p>
+		<div>
+		  <button class="btn btn-outline-success" id="enableTwoFaBtn">Enable</button>
+		</div>
+	<%% } %>
+</script>
+
+<!-- 
+	Vue, react, angualar
+	if we need to fetch data often => better to use model, collection
+	if we need to use only one time, not many time => better to use ajax call manually
+	even though we use often, if url is not following REST API, do manually
+-->
