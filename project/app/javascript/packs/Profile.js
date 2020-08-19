@@ -142,19 +142,16 @@ $(() => {
 			try {
 				await Helper.save(this.model);
 				this.render();
-				console.log("rendered");
+				const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
+				this.render_twofactor(data);
 				Helper.flash_message("success", "Profile updated successfully!");
 			} catch (error) {
-				console.log("Inside" + JSON.stringify(error));
 				if (error.statusText)
 				{
 					var res= error.responseText.split("#");
 					Helper.flash_message("danger", res[0]);
-					console.log(res[1]);
 					$('.nickname-update').val(res[1]);
-				}
-				else
-						console.error(error);			
+				}		
 			}
 		},
 
