@@ -77,6 +77,7 @@ $(() => {
 		el: $("#view-content"),
 		model: userProfile,
 		initialize: async function() {
+			console.log("profile initialized");
 			try {
 				this.user_id = $('html').data().userId;
 				await Helper.fetch(this.model);
