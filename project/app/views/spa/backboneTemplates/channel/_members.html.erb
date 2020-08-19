@@ -1,0 +1,32 @@
+<script type="text/template" name="tmpl-channel-members">
+<%% _.each(members, function(member, index) { %>
+	<div class="text-white pl-1 cursor userInfoModal list-hover" data-toggle="modal" data-target="#userInfoModal" data-user-id="<%%= member.user_id %>">
+		<%%= member.nickname %>
+		<%% if (owner === member.user_id) { %>
+			(owner) <span class="oi oi-home"></span>
+		<%% } %>
+		<%% if (_.find(admins, (a) => a === member.user_id)) { %>
+			(admin) <%% if (!is_owner) { %> <span class="oi oi-key"></span> <%% } %>
+		<%% } %>
+		<%% if (_.find(mutes, (m) => m.user_id === member.user_id)) { %>
+			<span class="oi oi-media-pause"></span>
+		<%% } %>
+		<%% if (_.find(bans, (b) => b === member.user_id)) { %>
+			<span class="oi oi-ban"></span>
+		<%% } %>
+		<%% if (is_owner && member.user_id !== owner) { %>
+		<div class="channel-admin-btn">
+			<span data-user-id="<%%= member.user_id %>" data-nickname="<%%= member.nickname %>" class="oi oi-key admin-member-btn <%%= (_.find(admins, (a) => a === member.user_id)) ? "admin-member" : ""%>"></span>
+			<span data-user-id="<%%= member.user_id %>" data-nickname="<%%= member.nickname %>" class="oi oi-media-pause mute-member-btn <%%= (_.find(mutes, (m) => m.user_id === member.user_id)) ? "mute-member" : "" %>"></span>
+			<span data-user-id="<%%= member.user_id %>" data-nickname="<%%= member.nickname %>" class="oi oi-ban ban-member-btn <%%= (_.find(bans, (b) => b === member.user_id)) ? "ban-member" : ""%>"></span>	
+		</div>
+		<%% } else if (is_admin && member.user_id !== owner
+			&& !_.find(admins, (a) => a === member.user_id)) { %>
+		<div class="channel-admin-btn">
+			<span data-user-id="<%%= member.user_id %>" data-nickname="<%%= member.nickname %>" class="oi oi-media-pause mute-member-btn <%%= (_.find(mutes, (m) => m.user_id === member.user_id)) ? "mute-member" : "" %>"></span>
+			<span data-user-id="<%%= member.user_id %>" data-nickname="<%%= member.nickname %>" class="oi oi-ban ban-member-btn <%%= (_.find(bans, (b) => b === member.user_id)) ? "ban-member" : ""%>"></span>	
+		</div>
+		<%% } %>
+	</div>
+<%% }) %>
+</script>
