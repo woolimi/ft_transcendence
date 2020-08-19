@@ -158,8 +158,15 @@ if ($('html').data().isLogin) {
 				data.avatar_url = Chat.content.opponent.avatar_url;
 				const new_message = new Message(data);
 				Chat.content.messages.add(new_message);
-				Chat.content.render_messages();				
-				Chat.content.scroll_down();
+				
+				Chat.content.block_list = Profile.userProfile.get("block_list");
+				const is_blocked = _.find(Chat.content.block_list, (u) => {
+					return u.user_id === Chat.content.opponent.user_id
+				});
+				if (!is_blocked) {
+					Chat.content.render_messages();
+					Chat.content.scroll_down();
+				}
 			},
 			scroll_event_callback(e) {
 				const t = e.currentTarget;
