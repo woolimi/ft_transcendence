@@ -1,12 +1,21 @@
 Rails.application.routes.draw do
-  devise_for :users, :controllers => { omniauth_callbacks: 'users/omniauth_callbacks' }
+  #Devise
+  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks", sessions: "users/sessions" }
+  devise_scope :user do
+    scope :users, as: :users do
+      post 'pre_otp', to: 'users/sessions#pre_otp'
+    end
+  end
 
+  # resource :two_factor
   root to: 'spa#index'
+
   # devise_scope :user do
   #   get 'sign_in', :to => 'devise/sessions#new', :as => :new_user_session
-    # delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+  # delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
   # end
   namespace :api do
+    resources :two_factors, only: [:show, :update, :create], param: :user_id
     resources :user_info, only: [:index, :show], param: :user_id
     resources :profile, only: [:show, :update], param: :user_id
     resources :my_friends, only: [:index, :show, :update, :destroy], param: :user_id

@@ -61,6 +61,7 @@ $(() => {
 		},
 	})
 
+
 	const SearchedBlockUsers = Backbone.Collection.extend({
 		model: AllUsers,
 		url: "/api/user_info/",
@@ -69,19 +70,26 @@ $(() => {
 	const searchedBlockUsers = new SearchedBlockUsers();
 
 	const userProfile = new UserProfile();
-	/* View */
+
 	const ProfileContentView = Backbone.View.extend({
 		template: _.template($("script[name='tmpl-content-profile']").html()),
+		twofa_template: _.template($("script[name='tmpl-two-fa']").html()),
 		el: $("#view-content"),
 		model: userProfile,
 		initialize: async function() {
+			console.log("profile initialized");
 			try {
+				this.user_id = $('html').data().userId;
 				await Helper.fetch(this.model);
-				if (Backbone.history.fragment === "profile")
-					this.render();
+				this.render();
+				const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
+				this.render_twofactor(data);
 			} catch (error) {
 				Helper.flash_message("danger", "Error while loading profile!");
 			}
+		},
+		render_twofactor(data) {
+			$("#two_fa").html(this.twofa_template(data));
 		},
 		render: function () {
 			const content = this.template(this.model.toJSON());
@@ -91,6 +99,18 @@ $(() => {
 			// "change .avatar": "upload_image",
 			"submit #profile-form": "onSubmit",
 			"click .unblock": "unblock",
+			"click #enableTwoFaBtn": "enable_two_factor",
+			"click #disableTwoFaBtn": "disable_two_factor"
+		},
+		enable_two_factor: async function() {
+			await Helper.ajax(`/api/two_factors/${this.user_id}`, "otp_required_for_login=true", "PUT");
+			const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
+			this.render_twofactor(data);
+		},
+		disable_two_factor: async function() {
+			await Helper.ajax(`/api/two_factors/${this.user_id}`, "otp_required_for_login=false", "PUT");
+			const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
+			this.render_twofactor(data);
 		},
 		upload_image: function()
 		{
@@ -122,9 +142,16 @@ $(() => {
 			try {
 				await Helper.save(this.model);
 				this.render();
+				const data = await Helper.ajax(`/api/two_factors/${this.user_id}`, "", "GET");
+				this.render_twofactor(data);
 				Helper.flash_message("success", "Profile updated successfully!");
 			} catch (error) {
-				Helper.flash_message("danger", "Error while updating profile!");				
+				if (error.statusText)
+				{
+					var res= error.responseText.split("#");
+					Helper.flash_message("danger", res[0]);
+					$('.nickname-update').val(res[1]);
+				}		
 			}
 		},
 
@@ -146,6 +173,7 @@ $(() => {
 		} 
 	});
 
+	
 	const SearchedBlockUsersView = Backbone.View.extend({
 		el: $("#view-block-searched-users"),
 		template: _.template($("script[name='tmpl-block-searched-users-modal']").html()),
@@ -201,7 +229,7 @@ $(() => {
 		},
 	});
 
-	Profile.content = new ProfileContentView();
+	Profile.Content = ProfileContentView;
 	Profile.searchBlockUserModal = new SearchedBlockUsersView();
 	Profile.userProfile = userProfile;
 })
