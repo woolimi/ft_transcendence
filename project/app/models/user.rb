@@ -1,10 +1,12 @@
 # rails g devise user
 
 class User < ApplicationRecord
-#  devise :database_authenticatable, :registerable,
+  devise :two_factor_authenticatable, :two_factor_backupable,:otp_secret_encryption_key => ENV['OTP_KEY']
+
+#  devise :registerable,
 #         :recoverable, :rememberable, :trackable, :validatable,
 #         :omniauthable, omniauth_providers: [:marvin]
-  devise :database_authenticatable,:registerable, :validatable, :omniauthable, omniauth_providers: [:marvin]
+  devise :registerable, :validatable, :omniauthable, omniauth_providers: [:marvin]
   has_one :user_profile
   has_many :chat_messages
   def self.from_omniauth(auth, session_id)
@@ -31,4 +33,12 @@ class User < ApplicationRecord
       end
         return false
   end
+
+  def otp_qr_code
+    issuer = '42 Pong'
+    label = "#{issuer}:#{email}"
+    qrcode = RQRCode::QRCode.new(otp_provisioning_uri(label, issuer: issuer))
+    qrcode.as_svg(module_size: 4)
+  end
+
 end

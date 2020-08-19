@@ -1,0 +1,36 @@
+<% if current_user.otp_required_for_login? %>
+  <div><%= link_to "Disable", two_factor_path, method: :delete, remote: true, class: "btn btn-outline-danger" %></div>
+
+  <div class="row">
+    <div class="col-8">
+      <ol class="mt-5">
+        <li>
+          Install Google Authenticator:
+          <%= link_to "Android", "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en", target: :blank %>
+          or
+          <%= link_to "iOS", "https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8", target: :blank %>
+        </li>
+        <li>In the app, select "Set up account" or the Plus (+) sign.</li>
+        <li>Choose "Scan barcode"</li>
+      </ol>
+    </div>
+
+    <div class="col-4 text-center">
+      <%= current_user.otp_qr_code.html_safe%>
+    </div>
+
+    <% if @codes %>
+    <hr>
+
+    <p><strong class="badge badge-danger">Important!</strong> Write these backups codes down in a safe place. They can be used once to login to your account if your 2FA device is unavailable. They will never be displayed again for security.</p>
+
+    <% @codes.each do |code| %>
+      <div><strong><%= code %></strong></div>
+    <% end %>
+  <% end %>
+
+<% else %>
+  <p>When you login, you will be required to enter a one-time code along to one of your devices.</p>
+  <div><%= link_to "Enable", two_factor_path, method: :post, remote: true, class: "btn btn-outline-success" %></div>
+
+<% end %>
