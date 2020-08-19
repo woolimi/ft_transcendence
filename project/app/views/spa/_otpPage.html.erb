@@ -1,0 +1,20 @@
+	<div class="row full-height justify-content-center align-items-center">
+			<form class="form-inline" id="otp-form">
+					<input class="form-control mr-sm-2"  placeholder="Enter OTP from your App" name="otp_attempt">
+					<button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Verify OTP</button>
+			</form>
+	</div>
+
+<script>
+		const f = $("#otp-form");
+		f.on("submit", async (e) => {
+			e.preventDefault();
+			const data = $(e.currentTarget).serialize();
+			try {
+				await Helper.ajax(`/api/two_factors`, data, "POST");
+				location.reload();
+			} catch (error) {
+				Helper.flash_message("danger", "OTP code is not correct.");
+			}
+		})
+</script>
