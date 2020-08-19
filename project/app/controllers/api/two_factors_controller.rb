@@ -15,7 +15,33 @@ class Api::TwoFactorsController < ApplicationController
         end
         return render json: data, status: :ok
     end
+    
+    # POST /api/two_factors
+    def create
+        puts 
+        ret = (current_user.validate_and_consume_otp!(params["otp_attempt"]) || check_backup_code(params[:otp_attempt]))
+        user_session["otp_validated"] = ret
+        return render plain: "forbidden", status: :forbidden if !ret
+        return render plain: "ok", status: :ok
+    end
 
+    # PUT /api/two_factors/
+    def update
+        if (params[:user_id] == current_user[:id])
+            if (params[:otp_required_for_login] == "true")
+                enable()
+            else
+                disable()
+            end
+        end
+    end
+
+    private
+
+    def enable_2fa_params
+        params.require(:two_fa).permit(:code, :password)
+    end
+    
     def enable
         current_user.update(
             otp_secret: User.generate_otp_secret,
@@ -30,14 +56,13 @@ class Api::TwoFactorsController < ApplicationController
         )
     end
 
-    # PUT /api/two_factors/
-    def update
-        if (params[:user_id] == current_user[:id])
-            if (params[:otp_required_for_login] == "true")
-                enable()
-            else
-                disable()
-            end
+    def check_backup_code(code)
+        ret = current_user.otp_backup_codes.include?(code)
+        if (ret == true)
+            current_user.otp_backup_codes.delete(code)
+            current_user.update(otp_backup_codes: current_user.otp_backup_codes)
+            return true
         end
+        return false
     end
 end
