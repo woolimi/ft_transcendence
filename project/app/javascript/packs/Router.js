@@ -9,6 +9,7 @@ import Channel from "./Channel.js"
 import Navbar from "./Navbar.js"
 import ChatChannel from "../channels/chat_channel"
 import ChannelChannel from "../channels/channel_channel"
+import Match from "./Match.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -29,6 +30,7 @@ if ($('html').data().isLogin) {
 			routes: {
 				"": "game",
 				"game": "game",
+				"game/duel": "game_duel",
 				"profile": "profile",
 				"guild": "guild",
 				"chats/:room": "chat",
@@ -37,6 +39,10 @@ if ($('html').data().isLogin) {
 			game: function () {
 				remove_channel();
 				Game.content.render();
+			},
+			game_duel: function() {
+				remove_channel();
+				Match.content = new Match.Content({ type: "duel" });
 			},
 			profile: function () {
 				remove_channel();

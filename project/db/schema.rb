@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_11_170924) do
+ActiveRecord::Schema.define(version: 2020_08_13_105843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2020_08_11_170924) do
 
   create_table "chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "room", null: false
+    t.integer "unread", null: false
     t.jsonb "members", null: false, array: true
     t.index ["room"], name: "index_chats_on_room", unique: true
   end
@@ -75,6 +76,12 @@ ActiveRecord::Schema.define(version: 2020_08_11_170924) do
     t.string "encrypted_password", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "encrypted_otp_secret"
+    t.string "encrypted_otp_secret_iv"
+    t.string "encrypted_otp_secret_salt"
+    t.integer "consumed_timestep"
+    t.boolean "otp_required_for_login"
+    t.string "otp_backup_codes", array: true
     t.index ["ft_id"], name: "index_users_on_ft_id", unique: true
   end
 
