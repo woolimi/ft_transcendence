@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_13_105843) do
+ActiveRecord::Schema.define(version: 2020_08_24_201932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -53,6 +53,15 @@ ActiveRecord::Schema.define(version: 2020_08_13_105843) do
     t.index ["room"], name: "index_chats_on_room", unique: true
   end
 
+  create_table "matches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "score"
+    t.string "players"
+    t.string "winner"
+    t.string "loser"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "nickname"
@@ -82,6 +91,25 @@ ActiveRecord::Schema.define(version: 2020_08_13_105843) do
     t.boolean "otp_required_for_login"
     t.string "otp_backup_codes", array: true
     t.index ["ft_id"], name: "index_users_on_ft_id", unique: true
+  end
+
+  create_table "wars", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "guild_1"
+    t.string "guild_2"
+    t.string "guild_1_score"
+    t.string "guild_2_score"
+    t.integer "guild_1_matches_won"
+    t.integer "guild_1_matches_lost"
+    t.integer "guild_1_matches_unanswered"
+    t.integer "guild_2_matches_won"
+    t.integer "guild_2_matches_lost"
+    t.integer "guild_2_matches_unanswered"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.integer "wager"
+    t.string "match_list"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "channel_messages", "channels"
