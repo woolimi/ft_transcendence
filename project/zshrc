@@ -1,0 +1,29 @@
+# add to ~/.zshrc
+export DATABASE_NAME=transcendence
+export FT_ID=dfc5354f98afd6ea8cbda701ea285f0a3ed9c9a6132cc88cc230f73e8b4d2326
+export FT_SECRET=abe0dc40069edc927e21d8e44e06ec9801b2ac3138c9353987c34141341b8f57
+
+# local posgresql on mac :
+# dbngin
+# https://medium.com/tableplus/the-easiest-way-to-install-postgresql-on-mac-71ebc07fa790
+# then tableplus (like pgadmin)
+
+# diff :
+# - .gitignore (ignore vendor/...)
+# - config/database.yaml
+# - Gemfile : added gems for 'ruby debug' vscode plugin
+# https://www.youtube.com/watch?v=u0yHpF18ahw&feature=youtu.be
+# https://github.com/rubyide/vscode-ruby/blob/master/docs/debugger.md
+# to use it in vscode, open vscode from the folder 'project'
+# to see the messages, go in the debug console, next to the vscode terminal
+
+# commands to do before 'rails s' the 1st time :
+# source ~/.zshrc
+# yarn install --checkfiles
+# bundle install
+# rails db:environment:set RAILS_ENV=development
+# rails db:setup
+
+
+# Hot reload : ./bin/webpack-dev-server in a separate console, before 'rails s'
+# To redo normal load, ctrl/c it and launch ./bin/webpack 

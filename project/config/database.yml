@@ -17,19 +17,19 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   database: <%= ENV['DATABASE_NAME'] %>
-  username: <%= ENV['DATABASE_USER'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
-  port: <%= ENV['DATABASE_PORT'] || '5432' %>
-  host: <%= ENV['DATABASE_HOST'] %>
+  # username: <%= ENV['DATABASE_USER'] %>
+  # password: <%= ENV['DATABASE_PASSWORD'] %>
+  # port: <%= ENV['DATABASE_PORT'] || '5432' %>
+  # host: <%= ENV['DATABASE_HOST'] %>
 
 # sudo -u postgres psql
 # create database ft_transcendence
 # alter user postgres with encrypted password '1234'
 development:
   <<: *default
-
+  database: pong_dev
   # The TCP port the server listens on. Defaults to 5432.
   # If your server runs on a different port number, change accordingly.
   #port: 5432
@@ -48,6 +48,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
+  database: pong_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
