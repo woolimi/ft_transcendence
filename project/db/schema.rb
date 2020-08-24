@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_13_105843) do
+ActiveRecord::Schema.define(version: 2020_08_24_110416) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -49,8 +49,22 @@ ActiveRecord::Schema.define(version: 2020_08_13_105843) do
 
   create_table "chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "room", null: false
+    t.integer "unread", null: false
     t.jsonb "members", null: false, array: true
     t.index ["room"], name: "index_chats_on_room", unique: true
+  end
+
+  create_table "guilds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "anagram"
+    t.integer "matches_played", default: 0
+    t.integer "wins", default: 0
+    t.integer "losses", default: 0
+    t.integer "total_score", default: 0
+    t.datetime "next_war_start"
+    t.datetime "next_war_end"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -62,6 +76,7 @@ ActiveRecord::Schema.define(version: 2020_08_13_105843) do
     t.string "block_list", default: [], array: true
     t.integer "status", default: 0
     t.uuid "user_id"
+    t.string "guild"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
 
