@@ -24,6 +24,8 @@ if ($('html').data().isLogin) {
 				Chat.content.undelegateEvents();
 			if (Channel.content)
 				Channel.content.undelegateEvents();
+			$(window).off("resize");
+			clearInterval(window.spa_interval);
 		};
 
 		const RouterClass = Backbone.Router.extend({

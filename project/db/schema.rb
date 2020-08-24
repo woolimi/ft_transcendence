@@ -49,7 +49,6 @@ ActiveRecord::Schema.define(version: 2020_08_13_105843) do
 
   create_table "chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "room", null: false
-    t.integer "unread", null: false
     t.jsonb "members", null: false, array: true
     t.index ["room"], name: "index_chats_on_room", unique: true
   end

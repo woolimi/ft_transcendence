@@ -23,8 +23,6 @@ window._ = _;
 require("jquery-ui");
 require("bootstrap");
 require("backbone");
-
-
 import Helper from "./Helper.js"
 global.Helper = Helper;
 window.Helper = Helper;
