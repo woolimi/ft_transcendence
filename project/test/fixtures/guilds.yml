@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  anagram: MyString
+  matches_played: 
+  default: 
+  wins: 
+  default: 
+  losses: 
+  default: 
+  total_score: 
+  default: 
+  next_war_start: 
+  default: 
+  next_war_end: 
+  default: 
+
+two:
+  name: MyString
+  anagram: MyString
+  matches_played: 
+  default: 
+  wins: 
+  default: 
+  losses: 
+  default: 
+  total_score: 
+  default: 
+  next_war_start: 
+  default: 
+  next_war_end: 
+  default: 
