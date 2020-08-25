@@ -47,12 +47,17 @@ $(() => {
 			const data = $(e.currentTarget).data();
 			if (data.userId === this.user_id) {
 				const nbPlayer = data.nbPlayer;
-				if ($(e.currentTarget)[0].checked)
-					$(`#player${nbPlayer}-ready-status`).html("Ready");
-				else
-					$(`#player${nbPlayer}-ready-status`).html("Not Ready");
-				// call MatchChannel#ready
-				// MatchChannel.perform("ready", { status: $(e.currentTarget)[0].checked });
+				// if ($(e.currentTarget)[0].checked)
+				// 	$(`#player${nbPlayer}-ready-status`).html("Ready");
+				// else
+				// 	$(`#player${nbPlayer}-ready-status`).html("Not Ready");
+				// call MatchChannel#ready(data)
+				MatchChannel.channel.perform("ready", {
+					ready: true,
+					match_id: this.options.id,
+					ready_status: $(e.currentTarget)[0].checked,
+					nb_player: nbPlayer,
+				});
 			}
 			// const status = this.$el.find(".ready-status");
 			// if (status[0].checked && status[1].checked) {
@@ -70,9 +75,9 @@ $(() => {
 					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
 					this.render_players(match_data);
 				}
-				// if (data.readyStatus) {
-				// 	$("")
-				// }
+				if (data.ready) {
+					$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
+				}
 			} catch (error) {
 				console.error(error);
 			}

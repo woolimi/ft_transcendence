@@ -13,13 +13,14 @@
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
 			<div><%%=player1 ? player1.nickname : 'Waiting' %></div>
+			<div id="player1-ready-status"><%%= player1 ? (player1.ready ? "Ready" : "Not Ready") : "" %></div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
 				<%% if (player1 && player1.user_id === $('html').data().userId) { %>
-				<input class="custom-switch-input ready-status" id="p1-ready-status" data-nb-player="1" data-user-id="<%%= player1.user_id%>" type="checkbox">
+				<input class="custom-switch-input ready-status" id="p1-ready-status" data-nb-player="1"
+					data-user-id="<%%= player1.user_id%>" type="checkbox" <%%= player1 && player1.ready ? 'checked' : ''%>>
 				<label class="custom-switch-btn" for="p1-ready-status"></label>
 				<%% } %>				
 			</div>
-			<div id="player1-ready-status"><%%= player1 ? "Not Ready" : "" %></div>
 		</div>
 		<div class="col-sm-4 p-1 text-center d-flex align-items-center justify-content-center">
 			<h1 class="m-1"><%%= player1 ? player1.score : 0 %></h1>
@@ -33,13 +34,14 @@
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
 			<div><%%= player2 ? player2.nickname : 'Waiting'%></div>
+			<div id="player2-ready-status"><%%= player2 ? (player2.ready ? "Ready" : "Not Ready") : "" %></div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
 				<%% if (player2 && player2.user_id === $('html').data().userId) { %>
-				<input class="custom-switch-input ready-status" id="p2-ready-status" data-nb-player="2" data-user-id="<%%= player2.user_id%>" type="checkbox">
+				<input class="custom-switch-input ready-status" id="p2-ready-status" data-nb-player="2"
+					data-user-id="<%%= player2.user_id%>" type="checkbox" <%%= player2 && player2.ready ? 'checked' : ''%>>
 				<label class="custom-switch-btn" for="p2-ready-status"></label>
 				<%% } %>
 			</div>
-			<div id="player2-ready-status"><%%= player2 ? "Not Ready" : "" %></div>
 		</div>
 	</div>
 

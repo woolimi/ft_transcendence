@@ -21,6 +21,12 @@ class MatchChannel < ApplicationCable::Channel
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", data)
   end
 
-  def new_user
+  def ready(data)
+    match = Match.find_by(id: data["match_id"])
+    return if match.started_at.present?
+    match.player1["ready"] = data["ready_status"] if data["nb_player"] == 1
+    match.player2["ready"] = data["ready_status"] if data["nb_player"] == 2
+    match.save();
+    ActionCable.server.broadcast("match_#{data["match_id"]}_channel", data)
   end
 end
