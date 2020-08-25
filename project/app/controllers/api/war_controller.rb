@@ -11,9 +11,6 @@ class Api::WarController < ApplicationController
             
             user_guild_number = check_guild_number(war, user["guild_id"])
             war["user_guild_number"] = user_guild_number
-            puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            puts war
-            puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             return render json: war, status: :ok
         else
 			return render plain: "Forbidden", status: :forbidden 
