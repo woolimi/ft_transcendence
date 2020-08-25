@@ -31,6 +31,7 @@ if ($('html').data().isLogin) {
 				"game": "game",
 				"profile": "profile",
 				"guild": "guild",
+				"guildRankings": "guildRankings",
 				"chats/:room": "chat",
 				"channels/:channel_id": "channel",
 			},
@@ -46,6 +47,11 @@ if ($('html').data().isLogin) {
 			guild: function () {
 				remove_channel();
 				Guild.content.render();
+
+			},
+			guildRankings: function () {
+				remove_channel();
+				Guild.rankingObj = new Guild.ranking();
 			},
 			chat: function (room) {
 				remove_channel();

@@ -1,0 +1,14 @@
+<!-- gulid content -->
+<script type="text/template" name="tmpl-content-guild-ranking">
+    <div>
+        <h1>All Guilds</h1>
+	</div>
+    <div>
+        <ul>
+        <%% _.each(guilds, function(user, i) { %>
+		<li class="list-group-item"><%%= guilds[i].name %> <%%= guilds[i].anagram %>
+		</li>
+	<%% }) %>
+        </ul>
+    </div>
+</script>
