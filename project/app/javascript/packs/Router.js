@@ -65,7 +65,7 @@ if ($('html').data().isLogin) {
 			},
 			tournament: function(id){
 				remove_channel();
-				Tournament.content.render(id);
+				Tournament.content = new Tournament.Content(id);
 			}
 		});
 		const router = new RouterClass();
