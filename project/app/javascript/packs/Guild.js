@@ -49,9 +49,10 @@ $(() => {
 		},
 		render: async function () {
 			await Helper.fetch(Profile.userProfile);
+			var user = Profile.userProfile.toJSON();
 			const content = this.template({
 				guilds: this.model.toJSON(),
-				user: Profile.userProfile.toJSON(),
+				user: user,
 			});
 			this.$el.html(content);
 			return this;
