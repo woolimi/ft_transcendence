@@ -7,6 +7,8 @@ import Profile from "./Profile.js"
 import Chat from "./Chat.js"
 import Channel from "./Channel.js"
 import Navbar from "./Navbar.js"
+import Tournaments from "./Tournaments.js"
+import Tournament from "./Tournament.js"
 import ChatChannel from "../channels/chat_channel"
 import ChannelChannel from "../channels/channel_channel"
 
@@ -33,6 +35,7 @@ if ($('html').data().isLogin) {
 				"guild": "guild",
 				"chats/:room": "chat",
 				"channels/:channel_id": "channel",
+				"tournaments/:id": "tournament",
 				"tournaments": "tournaments"
 			},
 			game: function () {
@@ -55,6 +58,14 @@ if ($('html').data().isLogin) {
 			channel: function (channel_id) {
 				remove_channel();
 				Channel.content = new Channel.Content({ channel_id: channel_id });
+			},
+			tournaments: function(){
+				remove_channel();
+				Tournaments.content.render();
+			},
+			tournament: function(id){
+				remove_channel();
+				Tournament.content.render(id);
 			}
 		});
 		const router = new RouterClass();
