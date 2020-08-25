@@ -12,6 +12,12 @@ $(() => {
 			const content = this.template();
 			this.$el.html(content);
 			return this;
+		},
+		events: {
+			"click #war": "goToWarPage"
+		},
+		goToWarPage: function () {
+			console.log("War page");
 		}
 	});
 

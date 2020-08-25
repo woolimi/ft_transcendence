@@ -9,6 +9,7 @@ import Channel from "./Channel.js"
 import Navbar from "./Navbar.js"
 import ChatChannel from "../channels/chat_channel"
 import ChannelChannel from "../channels/channel_channel"
+import War from "./War.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -34,6 +35,7 @@ if ($('html').data().isLogin) {
 				"guildRankings": "guildRankings",
 				"chats/:room": "chat",
 				"channels/:channel_id": "channel",
+				"war" :"war"
 			},
 			game: function () {
 				remove_channel();
@@ -60,6 +62,9 @@ if ($('html').data().isLogin) {
 			channel: function (channel_id) {
 				remove_channel();
 				Channel.content = new Channel.Content({ channel_id: channel_id });
+			},
+			war: function () {
+				War.content.render();	
 			}
 		});
 		const router = new RouterClass();
