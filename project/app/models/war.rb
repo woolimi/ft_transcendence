@@ -1,0 +1,2 @@
+class War < ApplicationRecord
+end
