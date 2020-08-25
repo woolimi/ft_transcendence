@@ -245,3 +245,101 @@ html, body, #app{
     min-height: 150px;
   }
 }
+
+// ----------------------
+// Tournament index
+
+.verticalListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.horizontalListContainer {
+  display: flex;
+  flex-direction: line;
+  align-items: stretch;
+}
+
+.tournamentList{
+	@extend .verticalListContainer;
+}
+
+.tournamentItem {
+  height: 40px;
+	opacity: 1;
+	cursor: pointer;
+	border-radius: 8px;
+	margin: 5px;
+	padding: 5px;
+	color: white;
+	font-size: 24px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+// ---------------------
+// Tournament show
+// https://blog.codepen.io/2018/02/16/need-make-tournament-bracket/
+
+#tournamentMain{
+  display:flex;
+  flex-direction:row;
+}
+
+#tournamentMain .round{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  width:200px;
+  list-style:none;
+  padding:0;
+}
+
+#tournamentMain .round .spacer{ 
+	flex-grow:1;
+}
+
+#tournamentMain .round .spacer:first-child,
+#tournamentMain .round .spacer:last-child{ 
+	flex-grow:.5; 
+}
+
+#tournamentMain .round .game-spacer{
+	flex-grow:1;
+}
+
+#tournamentBody {
+  font-family:sans-serif;
+  font-size:small;
+  padding:10px;
+  line-height:1.4em;
+}
+
+#tournamentMain li.gameTour {
+  padding-left:20px;
+}
+
+#tournamentMain li.gameTour.winner{
+	font-weight:bold;
+}
+
+#tournamentMain li.gameTour span{
+	float:right;
+	margin-right:5px;
+}
+
+#tournamentMain li.game-top{ 
+	border-bottom:1px solid #aaa;
+}
+
+#tournamentMain li.game-spacer{ 
+	border-right:1px solid #aaa;
+	min-height:40px;
+}
+
+#tournamentMain li.game-bottom{ 
+	border-top:1px solid #aaa;
+}

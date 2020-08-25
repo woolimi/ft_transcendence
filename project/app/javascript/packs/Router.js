@@ -7,6 +7,8 @@ import Profile from "./Profile.js"
 import Chat from "./Chat.js"
 import Channel from "./Channel.js"
 import Navbar from "./Navbar.js"
+import Tournaments from "./Tournaments.js"
+import Tournament from "./Tournament.js"
 import ChatChannel from "../channels/chat_channel"
 import ChannelChannel from "../channels/channel_channel"
 import War from "./War.js"
@@ -35,6 +37,8 @@ if ($('html').data().isLogin) {
 				"chats/:room": "chat",
 				"channels/:channel_id": "channel",
 				"war" :"war"
+				"tournaments/:id": "tournament",
+				"tournaments": "tournaments"
 			},
 			game: function () {
 				remove_channel();
@@ -60,6 +64,13 @@ if ($('html').data().isLogin) {
 			},
 			war: function () {
 				War.content.render();	
+			tournaments: function(){
+				remove_channel();
+				Tournaments.content.render();
+			},
+			tournament: function(id){
+				remove_channel();
+				Tournament.content = new Tournament.Content(id);
 			}
 		});
 		const router = new RouterClass();
