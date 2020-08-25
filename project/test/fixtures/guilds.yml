@@ -3,31 +3,9 @@
 one:
   name: MyString
   anagram: MyString
-  matches_played: 
-  default: 
-  wins: 
-  default: 
-  losses: 
-  default: 
-  total_score: 
-  default: 
-  next_war_start: 
-  default: 
-  next_war_end: 
-  default: 
+  total_score: 1
 
 two:
   name: MyString
   anagram: MyString
-  matches_played: 
-  default: 
-  wins: 
-  default: 
-  losses: 
-  default: 
-  total_score: 
-  default: 
-  next_war_start: 
-  default: 
-  next_war_end: 
-  default: 
+  total_score: 1
