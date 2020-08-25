@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     resources :user_info, only: [:index, :show], param: :user_id
     resources :profile, only: [:show, :update], param: :user_id
     resources :guild, only: [:show], param: :user_id
+    resources :war, only: [:show], param: :user_id
     resources :my_friends, only: [:index, :show, :update, :destroy], param: :user_id
     resources :user_status, only: [:show, :update], param: :user_id
     resources :chats, param: :room, only: [:index] do
