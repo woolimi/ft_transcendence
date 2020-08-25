@@ -19,8 +19,17 @@ $(() => {
 	const GuildContent = Backbone.View.extend({
 		el: $("#view-content"),
 		template: _.template($("script[name='tmpl-content-guild']").html()),
+		model: Guild.allGuilds,
 		events: {
 			'click input[name="guildSelection"]': 'guildOption',
+		},
+		initialize: async function(){
+			try {
+				await Helper.fetch(this.model);
+				this.render();
+			} catch (error) {
+				Helper.flash_message("danger", "Error while loading guild ranks!");
+			}
 		},
 		guildOption: function(event){
 			var val = $(event.target).val();
@@ -30,7 +39,9 @@ $(() => {
 			;
 		},
 		render: function () {
-			const content = this.template();
+			const content = this.template({
+				guilds: this.model.toJSON(),
+			});
 			this.$el.html(content);
 			return this;
 		}
