@@ -29,7 +29,6 @@ $(() => {
 			try {
 			await Helper.fetch(this.model);
 				await Helper.fetch(this.model);
-				this.render();
 			} catch (error) {
 				Helper.flash_message("danger", "Error while loading guild ranks!");
 			}
