@@ -1,6 +1,7 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
+import Profile from "./Profile.js"
 
 const Guild = {};
 
@@ -26,6 +27,7 @@ $(() => {
 		initialize: async function(){
 			try {
 				await Helper.fetch(this.model);
+				await Helper.fetch(Profile.userProfile);
 				this.render();
 			} catch (error) {
 				Helper.flash_message("danger", "Error while loading guild ranks!");
@@ -41,33 +43,7 @@ $(() => {
 		render: function () {
 			const content = this.template({
 				guilds: this.model.toJSON(),
-			});
-			this.$el.html(content);
-			return this;
-		}
-	});
-
-	const GuildRanking = Backbone.View.extend({
-		el: $("#view-content"),
-		template: _.template($("script[name='tmpl-content-guild-ranking']").html()),
-		model: Guild.allGuilds,
-		events: {
-			'click .guildRanking': 'guildRanking',
-		},
-		initialize: async function(){
-			try {
-				await Helper.fetch(this.model);
-				this.render();
-			} catch (error) {
-				Helper.flash_message("danger", "Error while loading guild ranks!");
-			}
-		},
-		guildRanking: function(){
-			this.render();
-		},
-		render: function () {
-			const content = this.template({
-				guilds: this.model.toJSON(),
+				user: Profile.userProfile.toJSON(),
 			});
 			this.$el.html(content);
 			return this;
@@ -75,7 +51,6 @@ $(() => {
 	});
 
 	Guild.content = new GuildContent();
-	Guild.ranking = GuildRanking;
 })
 
 export default Guild;
