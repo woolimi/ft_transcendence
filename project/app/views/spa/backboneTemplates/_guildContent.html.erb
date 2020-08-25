@@ -5,10 +5,13 @@
 	</div>
     <div>
         <ul>
-        <%% _.each(guilds, function(user, i) { %>
+        <%% _.each(guilds, function(guild, i) { %>
 		<li class="list-group-item d-flex justify-content-between align-items-center"><%%= guilds[i].name %> <%%= guilds[i].anagram %>
         <%% if(user.guild_id == null){ %>
-        <button type="button" class="btn btn-success btn-sm joinGuild">Join Guild</button>
+        <button type="button" class="btn btn-success btn-sm joinGuild" data-guild_id="<%%= guilds[i].id%>">Join Guild</button>
+		<%% } %>
+        <%% if(user.guild_id == guilds[i].id){ %>
+        <button type="button" class="btn btn-danger btn-sm leaveGuild">Leave Guild</button>
 		<%% } %>
         </li>
 	<%% }) %>
@@ -18,9 +21,6 @@
 	<div class="row">
         <div class="col-md-5">
             <a href="#" class="btn btn-primary btn-lg btn-block btn-huge disabled declareWar">Declare War</a>
-        </div>
-        <div class="col-md-5">
-            <a href="#" class="btn btn-primary btn-lg btn-block btn-huge leave">Leave Guild</a>
         </div>
 	</div>
 </script>
