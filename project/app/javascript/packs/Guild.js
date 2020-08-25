@@ -22,25 +22,33 @@ $(() => {
 		template: _.template($("script[name='tmpl-content-guild']").html()),
 		model: Guild.allGuilds,
 		events: {
-			'click input[name="guildSelection"]': 'guildOption',
+			'click .joinGuild': 'joinGuild',
+			'click .leaveGuild': 'leaveGuild',
 		},
 		initialize: async function(){
 			try {
+			await Helper.fetch(this.model);
 				await Helper.fetch(this.model);
-				await Helper.fetch(Profile.userProfile);
 				this.render();
 			} catch (error) {
 				Helper.flash_message("danger", "Error while loading guild ranks!");
 			}
 		},
-		guildOption: function(event){
-			var val = $(event.target).val();
-			console.log(val);
-			this.$('.createGuild')[val == 'create' ? 'show' : 'hide']();
-            this.$('.joinGuild')[val == 'join' ? 'show' : 'hide']();
-			;
+		joinGuild: async function(e){
+			console.log("Here we go!");
+			const guild_data = $(e.target).data();
+			Profile.userProfile.set('guild_id', guild_data.guild_id);
+			console.log(Profile.userProfile.toJSON());
+			await Helper.save(Profile.userProfile);
+			this.render();
 		},
-		render: function () {
+		leaveGuild: async function(e){
+			Profile.userProfile.set('guild_id', null);
+			await Helper.save(Profile.userProfile);
+			this.render();
+		},
+		render: async function () {
+			await Helper.fetch(Profile.userProfile);
 			const content = this.template({
 				guilds: this.model.toJSON(),
 				user: Profile.userProfile.toJSON(),
