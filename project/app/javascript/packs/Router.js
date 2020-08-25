@@ -11,6 +11,7 @@ import Tournaments from "./Tournaments.js"
 import Tournament from "./Tournament.js"
 import ChatChannel from "../channels/chat_channel"
 import ChannelChannel from "../channels/channel_channel"
+import War from "./War.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -35,6 +36,7 @@ if ($('html').data().isLogin) {
 				"guild": "guild",
 				"chats/:room": "chat",
 				"channels/:channel_id": "channel",
+				"war" :"war"
 				"tournaments/:id": "tournament",
 				"tournaments": "tournaments"
 			},
@@ -50,6 +52,7 @@ if ($('html').data().isLogin) {
 			guild: function () {
 				remove_channel();
 				Guild.content.render();
+
 			},
 			chat: function (room) {
 				remove_channel();
@@ -59,6 +62,8 @@ if ($('html').data().isLogin) {
 				remove_channel();
 				Channel.content = new Channel.Content({ channel_id: channel_id });
 			},
+			war: function () {
+				War.content.render();	
 			tournaments: function(){
 				remove_channel();
 				Tournaments.content.render();

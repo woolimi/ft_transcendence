@@ -17,6 +17,11 @@ $(() => {
 			this.$el.html(content);
 			return this;
 		},
+		events: {
+			"click #war": "goToWarPage"
+		},
+		goToWarPage: function () {
+			console.log("War page");
 		go_to_tournaments_page: function(e){
 			e.stopImmediatePropagation()
 			Router.router.navigate("/tournaments", { trigger: true });

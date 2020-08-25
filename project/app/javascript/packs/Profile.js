@@ -19,7 +19,10 @@ $(() => {
 			avatar_url: "#",
 			block_list: [],
 			two_factor: "undefined",
-			photo: new File([""], "filename")
+			photo: new File([""], "filename"),
+			guild_id: "",
+			is_owner: false,
+			is_officer: false
 		},
 		urlRoot: "/api/profile/",
 		idAttribute: 'user_id',
