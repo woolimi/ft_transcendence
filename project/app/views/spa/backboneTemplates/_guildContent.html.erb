@@ -1,23 +1,19 @@
 <!-- gulid content -->
 <script type="text/template" name="tmpl-content-guild">
-	<div>
-    <h2>Create or Join Guild</h2>
-        <label><input type="radio" name="guildSelection" value="create"> Create Guild</label><br>
-        <div class="col-md-5 createGuild" style="display: none;">
-			<input class="form-control mr-sm-2" placeholder="type new guild name" id="guildName">
-        </div>
-        <label><input type="radio" name="guildSelection" value="join"> Join Guild</label>
-        <div class="joinGuild" style="display: none;">Choose Guild</div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-5">
-            <a href="/#guildRankings" class="btn btn-primary btn-lg btn-block btn-huge guildStats">All Guild Stats</a>
-        </div>
-        <div class="col-md-5">
-            <a href="#" class="btn btn-primary btn-lg btn-block btn-huge history">War History</a>
-        </div>
+   <div>
+        <h1>All Guilds</h1>
 	</div>
+    <div>
+        <ul>
+        <%% _.each(guilds, function(user, i) { %>
+		<li class="list-group-item d-flex justify-content-between align-items-center"><%%= guilds[i].name %> <%%= guilds[i].anagram %>
+        <%% if(user.guild_id == null){ %>
+        <button type="button" class="btn btn-success btn-sm joinGuild">Join Guild</button>
+		<%% } %>
+        </li>
+	<%% }) %>
+        </ul>
+    </div>
 	<br>
 	<div class="row">
         <div class="col-md-5">
