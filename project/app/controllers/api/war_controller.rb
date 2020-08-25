@@ -10,6 +10,17 @@ class Api::WarController < ApplicationController
             war = War.find_by(id: guild["war_id"]).as_json(only: [:guild_1, :guild_2, :guild_1_score, :guild_2_score])
             
             user_guild_number = check_guild_number(war, user["guild_id"])
+            if ((war[user_guild_number + "_score"] === war["guild_1_score"]) && (war["guild_1_score"] > war["guild_2_score"]))
+                war["position"] = "win"
+            elsif ((war[user_guild_number + "_score"] === war["guild_2_score"]) && (war["guild_2_score"] > war["guild_1_score"]))
+                war["position"] = "win"
+            elsif ((war[user_guild_number + "_score"] === war["guild_2_score"]) && (war["guild_2_score"] < war["guild_1_score"]))
+                war["position"] = "loss"
+            elsif ((war[user_guild_number + "_score"] === war["guild_1_score"]) && (war["guild_1_score"] < war["guild_1_score"]))
+                war["position"] = "loss"
+            else
+                war["position"] = "draw"
+            end
             war["user_guild_number"] = user_guild_number
             return render json: war, status: :ok
         else
