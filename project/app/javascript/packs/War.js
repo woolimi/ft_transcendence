@@ -9,7 +9,7 @@ $(() => {
 
     const WarData = Backbone.Model.extend({
         defaults: {
-			user_id: $('html').data().userId,
+            user_id: $('html').data().userId,
         },
         urlRoot: "/api/war/",
         idAttribute: "user_id",

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_140617) do
+ActiveRecord::Schema.define(version: 2020_08_25_183158) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -63,12 +63,14 @@ ActiveRecord::Schema.define(version: 2020_08_25_140617) do
   end
 
   create_table "matches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "score"
-    t.string "players"
     t.string "winner"
     t.string "loser"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "score_left"
+    t.integer "score_right"
+    t.string "player_left"
+    t.string "player_right"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -81,6 +83,8 @@ ActiveRecord::Schema.define(version: 2020_08_25_140617) do
     t.integer "status", default: 0
     t.uuid "user_id"
     t.string "guild_id"
+    t.boolean "is_owner", default: false
+    t.boolean "is_officer", default: false
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
 
