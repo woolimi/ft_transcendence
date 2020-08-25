@@ -245,3 +245,35 @@ html, body, #app{
     min-height: 150px;
   }
 }
+
+.verticalListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.horizontalListContainer {
+  display: flex;
+  flex-direction: line;
+  align-items: stretch;
+}
+
+.tournamentList{
+	@extend .verticalListContainer;
+}
+
+.tournamentItem {
+  height: 40px;
+	opacity: 1;
+	cursor: pointer;
+	border-radius: 8px;
+	margin: 5px;
+	padding: 5px;
+	color: white;
+	font-size: 24px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
