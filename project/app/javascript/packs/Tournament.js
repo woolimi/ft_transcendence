@@ -31,6 +31,9 @@ $(() => {
 			let tournamentList = [
 				{},
 				{
+					id: 1,
+					name: 'Tournament for heroes',
+					status: 'finished',
 					id_player_1: 1,
 					id_player_2: 2,
 					id_player_3: 3,
@@ -55,6 +58,9 @@ $(() => {
 					}
 				},
 				{
+					id: 2,
+					name: 'Tournament of the century',
+					status: 'running',
 					id_player_1: 3,
 					id_player_2: 2,
 					id_player_3: 1,
@@ -66,16 +72,16 @@ $(() => {
 						winner_id: 3
 					},
 					semiFinal_2:{
-						match_id: 838,
-						left_score: 10,
-						right_score: 8,
-						winner_id: 1
+						match_id: NaN,
+						left_score: NaN,
+						right_score: NaN,
+						winner_id: NaN
 					},
 					final:{
-						match_id: 765,
-						left_score: 8,
-						right_score: 10,
-						winner_id: 1
+						match_id: NaN,
+						left_score: NaN,
+						right_score: NaN,
+						winner_id: NaN
 					}
 				},
 			]
@@ -88,8 +94,10 @@ $(() => {
 			// todo : model, use id to get specific tournament
 			let tournament = this.getTournament(this.id); 
 			let content = `<div id="tournamentBody">
-			<h1>Tournament</h1>
-<div id="tournamentMain">
+			<h3>Tournament</h3><br>
+			<p> <strong>Tournament name:</strong> ${tournament.name} </p>
+			<p> <strong>Status:</strong> ${tournament.status}</p>
+		<div id="tournamentMain">
     <ul class="round round-3">
         <li class="spacer">&nbsp;</li>
         
