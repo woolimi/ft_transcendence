@@ -10,6 +10,7 @@ $(() => {
     const WarData = Backbone.Model.extend({
         defaults: {
             user_id: $('html').data().userId,
+            user_guild_number: "undefined"
         },
         urlRoot: "/api/war/",
         idAttribute: "user_id",
@@ -29,12 +30,12 @@ $(() => {
                 await Helper.fetch(this.model);
                 console.log("Model: " + JSON.stringify(this.model));
                 this.render();
-            } catch (error) {
+            } catch (error) {user_guild_number
 				Helper.flash_message("danger", "Error while loading war!");
 			}
         },
         render: function() {
-            const content = this.template();
+            const content = this.template(this.model.toJSON());
             this.$el.html(content);
         }
     })
