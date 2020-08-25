@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_105440) do
-
+ActiveRecord::Schema.define(version: 2020_08_25_123117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -50,7 +49,6 @@ ActiveRecord::Schema.define(version: 2020_08_25_105440) do
 
   create_table "chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "room", null: false
-    t.integer "unread", null: false
     t.jsonb "members", null: false, array: true
     t.index ["room"], name: "index_chats_on_room", unique: true
   end
@@ -106,8 +104,8 @@ ActiveRecord::Schema.define(version: 2020_08_25_105440) do
   create_table "wars", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "guild_1"
     t.string "guild_2"
-    t.string "guild_1_score"
-    t.string "guild_2_score"
+    t.integer "guild_1_score"
+    t.integer "guild_2_score"
     t.integer "guild_1_matches_won"
     t.integer "guild_1_matches_lost"
     t.integer "guild_1_matches_unanswered"
