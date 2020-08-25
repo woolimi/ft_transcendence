@@ -10,6 +10,7 @@ import Navbar from "./Navbar.js"
 import ChatChannel from "../channels/chat_channel"
 import ChannelChannel from "../channels/channel_channel"
 import Match from "./Match.js"
+import MatchChannel from "../channels/match_channel.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -19,11 +20,15 @@ if ($('html').data().isLogin) {
 				ChatChannel.unsubscribe();
 			if (ChannelChannel.channel)
 				ChannelChannel.unsubscribe();
-				
+			if (MatchChannel.channel)
+				MatchChannel.unsubscribe();
+
 			if (Chat.content)
 				Chat.content.undelegateEvents();
 			if (Channel.content)
 				Channel.content.undelegateEvents();
+			if (Match.content)
+				Match.content.undelegateEvents();
 			$(window).off("resize");
 			clearInterval(window.spa_interval);
 		};
@@ -33,6 +38,7 @@ if ($('html').data().isLogin) {
 				"": "game",
 				"game": "game",
 				"game/duel": "game_duel",
+				"game/duel/:match_id": "game_duel",
 				"profile": "profile",
 				"guild": "guild",
 				"chats/:room": "chat",
@@ -42,9 +48,16 @@ if ($('html').data().isLogin) {
 				remove_channel();
 				Game.content.render();
 			},
-			game_duel: function() {
+			game_duel: async function(match_id) {
 				remove_channel();
-				Match.content = new Match.Content({ type: "duel" });
+				// if user click reload button, redirect to home
+				if (performance.getEntriesByType("navigation")[0].type === "reload")
+					return Router.router.navigate(`/`);
+				if (!match_id) {
+					const new_match = await Helper.ajax('/api/matches/', `match_type=duel`, 'POST');
+					return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
+				}
+				Match.content = new Match.Content({ match_type: "duel", id: match_id });
 			},
 			profile: function () {
 				remove_channel();

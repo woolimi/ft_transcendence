@@ -238,7 +238,6 @@ class Game {
 				this.over = false;
 				this.ball.stop();
 				this.req_id = requestAnimationFrame(this.loop.bind(this));
-				console.log("set timer again")
 				await this.set_timer();
 				this.ball.start();
 			}

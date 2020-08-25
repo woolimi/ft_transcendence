@@ -1,40 +1,50 @@
 <!-- match content -->
-<script type="text/template" name="tmpl-game-match">
-	<div class="container-fluid d-flex">
-		<div class="col-sm-4 text-center p-1">
-			<img class="rounded-circle game-avatar" src="https://cdn.intra.42.fr/users/small_wpark.jpg">
-			<div>name</div>
+<script type="text/template" name="tmpl-game-page">
+	<div id="game-players"></div>
+	<div id="game-game"></div>
+</script>
+
+<script type="text/template" name="tmpl-game-players">
+	<div class="container-fluid d-flex" id="match" data-match-id=<%%=id%>>
+		<div class="col-sm-4 text-center p-1 mt-4" id="match-player1" data-user-id=<%%=player1 ? player1.user_id : ''%>>
+			<%% if (player1) { %>
+			<img class="rounded-circle game-avatar" src="<%%=player1.avatar_url%>">
+			<%% } else { %>
+			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
+			<%% } %>
+			<div><%%=player1 ? player1.nickname : 'Waiting' %></div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
-				<input class="custom-switch-input ready-status" id="p1-ready-status" type="checkbox">
+				<%% if (player1 && player1.user_id === $('html').data().userId) { %>
+				<input class="custom-switch-input ready-status" id="p1-ready-status" data-nb-player="1" data-user-id="<%%= player1.user_id%>" type="checkbox">
 				<label class="custom-switch-btn" for="p1-ready-status"></label>
-				<div class="custom-switch-content-checked">
-					READY
-				</div>
-				<div class="custom-switch-content-unchecked">
-					NOT READY
-				</div>
+				<%% } %>				
 			</div>
+			<div id="player1-ready-status"><%%= player1 ? "Not Ready" : "" %></div>
 		</div>
 		<div class="col-sm-4 p-1 text-center d-flex align-items-center justify-content-center">
-			<h1 class="m-1">1</h1>
+			<h1 class="m-1"><%%= player1 ? player1.score : 0 %></h1>
 			<h1 class="m-1">:</h1>
-			<h1 class="m-1">1</h1>
+			<h1 class="m-1"><%%= player2 ? player2.score : 0 %></h1>
 		</div>
-		<div class="col-sm-4 p-1 text-center">
-			<img class="rounded-circle game-avatar" src="https://cdn.intra.42.fr/users/small_wpark.jpg">
-			<div>name</div>		
+		<div class="col-sm-4 text-center p-1 mt-4" id="match-player2">
+			<%% if (player2) { %>
+			<img class="rounded-circle game-avatar" src="<%%= player2.avatar_url %>">
+			<%% } else { %>
+			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
+			<%% } %>
+			<div><%%= player2 ? player2.nickname : 'Waiting'%></div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
-				<input class="custom-switch-input ready-status" id="p2-ready-status" type="checkbox">
+				<%% if (player2 && player2.user_id === $('html').data().userId) { %>
+				<input class="custom-switch-input ready-status" id="p2-ready-status" data-nb-player="2" data-user-id="<%%= player2.user_id%>" type="checkbox">
 				<label class="custom-switch-btn" for="p2-ready-status"></label>
-				<div class="custom-switch-content-checked">
-					READY
-				</div>
-				<div class="custom-switch-content-unchecked">
-					NOT READY
-				</div>
+				<%% } %>
 			</div>
+			<div id="player2-ready-status"><%%= player2 ? "Not Ready" : "" %></div>
 		</div>
 	</div>
+
+</script>
+<script type="text/template" name="tmpl-game-game">
 	<div id="timer">timer</div>
 	<div id="game-screen-wrapper">
 		<canvas id="game-screen" style="background-color:#353535"></canvas>
