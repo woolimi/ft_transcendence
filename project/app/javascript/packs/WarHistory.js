@@ -23,11 +23,16 @@ $(() => {
             var model =  new warHistoryModel({guild_id: options.guild_id});
             await Helper.fetch(model);
             console.log(model.toJSON());
-            this.render();
+            this.render(model);
         },
-        render: function()
+        render: function(model)
         {
-            const content = this.template();
+            console.log(model.toJSON());
+            var wars = model.toJSON();
+            delete wars.guild_id;
+            const content = this.template({
+                wars: wars,
+            });
 			this.$el.html(content);
         }
     });
