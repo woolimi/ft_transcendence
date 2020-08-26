@@ -1,19 +1,19 @@
 json.id game.id
 json.player_one do
-	begin
+	# begin
 		json.points game.users.first.game_points(game)
-		json.partial! 'users/users', user: game.users.first
-	rescue => exception
-		json.null!
-	end
+		json.partial! 'api/users/users', user: game.users.first
+	# rescue => exception
+	# 	json.null!
+	# end
 end
 json.player_two do
-	begin
+	# begin
 		json.points game.users.second.game_points(game)
-		json.partial! 'users/users', user: game.users.second
-	rescue => exception
-		json.null!
-	end
+		json.partial! 'api/users/users', user: game.users.second
+	# rescue => exception
+	# 	json.null!
+	# end
 end
 json.game_type game.game_type
 json.status game.status
