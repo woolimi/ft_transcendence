@@ -87,7 +87,7 @@ $(() => {
 
 				if (data.ball) {
 					this.game.update(data);
-					this.game.render();
+					this.game.draw();
 				}
 
 			} catch (error) {

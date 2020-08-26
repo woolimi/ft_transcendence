@@ -8,33 +8,12 @@ var CANVAS;
 	CANVAS[CANVAS["WIDTH"] = 400] = "WIDTH";
 	CANVAS[CANVAS["HEIGHT"] = 200] = "HEIGHT";
 })(CANVAS || (CANVAS = {}));
-var DIRECTION;
-(function (DIRECTION) {
-	DIRECTION[DIRECTION["IDLE"] = 0] = "IDLE";
-	DIRECTION[DIRECTION["UP"] = 1] = "UP";
-	DIRECTION[DIRECTION["DOWN"] = 2] = "DOWN";
-	DIRECTION[DIRECTION["LEFT"] = 3] = "LEFT";
-	DIRECTION[DIRECTION["RIGHT"] = 4] = "RIGHT";
-})(DIRECTION || (DIRECTION = {}));
 function trans_coordiante(pos, canvas) {
 	const trans_pos = {
 		x: pos.x * canvas.width / CANVAS.WIDTH,
 		y: pos.y * canvas.height / CANVAS.HEIGHT,
 	};
 	return trans_pos;
-}
-
-function p_setTimeout(i, timer) {
-	return new Promise((res) => {
-		setTimeout(() => {
-			if (i > 0)
-				timer.innerHTML = i.toString();
-			else {
-				timer.innerHTML = 'GO';
-			}
-			res(true);
-		}, 1000);
-	});
 }
 
 class KeyListener {
@@ -100,27 +79,16 @@ class Paddle {
 		if (this.y > CANVAS.HEIGHT - this.height)
 			this.y = CANVAS.HEIGHT - this.height;
 	}
+	update(data) {
+		this.x = data.x;
+		this.y = data.y;
+	}
 }
 class Ball {
 	constructor() {
 		this.r = 3;
 		this.x = (CANVAS.WIDTH / 2);
 		this.y = (CANVAS.HEIGHT / 2);
-		this.moveX = DIRECTION.IDLE;
-		this.moveY = DIRECTION.IDLE;
-		this.speed = 3;
-	}
-	stop() {
-		this.x = (CANVAS.WIDTH / 2);
-		this.y = (CANVAS.HEIGHT / 2);
-		this.moveX = DIRECTION.IDLE;
-		this.moveY = DIRECTION.IDLE;
-	}
-	start() {
-		this.x = (CANVAS.WIDTH / 2);
-		this.y = (CANVAS.HEIGHT / 2);
-		this.moveX = Math.floor(Math.random() * 2) ? DIRECTION.LEFT : DIRECTION.RIGHT;
-		this.moveY = Math.floor(Math.random() * 2) ? DIRECTION.UP : DIRECTION.DOWN;
 	}
 	draw(context, canvas) {
 		const trans = trans_coordiante({ x: this.x, y: this.y }, canvas);
@@ -129,15 +97,16 @@ class Ball {
 		context.fillStyle = 'white';
 		context.fill();
 	}
+	update(data) {
+		this.r = data.r;
+		this.x = data.x;
+		this.y = data.y;
+	}
 }
 class Game {
-	constructor(timer, wrapper, canvas) {
-		if (!timer || !wrapper || !canvas)
+	constructor(wrapper, canvas) {
+		if (!wrapper || !canvas)
 			throw Error("No element");
-		this.req_id = 0;
-		this.max_score = 3;
-		this.over = true;
-		this.timer = timer;
 		this.wrapper = wrapper;
 		this.canvas = canvas;
 		this.context = this.canvas.getContext('2d');
@@ -151,7 +120,7 @@ class Game {
 		this.draw();
 	}
 	resize() {
-		if (!this.wrapper || !this.canvas || !this.timer)
+		if (!this.wrapper || !this.canvas)
 			throw Error("No wrapper or canvas in resize");
 		this.canvas.width = this.wrapper.offsetWidth;
 		this.canvas.height = this.canvas.width / 2;
@@ -169,96 +138,27 @@ class Game {
 		// draw ball
 		this.ball.draw(this.context, this.canvas);
 	}
-	async update() {
-		if (!this.over) {
-			if (!this.canvas)
-				throw Error("No canvas in update");
-			// Update player position
-			if (keyListener.is_pressed("up"))
-				this.p1.move(DIRECTION.UP);
-			if (keyListener.is_pressed("down"))
-				this.p1.move(DIRECTION.DOWN);
-			// If the ball collides with the bound limits - correct the x and y coords.
-			if (this.ball.x <= 0) {
-				this.p2.score++;
-				this.over = true;
-			}
-			if (this.ball.x >= CANVAS.WIDTH) {
-				this.p1.score++;
-				this.over = true;
-			}
-			if (this.ball.y <= 0)
-				this.ball.moveY = DIRECTION.DOWN;
-			if (this.ball.y >= CANVAS.HEIGHT)
-				this.ball.moveY = DIRECTION.UP;
 
-			// Move ball in intended direction based on moveY and moveX values
-			if (this.ball.moveY === DIRECTION.UP)
-				this.ball.y -= (this.ball.speed / 1.5);
-			else if (this.ball.moveY === DIRECTION.DOWN)
-				this.ball.y += (this.ball.speed / 1.5);
-			if (this.ball.moveX === DIRECTION.LEFT)
-				this.ball.x -= this.ball.speed;
-			else if (this.ball.moveX === DIRECTION.RIGHT)
-				this.ball.x += this.ball.speed;
-			
-				// Handle p1-Ball collisions
-			if (this.ball.x - this.ball.r <= this.p1.x && this.ball.x >= this.p1.x - this.p1.width) {
-				if (this.ball.y <= this.p1.y + this.p1.height && this.ball.y + this.ball.r >= this.p1.y) {
-					this.ball.x = (this.p1.x + this.ball.r);
-					this.ball.moveX = DIRECTION.RIGHT;
-				}
-			}
-			// Handle p2-Ball collision
-			if (this.ball.x - this.ball.r <= this.p2.x && this.ball.x >= this.p2.x - this.p2.width) {
-				if (this.ball.y <= this.p2.y + this.p2.height && this.ball.y + this.ball.r >= this.p2.y) {
-					this.ball.x = (this.p2.x - this.ball.r);
-					this.ball.moveX = DIRECTION.LEFT;
-				}
-			}
-		}
+	update(data) {
+		this.ball.update(data.ball);
+		this.p1.update(data.player1);
+		this.p2.update(data.player2);
 	}
+
 	resize_handler_on() {
 		window.addEventListener("resize", () => {
 			this.resize();
 			this.draw();
 		});
 	}
-	async loop() {
-		this.update();
-		this.draw();
-		if (!this.over) {
-			this.req_id = requestAnimationFrame(this.loop.bind(this));
-		}
-		else {
-			if (this.p1.score === 3 || this.p2.score === 3) {
-				this.timer.innerHTML = "FINISHED";
-				this.ball.stop();
-				keyListener.off();
-				window.cancelAnimationFrame(this.req_id);
-			} else {
-				this.over = false;
-				this.ball.stop();
-				this.req_id = requestAnimationFrame(this.loop.bind(this));
-				await this.set_timer();
-				this.ball.start();
-			}
-		}
-	}
-	async start() {
-		this.over = false;
-		this.req_id = window.requestAnimationFrame(this.loop.bind(this));
+	start() {
 		keyListener.on();
-		await this.set_timer();
-		this.ball.start();
-	}
-	async set_timer() {
-		this.timer.innerHTML = '3';
-		for (let i = 2; i >= 0; i--) {
-			await p_setTimeout(i, this.timer);
-		}
 	}
 }
 
+// 	if(keyListener.is_pressed("up"))
+//    this.p1.move(DIRECTION.UP);
+//  if (keyListener.is_pressed("down"))
+// 	  this.p1.move(DIRECTION.DOWN);
 
 export { Game, keyListener }
