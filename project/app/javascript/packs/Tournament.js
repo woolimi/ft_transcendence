@@ -1,6 +1,7 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
+import Helper from "./Helper.js"
 
 const Tournament = {};
 

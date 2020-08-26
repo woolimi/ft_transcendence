@@ -46,6 +46,13 @@ Rails.application.routes.draw do
       post "/password/", to: 'channel_password#login'
 
       put "/last_visited", to: 'channels#update_last_visited'
-    end
+		end
+		resources :tournaments, param: :id, only: [:create, :index, :show], format: "json" do
+			member do
+				put :join
+				delete :quit
+			end
+		end
+	
   end
 end

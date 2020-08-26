@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_183158) do
+ActiveRecord::Schema.define(version: 2020_08_26_132010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -53,6 +53,24 @@ ActiveRecord::Schema.define(version: 2020_08_25_183158) do
     t.index ["room"], name: "index_chats_on_room", unique: true
   end
 
+  create_table "game_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "game_id"
+    t.uuid "user_id"
+    t.integer "status", default: 0
+    t.integer "points", default: 0
+    t.integer "position"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "games", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "status"
+    t.integer "game_type"
+    t.uuid "tournament_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "guilds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "anagram"
@@ -71,6 +89,22 @@ ActiveRecord::Schema.define(version: 2020_08_25_183158) do
     t.integer "score_right"
     t.string "player_left"
     t.string "player_right"
+  end
+
+  create_table "tournament_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "tournament_id"
+    t.uuid "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "tournaments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.integer "status", default: 0
+    t.datetime "registration_start"
+    t.datetime "registration_end"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
