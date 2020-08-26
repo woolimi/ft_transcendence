@@ -1,3 +1,3 @@
 class War < ApplicationRecord
-    has_many: matches
+    has_many :matches
 end
