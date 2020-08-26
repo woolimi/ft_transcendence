@@ -6,25 +6,33 @@
     <div>
         <ul>
         <%% _.each(guilds, function(guild, i) { %>
-		<li class="list-group-item d-flex justify-content-between align-items-center">
+		<li class="list-group-item d-flex justify-content-between align-items-center <%% if(user.guild_id == guilds[i].id){ %>bg-dark <%% } %>"  <%% if(user.guild_id == guilds[i].id){ %>style="color:white" <%% } %>>
         <span><%%= guilds[i].name %> <%%= guilds[i].anagram %>
         <br>
         Score: <%%= guilds[i].total_score %>
         </span>
+        <span>
         <%% if(user.guild_id == null){ %>
         <button type="button" class="btn btn-success btn-sm joinGuild" data-guild_id="<%%= guilds[i].id%>">Join Guild</button>
 		<%% } %>
         <%% if(user.guild_id == guilds[i].id){ %>
         <button type="button" class="btn btn-danger btn-sm leaveGuild">Leave Guild</button>
 		<%% } %>
-        </li>
+        <button type="button" class="btn btn-info btn-sm warHistory" data-guild_id="<%%= guilds[i].id%>">War History</button>
+        </span></li>
 	<%% }) %>
         </ul>
     </div>
 	<br>
-	<div class="row">
-        <div class="col-md-5">
-            <a href="#" class="btn btn-primary btn-lg btn-block btn-huge disabled declareWar">Declare War</a>
-        </div>
-	</div>
+    <%% if(user.guild_id == null){ %>
+    <div class="row align-items-center justify-content-center">
+        <h4>OR</h4>
+    </div>
+    <form id="create-guild">
+      <input type="text" class="form-control newGuildName" placeholder="Enter New Guild Name" pattern="[A-Za-z]{5,20}" required="required" title="Guild Name can only have 5-20 letters">
+    <div>
+    <button type="submit" id="createGuild" class="btn btn-success align-items-center btn-lg btn-block btn-huge ">Create Guild</button>
+    </form>
+    </div>
+    <%% } %>
 </script>

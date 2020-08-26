@@ -3,9 +3,16 @@ class Api::GuildController < ApplicationController
 
     def show
 		allGuilds = Guild.select("id, name, anagram, total_score")
-        puts ">>>>>>>>>>>>"
-        puts allGuilds.as_json
-        puts ">>>>>>>>>>>>"
         render json: allGuilds
-	end
-end
+    end
+    
+    def update
+      guild = Guild.new(name: params[:guildName], anagram: "xxxxx")
+      guild.save()
+      me = UserProfile.find_by(user_id: current_user[:id])
+      me.guild_id = guild.id
+      me.is_owner = true
+      me.is_officer = true
+      me.save()
+    end
+  end

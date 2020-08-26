@@ -10,6 +10,7 @@ import Navbar from "./Navbar.js"
 import ChatChannel from "../channels/chat_channel"
 import ChannelChannel from "../channels/channel_channel"
 import War from "./War.js"
+import WarHistory from "./WarHistory.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -32,6 +33,7 @@ if ($('html').data().isLogin) {
 				"game": "game",
 				"profile": "profile",
 				"guild": "guild",
+				"guild/war_history/:guild_id": "guildHistory",
 				"chats/:room": "chat",
 				"channels/:channel_id": "channel",
 				"war" :"war"
@@ -49,6 +51,9 @@ if ($('html').data().isLogin) {
 				remove_channel();
 				Guild.content.render();
 
+			},
+			guildHistory: function(guild_id){
+				WarHistory.histView = new WarHistory.HistContent({guild_id:guild_id});
 			},
 			chat: function (room) {
 				remove_channel();
