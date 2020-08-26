@@ -94,7 +94,11 @@ $(() => {
 					return;
 				}
 
-
+				if (data.score) {
+					$("#player1-score").html(data.score[0]);
+					$("#player2-score").html(data.score[1]);
+					return;
+				}
 			} catch (error) {
 				console.error(error);
 			}

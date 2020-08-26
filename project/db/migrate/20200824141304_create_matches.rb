@@ -8,6 +8,7 @@ class CreateMatches < ActiveRecord::Migration[6.0]
       t.string :loser
       t.timestamp :created_at
       t.timestamp :started_at
+      t.boolean :match_finished
     end
   end
 end

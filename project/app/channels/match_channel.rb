@@ -41,6 +41,8 @@ class MatchChannel < ApplicationCable::Channel
     ActionCable.server.broadcast("match_#{data["match_id"]}_channel", data)
     if (match.player_1["ready"] && match.player_2["ready"])
       # set match started_at ...
+      match.started_at = Time.now()
+      match.save()
       ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { all_ready: true })
       return game_start(match[:id], [match.player_1["user_id"], match.player_2["user_id"]])
     end
@@ -56,8 +58,6 @@ class MatchChannel < ApplicationCable::Channel
     new_pos["y"] += @@PADDLE[:SPEED] if data["move"] == "down"
     new_pos["y"] = 0 if new_pos["y"] < 0
     new_pos["y"] = @@CANVAS[:HEIGHT] - @@PADDLE[:HEIGHT] if new_pos["y"] > @@CANVAS[:HEIGHT] - @@PADDLE[:HEIGHT]
-    puts "new_pos"
-    puts new_pos
     @@matches[data["match_id"]]["player_#{player_nb}"] = new_pos
   end
 
@@ -122,8 +122,17 @@ class MatchChannel < ApplicationCable::Channel
       end # over false
 
       if (@@matches[match_id]["over"] == true)
+        ActionCable.server.broadcast("match_#{match_id}_channel", {:score => game["score"]})
+        match = Match.find_by(id: match_id)
+        match.player_1["score"] = game["score"][0]
+        match.player_2["score"] = game["score"][1]
+        match.save()
         if (game["score"][0] == 3 || game["score"][1] == 3)
           # set winner, loser, finished
+          match.winner = game["score"][0] > game["score"][1] ? match.player_1["user_id"] : match.player_2["user_id"]
+          match.loser = game["score"][0] < game["score"][1] ? match.player_1["user_id"] : match.player_2["user_id"]
+          match.match_finished = true
+          match.save()
           break
         else
           ActionCable.server.broadcast("match_#{match_id}_channel", game)
@@ -154,7 +163,7 @@ class MatchChannel < ApplicationCable::Channel
 
   def ball_start(ball)
     ball["moveX"] = rand(0..1) == 1 ? @@DIRECTION[:LEFT] : @@DIRECTION[:RIGHT];
-		ball["moveY"] = rand(0..1) == 1 ? @@DIRECTION[:UP] : @@DIRECTION[:DOWN];
+    ball["moveY"] = rand(0..1) == 1 ? @@DIRECTION[:UP] : @@DIRECTION[:DOWN];
   end
 
   def count_down(match_id)

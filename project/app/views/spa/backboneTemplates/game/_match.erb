@@ -23,9 +23,9 @@
 			</div>
 		</div>
 		<div class="col-sm-4 p-1 text-center d-flex align-items-center justify-content-center">
-			<h1 class="m-1"><%%= player_1 ? player_1.score : 0 %></h1>
+			<h1 class="m-1" id="player1-score"><%%= player_1 ? player_1.score : 0 %></h1>
 			<h1 class="m-1">:</h1>
-			<h1 class="m-1"><%%= player_2 ? player_2.score : 0 %></h1>
+			<h1 class="m-1"	id="player2-score"><%%= player_2 ? player_2.score : 0 %></h1>
 		</div>
 		<div class="col-sm-4 text-center p-1 mt-4" id="match-player2">
 			<%% if (player_2) { %>

@@ -152,7 +152,6 @@ class Pong {
 		return false;
 	}
 	async keyLoop() {
-
 		if (!MatchChannel.channel) {
 			return cancelAnimationFrame(this.reqId);
 		}
@@ -176,10 +175,5 @@ class Pong {
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-// 	if(keyListener.is_pressed("up"))
-//    this.p1.move(DIRECTION.UP);
-//  if (keyListener.is_pressed("down"))
-// 	  this.p1.move(DIRECTION.DOWN);
 
 export { Pong }

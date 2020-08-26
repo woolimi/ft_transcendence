@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 2020_08_24_141304) do
     t.string "loser"
     t.datetime "created_at"
     t.datetime "started_at"
+    t.boolean "match_finished"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
