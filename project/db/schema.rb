@@ -69,8 +69,8 @@ ActiveRecord::Schema.define(version: 2020_08_26_142655) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "score_left"
     t.integer "score_right"
-    t.string "player_left"
-    t.string "player_right"
+    t.string "player_1"
+    t.string "player_2"
     t.string "match_type"
     t.uuid "war_id"
     t.index ["war_id"], name: "index_matches_on_war_id"
@@ -124,7 +124,6 @@ ActiveRecord::Schema.define(version: 2020_08_26_142655) do
     t.datetime "start_date"
     t.datetime "end_date"
     t.integer "wager"
-    t.string "match_list"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "status"
