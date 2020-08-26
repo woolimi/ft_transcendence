@@ -36,7 +36,7 @@ if ($('html').data().isLogin) {
 				"guild": "guild",
 				"chats/:room": "chat",
 				"channels/:channel_id": "channel",
-				"war" :"war"
+				"war" :"war",
 				"tournaments/:id": "tournament",
 				"tournaments": "tournaments"
 			},
@@ -63,7 +63,8 @@ if ($('html').data().isLogin) {
 				Channel.content = new Channel.Content({ channel_id: channel_id });
 			},
 			war: function () {
-				War.content.render();	
+				War.content.render();
+			},
 			tournaments: function(){
 				remove_channel();
 				Tournaments.content.render();

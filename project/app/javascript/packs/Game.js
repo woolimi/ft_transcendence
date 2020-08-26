@@ -10,6 +10,7 @@ $(() => {
 		el: $("#view-content"),
 		events: {
 			"click #tournaments": "go_to_tournaments_page",
+			// "click #war": "goToWarPage",
 		},
 		template: _.template($("script[name='tmpl-content-game']").html()),
 		render: function () {
@@ -17,11 +18,9 @@ $(() => {
 			this.$el.html(content);
 			return this;
 		},
-		events: {
-			"click #war": "goToWarPage"
-		},
-		goToWarPage: function () {
-			console.log("War page");
+		// goToWarPage: function () {
+		// 	console.log("War page");
+		// },
 		go_to_tournaments_page: function(e){
 			e.stopImmediatePropagation()
 			Router.router.navigate("/tournaments", { trigger: true });
