@@ -7,7 +7,7 @@ class Api::WarController < ApplicationController
 
             guild = Guild.find_by(id: user["guild_id"]).as_json(only: [:war_id])
             
-            war = War.find_by(id: guild["war_id"]).as_json(only: [:guild_1, :guild_2, :guild_1_score, :guild_2_score])
+            war = War.find_by(id: guild["war_id"]).as_json(only: [:guild_1, :guild_2, :guild_1_score, :guild_2_score, :start_date, :end_date, :match_ongoing])
             
             user_guild_number = check_guild_number(war, user["guild_id"])
             if ((war[user_guild_number + "_score"] === war["guild_1_score"]) && (war["guild_1_score"] > war["guild_2_score"]))

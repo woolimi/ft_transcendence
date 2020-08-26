@@ -2,6 +2,8 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 
+
+
 const War = {};
 
 $(() => {
@@ -11,13 +13,16 @@ $(() => {
         defaults: {
             user_id: $('html').data().userId,
             user_guild_number: "undefined",
-            position: "undefined"
+            position: "undefined",
+            start_date: "undefined",
+            end_date: "undefined",
+            match_ongoing: "undefined"
         },
         urlRoot: "/api/war/",
         idAttribute: "user_id",
-        url: function () {
-			return this.urlRoot + encodeURIComponent(this.get('user_id'));
-		},
+        url: function() {
+            return this.urlRoot + encodeURIComponent(this.get('user_id'));
+        },
     });
 
     War.data = new WarData();
@@ -32,8 +37,8 @@ $(() => {
                 console.log("Model: " + JSON.stringify(this.model));
                 this.render();
             } catch (error) {
-				Helper.flash_message("danger", "Error while loading war!");
-			}
+                Helper.flash_message("danger", "Error while loading war!");
+            }
         },
         render: function() {
             const content = this.template(this.model.toJSON());
