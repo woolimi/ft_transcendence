@@ -55,8 +55,8 @@ ActiveRecord::Schema.define(version: 2020_08_24_141304) do
 
   create_table "matches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "match_type", null: false
-    t.jsonb "player1"
-    t.jsonb "player2"
+    t.jsonb "player_1"
+    t.jsonb "player_2"
     t.string "winner"
     t.string "loser"
     t.datetime "created_at"

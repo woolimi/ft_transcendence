@@ -1,7 +1,7 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
-import { Game, keyListener } from "./Pong.js"
+import { Pong } from "./Pong.js"
 import MatchChannel from '../channels/match_channel'
 
 const Match = {};
@@ -39,7 +39,7 @@ $(() => {
 			}
 			const wrapper = document.getElementById("game-screen-wrapper");
 			const canvas = document.getElementById("game-screen");
-			this.game = new Game(wrapper, canvas);
+			this.pong = new Pong(wrapper, canvas, options.id);
 		},
 		check_ready(e) {
 			e.stopImmediatePropagation();
@@ -60,11 +60,6 @@ $(() => {
 				if (data.from === this.user_id)
 					return;
 				// new user enter into room
-				if (data.players) {
-					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
-					this.render_players(match_data);
-					return;
-				}
 				if (data.ready) {
 					$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
 					return;
@@ -73,10 +68,7 @@ $(() => {
 				if (data.all_ready) {
 					// disable ready button
 					$('.ready-status')[0].disabled = true;
-					// keyListener.on();
-					// keyListener on
-					// resize event on
-					// 
+					this.pong.on();
 					return;
 				}
 
@@ -86,9 +78,22 @@ $(() => {
 				}
 
 				if (data.ball) {
-					this.game.update(data);
-					this.game.draw();
+					this.pong.update(data);
+					this.pong.draw();
+					return;
 				}
+
+				if (data.end) {
+					this.pong.off();
+					return;
+				}
+
+				if (data.players) {
+					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
+					this.render_players(match_data);
+					return;
+				}
+
 
 			} catch (error) {
 				console.error(error);

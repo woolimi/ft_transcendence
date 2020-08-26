@@ -13,20 +13,20 @@ class Api::MatchesController < ApplicationController
 
 		# find empty or single person room
 		single_rooms = Match
-			.where("match_type = '#{params[:match_type]}' AND started_at IS NULL AND (player1 IS NULL OR player2 IS NULL)")
+			.where("match_type = '#{params[:match_type]}' AND started_at IS NULL AND (player_1 IS NULL OR player_2 IS NULL)")
 			.order("created_at ASC");
 		me = UserProfile.find_by(user_id: current_user[:id]);
 		if single_rooms.empty? # if single_room is empty, create new room
 			single_room = Match.create(
 				match_type: params[:match_type],
-				player1: {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0},
+				player_1: {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0},
 				created_at: Time.now())
 			return render json: single_room if (single_room.present? && me.present?)
 		else # if single_room is exist, enter into it
-			if (single_rooms[0].player1.blank?)
-				single_rooms[0].player1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0}
-			elsif (single_rooms[0].player2.blank?)
-				single_rooms[0].player2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0}
+			if (single_rooms[0].player_1.blank?)
+				single_rooms[0].player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0}
+			elsif (single_rooms[0].player_2.blank?)
+				single_rooms[0].player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0}
 			end
 			return render json: single_rooms[0] if single_rooms[0].save()
 		end

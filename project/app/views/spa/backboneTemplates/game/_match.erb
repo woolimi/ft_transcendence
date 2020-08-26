@@ -6,39 +6,39 @@
 
 <script type="text/template" name="tmpl-game-players">
 	<div class="container-fluid d-flex" id="match" data-match-id=<%%=id%>>
-		<div class="col-sm-4 text-center p-1 mt-4" id="match-player1" data-user-id=<%%=player1 ? player1.user_id : ''%>>
-			<%% if (player1) { %>
-			<img class="rounded-circle game-avatar" src="<%%=player1.avatar_url%>">
+		<div class="col-sm-4 text-center p-1 mt-4" id="match-player1" data-user-id=<%%=player_1 ? player_1.user_id : ''%>>
+			<%% if (player_1) { %>
+			<img class="rounded-circle game-avatar" src="<%%=player_1.avatar_url%>">
 			<%% } else { %>
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
-			<div><%%=player1 ? player1.nickname : 'Waiting' %></div>
-			<div id="player1-ready-status"><%%= player1 ? (player1.ready ? "Ready" : "Not Ready") : "" %></div>
+			<div><%%=player_1 ? player_1.nickname : 'Waiting' %></div>
+			<div id="player1-ready-status"><%%= player_1 ? (player_1.ready ? "Ready" : "Not Ready") : "" %></div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
-				<%% if (player1 && player1.user_id === $('html').data().userId) { %>
+				<%% if (player_1 && player_1.user_id === $('html').data().userId) { %>
 				<input class="custom-switch-input ready-status" id="p1-ready-status" data-nb-player="1"
-					data-user-id="<%%= player1.user_id%>" type="checkbox" <%%= player1 && player1.ready ? 'checked' : ''%>>
+					data-user-id="<%%= player_1.user_id%>" type="checkbox" <%%= player_1 && player_1.ready ? 'checked' : ''%>>
 				<label class="custom-switch-btn" for="p1-ready-status"></label>
 				<%% } %>				
 			</div>
 		</div>
 		<div class="col-sm-4 p-1 text-center d-flex align-items-center justify-content-center">
-			<h1 class="m-1"><%%= player1 ? player1.score : 0 %></h1>
+			<h1 class="m-1"><%%= player_1 ? player_1.score : 0 %></h1>
 			<h1 class="m-1">:</h1>
-			<h1 class="m-1"><%%= player2 ? player2.score : 0 %></h1>
+			<h1 class="m-1"><%%= player_2 ? player_2.score : 0 %></h1>
 		</div>
 		<div class="col-sm-4 text-center p-1 mt-4" id="match-player2">
-			<%% if (player2) { %>
-			<img class="rounded-circle game-avatar" src="<%%= player2.avatar_url %>">
+			<%% if (player_2) { %>
+			<img class="rounded-circle game-avatar" src="<%%= player_2.avatar_url %>">
 			<%% } else { %>
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
-			<div><%%= player2 ? player2.nickname : 'Waiting'%></div>
-			<div id="player2-ready-status"><%%= player2 ? (player2.ready ? "Ready" : "Not Ready") : "" %></div>
+			<div><%%= player_2 ? player_2.nickname : 'Waiting'%></div>
+			<div id="player2-ready-status"><%%= player_2 ? (player_2.ready ? "Ready" : "Not Ready") : "" %></div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
-				<%% if (player2 && player2.user_id === $('html').data().userId) { %>
+				<%% if (player_2 && player_2.user_id === $('html').data().userId) { %>
 				<input class="custom-switch-input ready-status" id="p2-ready-status" data-nb-player="2"
-					data-user-id="<%%= player2.user_id%>" type="checkbox" <%%= player2 && player2.ready ? 'checked' : ''%>>
+					data-user-id="<%%= player_2.user_id%>" type="checkbox" <%%= player_2 && player_2.ready ? 'checked' : ''%>>
 				<label class="custom-switch-btn" for="p2-ready-status"></label>
 				<%% } %>
 			</div>

@@ -1,3 +1,6 @@
+import MatchChannel from "../channels/match_channel"
+import Match from "./Match";
+
 var SIDE;
 (function (SIDE) {
 	SIDE[SIDE["LEFT"] = 0] = "LEFT";
@@ -16,41 +19,21 @@ function trans_coordiante(pos, canvas) {
 	return trans_pos;
 }
 
-class KeyListener {
-	constructor() {
-		this.pressedKeys = { up: false, down: false };
-	}
-	on() {
-		document.addEventListener("keyup", keyup_cb);
-		document.addEventListener("keydown", keydown_cb);
-	}
-	off() {
-		document.removeEventListener("keyup", keyup_cb);
-		document.removeEventListener("keydown", keydown_cb);
-	}
-	is_pressed(key) {
-		if (key === "ArrowUp" || key === "up")
-			return this.pressedKeys.up;
-		if (key === "ArrowDown" || key === "down")
-			return this.pressedKeys.down;
-		return false;
-	}
-}
+const pressedKeys = { up: false, down: false };
 
-const keyListener = new KeyListener();
 function keyup_cb(e) {
 	if (e.code === "ArrowUp")
-		keyListener.pressedKeys.up = false;
+		pressedKeys.up = false;
 	if (e.code === "ArrowDown")
-		keyListener.pressedKeys.down = false;
+		pressedKeys.down = false;
 	if (e.code === "ArrowUp" || e.code === "ArrowDown")
 		e.preventDefault();
 }
 function keydown_cb(e) {
 	if (e.code === "ArrowUp")
-		keyListener.pressedKeys.up = true;
+		pressedKeys.up = true;
 	if (e.code === "ArrowDown")
-		keyListener.pressedKeys.down = true;
+		pressedKeys.down = true;
 	if (e.code === "ArrowUp" || e.code === "ArrowDown")
 		e.preventDefault();
 }
@@ -68,16 +51,6 @@ class Paddle {
 	draw(context, canvas) {
 		const trans = trans_coordiante({ x: this.x, y: this.y }, canvas);
 		context.fillRect(trans.x, trans.y, this.width * canvas.width / CANVAS.WIDTH, this.height * canvas.height / CANVAS.HEIGHT);
-	}
-	move(dir) {
-		if (dir === DIRECTION.UP)
-			this.y -= this.speed;
-		else if (dir === DIRECTION.DOWN)
-			this.y += this.speed;
-		if (this.y < 0)
-			this.y = 0;
-		if (this.y > CANVAS.HEIGHT - this.height)
-			this.y = CANVAS.HEIGHT - this.height;
 	}
 	update(data) {
 		this.x = data.x;
@@ -103,12 +76,15 @@ class Ball {
 		this.y = data.y;
 	}
 }
-class Game {
-	constructor(wrapper, canvas) {
+
+class Pong {
+	constructor(wrapper, canvas, match_id) {
 		if (!wrapper || !canvas)
 			throw Error("No element");
 		this.wrapper = wrapper;
 		this.canvas = canvas;
+		this.match_id = match_id;
+		this.user_id = $('html').data().userId;
 		this.context = this.canvas.getContext('2d');
 		if (!this.context)
 			throw Error("No context in constructor");
@@ -118,6 +94,7 @@ class Game {
 		this.ball = new Ball();
 		this.resize_handler_on();
 		this.draw();
+		this.reqId = null;
 	}
 	resize() {
 		if (!this.wrapper || !this.canvas)
@@ -141,8 +118,8 @@ class Game {
 
 	update(data) {
 		this.ball.update(data.ball);
-		this.p1.update(data.player1);
-		this.p2.update(data.player2);
+		this.p1.update(data.player_1);
+		this.p2.update(data.player_2);
 	}
 
 	resize_handler_on() {
@@ -151,9 +128,53 @@ class Game {
 			this.draw();
 		});
 	}
-	start() {
-		keyListener.on();
+	on() {
+		this.keyListener_on();
+		this.reqId = requestAnimationFrame(this.keyLoop.bind(this));
 	}
+	off() {
+		this.keyListener_off();
+	}
+	keyListener_on() {
+		document.addEventListener("keyup", keyup_cb);
+		document.addEventListener("keydown", keydown_cb);
+	}
+	keyListener_off() {
+		document.removeEventListener("keyup", keyup_cb);
+		document.removeEventListener("keydown", keydown_cb);
+		cancelAnimationFrame(this.reqId);
+	}
+	keyPressed(key) {
+		if (key === "ArrowUp")
+			return pressedKeys.up;
+		if (key === "ArrowDown")
+			return pressedKeys.down;
+		return false;
+	}
+	async keyLoop() {
+
+		if (!MatchChannel.channel) {
+			return cancelAnimationFrame(this.reqId);
+		}
+		let move = 0;
+		if (this.keyPressed("ArrowUp"))
+			move += 1;
+		if (this.keyPressed("ArrowDown"))
+			move -= 1;
+		if (move !== 0) {
+			MatchChannel.channel.perform("game_data", {
+				"from": this.user_id,
+				"match_id": this.match_id,
+				"move": (move === 1) ? "up" : "down",
+			});
+		}
+		await sleep(0.5)
+		this.reqId = requestAnimationFrame(this.keyLoop.bind(this));
+	}
+}
+
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // 	if(keyListener.is_pressed("up"))
@@ -161,4 +182,4 @@ class Game {
 //  if (keyListener.is_pressed("down"))
 // 	  this.p1.move(DIRECTION.DOWN);
 
-export { Game, keyListener }
+export { Pong }

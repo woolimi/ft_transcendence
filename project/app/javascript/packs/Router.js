@@ -30,7 +30,6 @@ if ($('html').data().isLogin) {
 			if (Match.content)
 				Match.content.undelegateEvents();
 			$(window).off("resize");
-			clearInterval(window.spa_interval);
 		};
 
 		const RouterClass = Backbone.Router.extend({
