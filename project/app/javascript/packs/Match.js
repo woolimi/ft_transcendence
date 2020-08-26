@@ -37,21 +37,15 @@ $(() => {
 			} catch (error) {
 				console.error(error);
 			}
-			const timer = document.getElementById("timer");
 			const wrapper = document.getElementById("game-screen-wrapper");
 			const canvas = document.getElementById("game-screen");
-			Match.game = new Game(timer, wrapper, canvas);
+			this.game = new Game(wrapper, canvas);
 		},
 		check_ready(e) {
 			e.stopImmediatePropagation();
 			const data = $(e.currentTarget).data();
 			if (data.userId === this.user_id) {
 				const nbPlayer = data.nbPlayer;
-				// if ($(e.currentTarget)[0].checked)
-				// 	$(`#player${nbPlayer}-ready-status`).html("Ready");
-				// else
-				// 	$(`#player${nbPlayer}-ready-status`).html("Not Ready");
-				// call MatchChannel#ready(data)
 				MatchChannel.channel.perform("ready", {
 					ready: true,
 					match_id: this.options.id,
@@ -59,11 +53,6 @@ $(() => {
 					nb_player: nbPlayer,
 				});
 			}
-			// const status = this.$el.find(".ready-status");
-			// if (status[0].checked && status[1].checked) {
-			// 	status.attr("disabled", true);
-			// 	Match.game.start();
-			// }
 		},
 		async recv_callback(data) {
 			try {
@@ -74,10 +63,33 @@ $(() => {
 				if (data.players) {
 					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
 					this.render_players(match_data);
+					return;
 				}
 				if (data.ready) {
 					$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
+					return;
 				}
+
+				if (data.all_ready) {
+					// disable ready button
+					$('.ready-status')[0].disabled = true;
+					// keyListener.on();
+					// keyListener on
+					// resize event on
+					// 
+					return;
+				}
+
+				if (data.count_down) {
+					$("#timer").html(data.count);
+					return;
+				}
+
+				if (data.ball) {
+					this.game.update(data);
+					this.game.render();
+				}
+
 			} catch (error) {
 				console.error(error);
 			}

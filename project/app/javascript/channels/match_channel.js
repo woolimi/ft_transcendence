@@ -30,12 +30,11 @@ if ($('html').data().isLogin) {
 
         disconnected() {
           // Called when the subscription has been terminated by the server
-          console.log("disconnected to match", this.match_data.id);
+          console.log("disconnected to match");
         },
 
         received(data) {
           // Called when there's incoming data on the websocket for this channel
-          console.log("received", data)
           recv_callback.bind(me)(data);
         }
       });

@@ -183,14 +183,15 @@ class Game {
 				this.p2.score++;
 				this.over = true;
 			}
-			if (this.ball.x >= CANVAS.WIDTH - this.ball.r) {
+			if (this.ball.x >= CANVAS.WIDTH) {
 				this.p1.score++;
 				this.over = true;
 			}
 			if (this.ball.y <= 0)
 				this.ball.moveY = DIRECTION.DOWN;
-			if (this.ball.y >= CANVAS.HEIGHT - this.ball.r)
+			if (this.ball.y >= CANVAS.HEIGHT)
 				this.ball.moveY = DIRECTION.UP;
+
 			// Move ball in intended direction based on moveY and moveX values
 			if (this.ball.moveY === DIRECTION.UP)
 				this.ball.y -= (this.ball.speed / 1.5);
@@ -200,7 +201,8 @@ class Game {
 				this.ball.x -= this.ball.speed;
 			else if (this.ball.moveX === DIRECTION.RIGHT)
 				this.ball.x += this.ball.speed;
-			// Handle p1-Ball collisions
+			
+				// Handle p1-Ball collisions
 			if (this.ball.x - this.ball.r <= this.p1.x && this.ball.x >= this.p1.x - this.p1.width) {
 				if (this.ball.y <= this.p1.y + this.p1.height && this.ball.y + this.ball.r >= this.p1.y) {
 					this.ball.x = (this.p1.x + this.ball.r);
