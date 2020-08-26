@@ -22,9 +22,6 @@ class Api::ProfileController < ApplicationController
 
 	# PATCH / PUT
 	def update
-		puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-		puts "HERE WE GO!"
-		puts ">>>>>>>>>>>>>>>>>>>"
 		me = UserProfile.find_by(user_id: current_user[:id])
 		# puts me.photo.as_json()
 		if ((params[:nickname] <=> me.nickname) != 0)
@@ -34,12 +31,14 @@ class Api::ProfileController < ApplicationController
 			end
 			me.nickname = params[:nickname]
 		end
-		puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-		puts params[:guild_id]
-		puts me.guild_id
-		puts ">>>>>>>>>>>>>>>>>>>"
 		if (params[:guild_id] != me.guild_id)
 			me.guild_id = params[:guild_id]
+		end
+		if(params[:is_officer] != me.is_officer)
+			me.is_officer = params[:is_officer]
+		end
+		if(params[:is_owner] != me.is_owner)
+			me.is_owner = params[:is_owner]
 		end
 		arr =  params[:block_list].as_json();
 		res = []
