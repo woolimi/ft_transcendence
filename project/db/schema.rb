@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_183158) do
+ActiveRecord::Schema.define(version: 2020_08_26_142655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -71,6 +71,9 @@ ActiveRecord::Schema.define(version: 2020_08_25_183158) do
     t.integer "score_right"
     t.string "player_left"
     t.string "player_right"
+    t.string "match_type"
+    t.uuid "war_id"
+    t.index ["war_id"], name: "index_matches_on_war_id"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -125,11 +128,13 @@ ActiveRecord::Schema.define(version: 2020_08_25_183158) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "status"
+    t.boolean "match_ongoing"
   end
 
   add_foreign_key "channel_messages", "channels"
   add_foreign_key "channel_messages", "users"
   add_foreign_key "chat_messages", "chats"
   add_foreign_key "chat_messages", "users"
+  add_foreign_key "matches", "wars"
   add_foreign_key "user_profiles", "users"
 end

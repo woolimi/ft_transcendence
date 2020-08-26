@@ -1,15 +1,88 @@
 <!-- war content -->
+<style>
+    p {
+        text-align: center;
+        font-size: 60px;
+        margin-top: 0px;
+    }
+    
+    #status {
+        text-shadow: 2px 2px #000000;
+        margin-top: 3rem !important;
+        background: rgb(2, 0, 36);
+        background: linear-gradient(90deg, rgba(2, 0, 36, 1) 14%, rgba(9, 9, 121, 1) 100%, rgba(0, 212, 255, 1) 100%);
+    }
+    
+    #countdown,
+    #stats {
+        background: rgb(2, 0, 36);
+        background: linear-gradient(90deg, rgba(2, 0, 36, 1) 14%, rgba(9, 9, 121, 1) 100%, rgba(0, 212, 255, 1) 100%);
+        text-shadow: 2px 2px #000000;
+    }
+    
+    #score {
+        margin-right: 1rem !important;
+    }
+</style>
+
 <script type="text/template" name="tmpl-content-war">
-<div>
-This is the war template
-<%% if(position === "win") {%>
-    <div class="container">
-        <h1 align="cennter" class="display-4" style="color:#41C232">Your guild is leading!</h1>
+    <div>
+        <%% if(position === "win") {%>
+            <div id="status" class="rounded bg-gradient-2 shadow p-5 text-center mb-5">
+                <h1 align="center" class="display-4" style="color:#E3C220">Your guild is leading!</h1>
+            </div>
+            <%% } else {%>
+                <div id="status" class="rounded bg-gradient-1 shadow p-5 text-center mb-5">
+                    <h1 class="display-4" style="color:#C90812">Your guild is trailing!</h1>
+                </div>
+                <%% } %>
     </div>
-<%% } else {%>
-    <div class="container">
-        <h1 class="display-4" style="color:#C90812">Your guild is trailing!</h1>
+    <div id="countdown" class="rounded bg-gradient-1 text-white shadow p-5 text-center mb-5">
+        <h1 align="center" class="display-4" style="color:#FFFFFF">War Time:</h1>
+        <p id="clock"></p>
     </div>
-	<%% } %>
-</div>
+    <%% 
+        var x = setInterval(function() {
+        var dds = new Date(end_date); 
+        var countDownDate = new Date(dds).getTime();
+        var now = new Date().getTime();
+        
+        var distance = countDownDate - now;
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById("clock").innerHTML = days + "d " + hours + "h "
+        + minutes + "m " + seconds + "s ";
+        
+        if (distance < 0) {
+          clearInterval(x);
+          document.getElementById("clock").innerHTML = "WAR EXPIRED";
+        }
+        }, 1000);
+    %>
+        <div id="stats" class="rounded bg-gradient-1 text-white shadow p-5 text-center mb-5">
+            <h1 align="center" class="display-4" style="color:#FFFFFF">Statistics:</h1>
+            <div id="stats_inner">
+                <div class="container">
+                    <div class="row">
+                        <div id="score" class="col-6">
+                            Score
+                        </div>
+                        <div class="col-1"></div>
+                        <div id="other_statistics" class="col-4">
+                            Others stats
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <%% if(match_ongoing === false) {%>
+                <button type="button" class="btn btn-warning btn-lg btn-block">Attack!</button>
+                <%% } %>
+
+
+        </div>
 </script>
