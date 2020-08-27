@@ -16,14 +16,13 @@ class User < ApplicationRecord
 	has_many :tournament_users, dependent: :destroy
 	has_many :tournaments, through: :tournament_users, source: :tournament
 
-  def self.from_omniauth(auth, session_id)
+  def self.from_omniauth(auth)
     user = User.find_by(ft_id: auth[:uid])
     if user.blank?
       small_img = auth[:info][:image];
       small_img[small_img.rindex("/")] = "/small_"
       user = User.create(
         ft_id: auth[:uid], 
-        session_id: session_id,
         email: auth[:info][:email],
         password: "asdfas")
       user.create_user_profile(
