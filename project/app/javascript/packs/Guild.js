@@ -48,14 +48,12 @@ $(() => {
 		},
 		leaveGuild: async function(e){
 			Profile.userProfile.set('guild_id', null);
-			Profile.userProfile.set('is_owner', false);
-			Profile.userProfile.set('is_officer', false);
 			await Helper.save(Profile.userProfile);
 			this.render();
 		},
 		createGuild: async function(e){
 			e.preventDefault();
-			const form = $("#reate-guild");
+			const form = $("#create-guild");
 			const guildName = $(".newGuildName").val();
 			var i = 0
 			var guildArr = this.model.toJSON();
