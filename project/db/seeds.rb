@@ -6,6 +6,9 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+# rails db:drop && rails db:create && rails db:migrate && rails db:seed
+
+
 if User.find_by({ email: "doby@asdf.com" }).blank?
 	u = User.create!(
 		ft_id: 1, 
@@ -72,6 +75,7 @@ if Tournament.find_by(name: 'tournament1').blank?
 	tournament.players.clear
 	tournament.players.push users
 
+	byebug
 	match1=Match.create(
 		match_type: 'tournament_semi',
 		tournament: tournament,
@@ -79,8 +83,8 @@ if Tournament.find_by(name: 'tournament1').blank?
 		player_right: user2,
 		player_1: {score: 10},
 		player_2: {score: 8},
-		winner: user1.name,
-		loser: user2.name,
+		winner: user1.user_profile.name,
+		loser: user2.user_profile.name,
 		# created_at: Time.now()
 	)
 	match2=Match.create(
@@ -90,8 +94,8 @@ if Tournament.find_by(name: 'tournament1').blank?
 		player_right: user4,
 		player_1: {score: 10},
 		player_2: {score: 8},
-		winner: user3.name,
-		loser: user4.name
+		winner: user3.user_profile.name,
+		loser: user4.user_profile.name
 	)
 	match3=Match.create(
 		match_type: 'tournament_final',
@@ -100,7 +104,7 @@ if Tournament.find_by(name: 'tournament1').blank?
 		player_right: user3,
 		player_1: {score: 10},
 		player_2: {score: 8},
-		winner: user1.name,
-		loser: user3.name
+		winner: user1.user_profile.name,
+		loser: user3.user_profile.name
 	)
 end
