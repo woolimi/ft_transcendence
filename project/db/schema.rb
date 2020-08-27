@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_26_142655) do
+ActiveRecord::Schema.define(version: 2020_08_27_104027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -59,7 +59,9 @@ ActiveRecord::Schema.define(version: 2020_08_26_142655) do
     t.integer "total_score"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "war_id"
+    t.jsonb "guild_officers"
+    t.uuid "owner"
+    t.index ["owner"], name: "index_guilds_on_owner"
   end
 
   create_table "matches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -86,8 +88,6 @@ ActiveRecord::Schema.define(version: 2020_08_26_142655) do
     t.integer "status", default: 0
     t.uuid "user_id"
     t.string "guild_id"
-    t.boolean "is_owner", default: false
-    t.boolean "is_officer", default: false
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
 
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2020_08_26_142655) do
   add_foreign_key "channel_messages", "users"
   add_foreign_key "chat_messages", "chats"
   add_foreign_key "chat_messages", "users"
+  add_foreign_key "guilds", "user_profiles", column: "owner"
   add_foreign_key "matches", "wars"
   add_foreign_key "user_profiles", "users"
 end
