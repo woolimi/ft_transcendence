@@ -3,44 +3,18 @@
 class DeviseCreateUsers < ActiveRecord::Migration[6.0]
   def change
     create_table :users, id: :uuid do |t|
-      t.integer   :ft_id, null: false, index: { unique: true } # 42 id num
-      t.string    :session_id
-      t.string    :access_token
-      t.string    :refresh_token
-      t.datetime  :token_expires_in
-      
+      t.integer   :ft_id, null: false, index: { unique: true } # 42 id num      
+
       ## Database authenticatable
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""
-      ## Recoverable
-      # t.string   :reset_password_token
-      # t.datetime :reset_password_sent_at
-
-      ## Rememberable
-      # t.datetime :remember_created_at
-
-      ## Trackable
-      # t.integer  :sign_in_count, default: 0, null: false
-      # t.datetime :current_sign_in_at
-      # t.datetime :last_sign_in_at
-      # t.inet     :current_sign_in_ip
-      # t.inet     :last_sign_in_ip
-
-      ## Confirmable
-      # t.string   :confirmation_token
-      # t.datetime :confirmed_at
-      # t.datetime :confirmation_sent_at
-      # t.string   :unconfirmed_email # Only if using reconfirmable
-
-      ## Lockable
-      # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
-      # t.string   :unlock_token # Only if unlock strategy is :email or :both
-      # t.datetime :locked_at
-
-
       t.timestamps null: false
+      t.string :encrypted_otp_secret
+      t.string :encrypted_otp_secret_iv
+      t.string :encrypted_otp_secret_salt
+      t.integer :consumed_timestep
+      t.boolean :otp_required_for_login
+      t.string :otp_backup_codes, :string, array: true
     end
-    # add_index :users, :confirmation_token,   unique: true
-    # add_index :users, :unlock_token,         unique: true
   end
 end

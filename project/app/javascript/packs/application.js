@@ -27,6 +27,7 @@ import Helper from "./Helper.js"
 global.Helper = Helper;
 window.Helper = Helper;
 
+
 import SPA from "./SPA.js"
 if ($("html").data().isLogin) {
 	SPA.start();
