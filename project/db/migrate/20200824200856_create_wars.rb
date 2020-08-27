@@ -17,9 +17,7 @@ class CreateWars < ActiveRecord::Migration[6.0]
       t.string :match_list
       t.integer :status
       t.boolean :match_ongoing
-
       t.timestamps
     end
   end
 end
-

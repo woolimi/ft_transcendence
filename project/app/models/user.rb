@@ -8,7 +8,14 @@ class User < ApplicationRecord
 #         :omniauthable, omniauth_providers: [:marvin]
   devise :registerable, :validatable, :omniauthable, omniauth_providers: [:marvin]
   has_one :user_profile
-  has_many :chat_messages
+	has_many :chat_messages
+	
+	has_many :game_users, dependent: :destroy
+	has_many :games, through: :game_users, source: :game
+
+	has_many :tournament_users, dependent: :destroy
+	has_many :tournaments, through: :tournament_users, source: :tournament
+
   def self.from_omniauth(auth, session_id)
     user = User.find_by(ft_id: auth[:uid])
     if user.blank?
@@ -40,5 +47,9 @@ class User < ApplicationRecord
     qrcode = RQRCode::QRCode.new(otp_provisioning_uri(label, issuer: issuer))
     qrcode.as_svg(module_size: 4)
   end
+
+	def game_points(game)
+		game.game_users.find_by(user_id: self.id).points
+	end
 
 end

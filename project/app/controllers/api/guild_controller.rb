@@ -2,8 +2,8 @@ class Api::GuildController < ApplicationController
     before_action :authenticate_user!
 
     def show
-		allGuilds = Guild.select("id, name, anagram, total_score")
-        render json: allGuilds
+		   allGuilds = Guild.select("id, name, anagram, total_score")
+       render json: allGuilds
     end
     
     def update

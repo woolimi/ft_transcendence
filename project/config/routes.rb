@@ -6,10 +6,10 @@ Rails.application.routes.draw do
       post 'pre_otp', to: 'users/sessions#pre_otp'
     end
   end
-
+  
   # resource :two_factor
   root to: 'spa#index'
-
+  
   # devise_scope :user do
   #   get 'sign_in', :to => 'devise/sessions#new', :as => :new_user_session
   # delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
@@ -48,6 +48,12 @@ Rails.application.routes.draw do
 
       put "/last_visited", to: 'channels#update_last_visited'
     end
+    resources :tournaments, param: :id, only: [:create, :index, :show], format: "json" do
+        member do
+            put :join
+            delete :quit
+        end
+    end
     resources :matches, param: :id, only: [:create, :show]
-  end # namespace api
+  end # namespace api      
 end
