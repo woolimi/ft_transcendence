@@ -47,7 +47,7 @@ $(() => {
 					class: 'tournamentItem'
 				})
 				contentElem.on('click', ()=>{
-					location.href = `#tournaments/${tournament.id}`;
+					location.href = `#game/tournaments/${tournament.id}`;
 				})
 				contentElem.html(tournament.name)
 				if(tournament.status == 'finished'){
