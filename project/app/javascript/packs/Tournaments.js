@@ -17,9 +17,9 @@ $(() => {
 		tournamentsList_backbone: Tournaments.collection,
 		tournamentList:[],
 		initialize: async function(){
-			debugger
+			// debugger
 			await Helper.fetch(this.tournamentsList_backbone)
-			debugger
+			// debugger
 			// console.log(this.tournamentsList)
 			// for(const tournament of this.tournamentsList){
 			// 	console.log(tournament.attributes)
