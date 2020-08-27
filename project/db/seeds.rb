@@ -72,8 +72,8 @@ if Tournament.find_by(name: 'tournament1').blank?
 	tournament.players.clear
 	tournament.players.push users
 
-	game1=Match.create(
-		game_type: 'tournament_semi',
+	match1=Match.create(
+		match_type: 'tournament_semi',
 		tournament: tournament,
 		player_left: user1,
 		player_right: user2,
@@ -83,8 +83,8 @@ if Tournament.find_by(name: 'tournament1').blank?
 		loser: user2.name,
 		# created_at: Time.now()
 	)
-	game2=Match.create(
-		game_type: 'tournament_semi',
+	match2=Match.create(
+		match_type: 'tournament_semi',
 		tournament: tournament,
 		player_left: user3,
 		player_right: user4,
@@ -93,8 +93,8 @@ if Tournament.find_by(name: 'tournament1').blank?
 		winner: user3.name,
 		loser: user4.name
 	)
-	game3=Match.create(
-		game_type: 'tournament_final',
+	match3=Match.create(
+		match_type: 'tournament_final',
 		tournament: tournament,
 		player_left: user1,
 		player_right: user3,

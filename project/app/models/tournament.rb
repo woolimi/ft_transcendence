@@ -2,7 +2,7 @@ class Tournament < ApplicationRecord
 	has_many :tournament_users, dependent: :destroy, before_add: :check_player_limit
 	has_many :players, through: :tournament_users, source: :user
 
-	has_many :games, dependent: :destroy
+	has_many :matches, dependent: :destroy
 
 	enum status: [
 		:pending,
@@ -19,11 +19,11 @@ class Tournament < ApplicationRecord
 	end
 
 	def semis_done?
-		games.where(game_type: :tournament_semi).where(status: :finished).count == 2
+		matches.where(match_type: 'tournament_semi').where.not(winner: '').count == 2
 	end
 
 	def winner
-		games.find_by(game_type: :tournament_final).winner
+		matches.find_by(match_type: 'tournament_final').winner
 	end
 
 
