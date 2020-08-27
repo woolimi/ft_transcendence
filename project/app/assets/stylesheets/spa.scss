@@ -287,3 +287,17 @@ html, body, #app{
   width: 6em;
   height: 6em;
 }
+
+#game-timer {
+    position: absolute;
+    left: 50%;
+    background: #5b986ea6;
+    text-align: center;
+    border-radius: 40px;
+    padding: 10px;
+    font-size: 5em;
+    top: 50%;
+    transform: translate(-50%, -98%);
+    color: #f1f1f1;
+    width: 3em;
+}

@@ -32,6 +32,7 @@ if ($('html').data().isLogin) {
 			$(window).off("resize");
 		};
 
+		const urlHistory = [];
 		const RouterClass = Backbone.Router.extend({
 			routes: {
 				"": "game",
@@ -49,9 +50,10 @@ if ($('html').data().isLogin) {
 			},
 			game_duel: async function(match_id) {
 				remove_channel();
-				// if user click reload button, redirect to home
+				if (urlHistory[0] && urlHistory[0].indexOf("#game/duel/") > -1)
+					return Router.router.navigate(`/`, { trigger: true });
 				if (performance.getEntriesByType("navigation")[0].type === "reload")
-					return Router.router.navigate(`/`);
+					return Router.router.navigate(`/`, { trigger: true });
 				if (!match_id) {
 					const new_match = await Helper.ajax('/api/matches/', `match_type=duel`, 'POST');
 					return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
@@ -78,6 +80,13 @@ if ($('html').data().isLogin) {
 		});
 		const router = new RouterClass();
 		Router.router = router;
+
+		$(window).on('hashchange', function (e) {
+			urlHistory.push(location.hash);
+			if (urlHistory.length > 2) {
+				urlHistory.splice(0, urlHistory.length - 2)
+			};
+		});
 
 		Router.router.on("route", function (curRoute, params) {
 			Navbar.currentRoute.set({ route: curRoute });

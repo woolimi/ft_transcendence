@@ -73,7 +73,13 @@ $(() => {
 				}
 
 				if (data.count_down) {
-					$("#timer").html(data.count);
+					$("#game-timer").removeClass("d-none")
+					$("#game-timer").html(data.count);
+					if (data.count === "GO!") {
+						setTimeout(()=> {
+							$("#game-timer").addClass("d-none")
+						}, 800)
+					}
 					return;
 				}
 

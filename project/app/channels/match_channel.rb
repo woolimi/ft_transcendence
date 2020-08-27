@@ -64,7 +64,7 @@ class MatchChannel < ApplicationCable::Channel
   private
   def game_start(match_id, players)
     @@matches[match_id] = {
-      "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => @@DIRECTION[:IDLE], "moveY" => @@DIRECTION[:IDLE], "speed" => 3 },
+      "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => @@DIRECTION[:IDLE], "moveY" => @@DIRECTION[:IDLE], "speed" => 4 },
       "score" => [0, 0],
       "player_1" => { "x" => 10, "y" => 90 },
       "player_2" => { "x" => 390, "y" => 90 },
@@ -96,27 +96,24 @@ class MatchChannel < ApplicationCable::Channel
           @@matches[match_id]["over"] = true
         end
 
-        game["ball"]["moveY"] = @@DIRECTION[:UP] if (game["ball"]["y"] + game["ball"]["r"] >= @@CANVAS[:HEIGHT])
-        game["ball"]["moveY"] = @@DIRECTION[:DOWN] if (game["ball"]["y"] - game["ball"]["r"] <= 0)
+        game["ball"]["moveY"] *= -1 if (game["ball"]["y"] + game["ball"]["r"] >= @@CANVAS[:HEIGHT])
+        game["ball"]["moveY"] *= -1 if (game["ball"]["y"] - game["ball"]["r"] <= 0)
 
-        game["ball"]["y"] -= game["ball"]["speed"] / 1.5 if game["ball"]["moveY"] == @@DIRECTION[:UP]
-        game["ball"]["y"] += game["ball"]["speed"] / 1.5 if game["ball"]["moveY"] == @@DIRECTION[:DOWN]
-        game["ball"]["x"] -= game["ball"]["speed"] / 1.5 if game["ball"]["moveX"] == @@DIRECTION[:LEFT]
-        game["ball"]["x"] += game["ball"]["speed"] / 1.5 if game["ball"]["moveX"] == @@DIRECTION[:RIGHT]
-
+        game["ball"]["y"] += game["ball"]["moveY"] * game["ball"]["speed"] / 1.5
+        game["ball"]["x"] += game["ball"]["moveX"] * game["ball"]["speed"] / 1.5
 
         # handle p1 - ball collision
         if (game["ball"]["x"] - game["ball"]["r"] <= p1["x"] && game["ball"]["x"] >= p1["x"] - @@PADDLE[:WIDTH])
           if (game["ball"]["y"] <= p1["y"] + @@PADDLE[:HEIGHT] && game["ball"]["y"] + game["ball"]["r"] >= p1["y"])
-            game["ball"]["x"] = (p1["x"] + game["ball"]["r"]);
-            game["ball"]["moveX"] = @@DIRECTION[:RIGHT];
+            game["ball"]["x"] = (p1["x"] + game["ball"]["r"])
+            game["ball"]["moveX"] *= -1
           end
         end
         # handle p2 - ball collision
         if (game["ball"]["x"] - game["ball"]["r"] <= p2["x"] && game["ball"]["x"] >= p2["x"] - @@PADDLE[:WIDTH])
           if (game["ball"]["y"] <= p2["y"] + @@PADDLE[:HEIGHT] && game["ball"]["y"] + game["ball"]["r"] >= p2["y"])
-            game["ball"]["x"] = (p2["x"] - game["ball"]["r"]);
-            game["ball"]["moveX"] = @@DIRECTION[:LEFT];
+            game["ball"]["x"] = (p2["x"] - game["ball"]["r"])
+            game["ball"]["moveX"] *= -1
           end
         end
       end # over false
@@ -152,8 +149,8 @@ class MatchChannel < ApplicationCable::Channel
   def ball_reset(ball)
     ball["x"] = @@CANVAS[:WIDTH] / 2
     ball["y"] = @@CANVAS[:HEIGHT] / 2
-    ball["moveX"] = @@DIRECTION[:IDLE]
-    ball["moveY"] = @@DIRECTION[:IDLE]
+    ball["moveX"] = 0
+    ball["moveY"] = 0
   end
 
   def player_reset(game)
@@ -162,8 +159,8 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def ball_start(ball)
-    ball["moveX"] = rand(0..1) == 1 ? @@DIRECTION[:LEFT] : @@DIRECTION[:RIGHT];
-    ball["moveY"] = rand(0..1) == 1 ? @@DIRECTION[:UP] : @@DIRECTION[:DOWN];
+    ball["moveX"] = (rand(0..1) == 1 ? -1 : 1) * Math.cos(rand(45..60) * Math::PI / 180)
+    ball["moveY"] = (rand(0..1) == 1 ? -1 : 1) * Math.sin(rand(45..60) * Math::PI / 180)
   end
 
   def count_down(match_id)
@@ -176,7 +173,7 @@ class MatchChannel < ApplicationCable::Channel
     data[:count] = 1
     ActionCable.server.broadcast("match_#{match_id}_channel", data)
     sleep 1
-    data[:count] = "GO"
+    data[:count] = "GO!"
     ActionCable.server.broadcast("match_#{match_id}_channel", data)
     sleep 1
   end
