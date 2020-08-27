@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_26_132010) do
+ActiveRecord::Schema.define(version: 2020_08_27_093258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -53,24 +53,6 @@ ActiveRecord::Schema.define(version: 2020_08_26_132010) do
     t.index ["room"], name: "index_chats_on_room", unique: true
   end
 
-  create_table "game_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "game_id"
-    t.uuid "user_id"
-    t.integer "status", default: 0
-    t.integer "points", default: 0
-    t.integer "position"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "games", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "status"
-    t.integer "game_type"
-    t.uuid "tournament_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "guilds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "anagram"
@@ -85,10 +67,17 @@ ActiveRecord::Schema.define(version: 2020_08_26_132010) do
     t.string "loser"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "score_left"
-    t.integer "score_right"
-    t.string "player_left"
-    t.string "player_right"
+    t.uuid "war_id"
+    t.uuid "tournament_id"
+    t.string "match_type"
+    t.jsonb "player_1"
+    t.jsonb "player_2"
+    t.uuid "player_left_id"
+    t.uuid "player_right_id"
+    t.index ["player_left_id"], name: "index_matches_on_player_left_id"
+    t.index ["player_right_id"], name: "index_matches_on_player_right_id"
+    t.index ["tournament_id"], name: "index_matches_on_tournament_id"
+    t.index ["war_id"], name: "index_matches_on_war_id"
   end
 
   create_table "tournament_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -165,5 +154,7 @@ ActiveRecord::Schema.define(version: 2020_08_26_132010) do
   add_foreign_key "channel_messages", "users"
   add_foreign_key "chat_messages", "chats"
   add_foreign_key "chat_messages", "users"
+  add_foreign_key "matches", "tournaments"
+  add_foreign_key "matches", "wars"
   add_foreign_key "user_profiles", "users"
 end
