@@ -1,15 +1,108 @@
 <!-- war content -->
+<style>
+    .clock-class {
+        text-align: center;
+        font-size: 60px;
+        margin-top: 0px;
+    }
+    
+    #status {
+        text-shadow: 2px 2px #000000;
+        margin-top: 1rem !important;
+        background: rgb(2, 0, 36);
+        background: linear-gradient(90deg, rgba(2, 0, 36, 1) 14%, rgba(9, 9, 121, 1) 100%, rgba(0, 212, 255, 1) 100%);
+    }
+    
+    #countdown,
+    #stats {
+        background: rgb(2, 0, 36);
+        background: linear-gradient(90deg, rgba(2, 0, 36, 1) 14%, rgba(9, 9, 121, 1) 100%, rgba(0, 212, 255, 1) 100%);
+        text-shadow: 2px 2px #000000;
+    }
+    
+    #score {
+        font-size: 40px;
+        margin-right: 1rem !important;
+        border-right: 6px solid white;
+        border-width: thin;
+    }
+    
+    #other_statistics {
+        font-size: 30px;
+    }
+</style>
+
 <script type="text/template" name="tmpl-content-war">
-<div>
-This is the war template
-<%% if(position === "win") {%>
-    <div class="container">
-        <h1 align="cennter" class="display-4" style="color:#41C232">Your guild is leading!</h1>
+    <div>
+        <%% if(position === "win") {%>
+            <div id="status" class="rounded bg-gradient-2 shadow p-5 text-center mb-5">
+                <h1 align="center" class="display-4" style="color:#E3C220">Your guild is leading!</h1>
+            </div>
+            <%% } else {%>
+                <div id="status" class="rounded bg-gradient-1 shadow p-5 text-center mb-5">
+                    <h1 class="display-4" style="color:#C90812">Your guild is trailing!</h1>
+                </div>
+                <%% } %>
     </div>
-<%% } else {%>
-    <div class="container">
-        <h1 class="display-4" style="color:#C90812">Your guild is trailing!</h1>
+    <div id="countdown" class="rounded bg-gradient-1 text-white shadow p-5 text-center mb-5">
+        <h1 align="center" class="display-4" style="color:#FFFFFF">War Time:</h1>
+        <p id="clock" class="clock-class"></p>
     </div>
-	<%% } %>
-</div>
+    <div id="stats" class="rounded bg-gradient-1 text-white shadow p-5 text-center mb-5">
+        <h1 align="center" class="display-4" style="color:#FFFFFF">Statistics:</h1>
+        <div id="stats_inner">
+            <div class="container">
+                <div class="row">
+                    <div id="score" class="col-6">
+                        <p class="text-md-center">Score</p>
+                        <div class="row">
+                            <table style="width:100%" id="score-table">
+                                <tr>
+                                    <th>
+                                        Guild 1
+                                    </th>
+                                    <th>
+                                        Guild 2
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <%%= guild_1_score %>
+                                    </td>
+                                    <td>
+                                        <%%= guild_2_score %>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-1"></div>
+                    <div id="other_statistics" class="col-4">
+                        <p class="text-md-center">Others stats</p>
+                        <table style="width:100%" id="score-table">
+                            <tr>
+                                <td>Wins</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>Losses</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>Draws</td>
+                                <td>10</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <%% if(match_ongoing === false) {%>
+            <button type="button" class="btn btn-warning btn-lg btn-block">Attack!</button>
+            <%% } %>
+
+
+    </div>
 </script>

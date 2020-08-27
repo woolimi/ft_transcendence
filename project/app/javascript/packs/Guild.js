@@ -2,6 +2,7 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Profile from "./Profile.js"
+import Router from "./Router.js"
 
 const Guild = {};
 
@@ -22,14 +23,18 @@ $(() => {
 		template: _.template($("script[name='tmpl-content-guild']").html()),
 		model: Guild.allGuilds,
 		events: {
-			'click .joinGuild': 'joinGuild',
-			'click .leaveGuild': 'leaveGuild',
+			"click .joinGuild": "joinGuild",
+			"click .leaveGuild": "leaveGuild",
+			"submit #create-guild": "createGuild",
+			"click .warHistory": "warHistory",
 		},
 		initialize: async function(){
 			try {
-			await Helper.fetch(this.model);
+				this.user_id = $('html').data().userId;
+			
 				await Helper.fetch(this.model);
-			} catch (error) {
+				await Helper.fetch(Profile.userProfile);
+			} 	catch (error) {
 				Helper.flash_message("danger", "Error while loading guild ranks!");
 			}
 		},
@@ -46,12 +51,34 @@ $(() => {
 			await Helper.save(Profile.userProfile);
 			this.render();
 		},
+		createGuild: async function(e){
+			e.preventDefault();
+			const form = $("#create-guild");
+			const guildName = $(".newGuildName").val();
+			var i = 0
+			var guildArr = this.model.toJSON();
+			const data = form.serialize();
+			for(i = 0; i < Object.keys(guildArr).length; i++)
+			{
+				if(guildArr[i].name == guildName)
+					return Helper.flash_message("danger", "Guild already exists");
+			}
+			await Helper.ajax(`/api/guild/${this.user_id}`, "guildName=" + guildName, "PUT");
+			await Helper.fetch(this.model);
+			this.render();
+			console.log($(".newGuildName").val());
+		},
+		warHistory: async function(e)
+		{
+			const guild_data = $(e.target).data();
+			Router.router.navigate("/guild/war_history/" + guild_data.guild_id, {trigger: true});
+		},
 		render: async function () {
 			await Helper.fetch(Profile.userProfile);
-			var user = Profile.userProfile.toJSON();
+			var guild = this.model.toJSON();
 			const content = this.template({
-				guilds: this.model.toJSON(),
-				user: user,
+				guilds: guild,
+				user: Profile.userProfile.toJSON(),
 			});
 			this.$el.html(content);
 			return this;

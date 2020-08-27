@@ -6,28 +6,27 @@ import Router from "./Router.js"
 const Game = {};
 
 $(() => {
-	const GameContent = Backbone.View.extend({
-		el: $("#view-content"),
-		events: {
-			"click #tournaments": "go_to_tournaments_page",
-			// "click #war": "goToWarPage",
-		},
-		template: _.template($("script[name='tmpl-content-game']").html()),
-		render: function () {
-			const content = this.template();
-			this.$el.html(content);
-			return this;
-		},
-		// goToWarPage: function () {
-		// 	console.log("War page");
-		// },
-		go_to_tournaments_page: function(e){
-			e.stopImmediatePropagation()
-			Router.router.navigate("/tournaments", { trigger: true });
-		}
-	});
-
-	Game.content = new GameContent();
+    Game.Content = Backbone.View.extend({
+        el: $("#view-content"),
+        index_template: _.template($("script[name='tmpl-game-index']").html()),
+        render: function() {
+            this.$el.html(this.index_template());
+            return this;
+        },
+        events: {
+            "click .game-type": "move_page",
+            "click #war": "goToWarPage"
+        },
+        move_page: function(e) {
+            e.stopImmediatePropagation();
+            const link = $(e.currentTarget).data().link;
+            window.location.hash = `game/${link}`;
+        },
+        goToWarPage: function() {
+            console.log("War page");
+        }
+    });
+    Game.content = new Game.Content();
 })
 
 export default Game;

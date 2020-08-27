@@ -4,7 +4,8 @@ class CreateGuilds < ActiveRecord::Migration[6.0]
       t.string :name
       t.string :anagram
       t.integer :total_score
-
+      t.jsonb :guild_officers
+      t.uuid :owner
       t.timestamps
     end
   end
