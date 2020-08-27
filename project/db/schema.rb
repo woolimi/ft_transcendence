@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_13_105843) do
+ActiveRecord::Schema.define(version: 2020_08_24_141304) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -51,6 +51,17 @@ ActiveRecord::Schema.define(version: 2020_08_13_105843) do
     t.string "room", null: false
     t.jsonb "members", null: false, array: true
     t.index ["room"], name: "index_chats_on_room", unique: true
+  end
+
+  create_table "matches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "match_type", null: false
+    t.jsonb "player_1"
+    t.jsonb "player_2"
+    t.string "winner"
+    t.string "loser"
+    t.datetime "created_at"
+    t.datetime "started_at"
+    t.boolean "match_finished"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
