@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_24_141304) do
+ActiveRecord::Schema.define(version: 2020_08_25_105440) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -53,15 +53,31 @@ ActiveRecord::Schema.define(version: 2020_08_24_141304) do
     t.index ["room"], name: "index_chats_on_room", unique: true
   end
 
+  create_table "guilds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "anagram"
+    t.integer "total_score"
+    t.jsonb "guild_officers"
+    t.uuid "owner"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "matches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "match_type", null: false
     t.jsonb "player_1"
     t.jsonb "player_2"
-    t.string "winner"
-    t.string "loser"
+    t.uuid "winner"
+    t.uuid "loser"
     t.datetime "created_at"
     t.datetime "started_at"
     t.boolean "match_finished"
+    t.uuid "player_left"
+    t.uuid "player_right"
+    t.integer "score_left"
+    t.integer "score_right"
+    t.uuid "war_id"
+    t.index ["war_id"], name: "index_matches_on_war_id"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -72,16 +88,13 @@ ActiveRecord::Schema.define(version: 2020_08_24_141304) do
     t.string "two_factor", default: "off"
     t.string "block_list", default: [], array: true
     t.integer "status", default: 0
+    t.uuid "guild_id"
     t.uuid "user_id"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "ft_id", null: false
-    t.string "session_id"
-    t.string "access_token"
-    t.string "refresh_token"
-    t.datetime "token_expires_in"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -92,7 +105,29 @@ ActiveRecord::Schema.define(version: 2020_08_24_141304) do
     t.integer "consumed_timestep"
     t.boolean "otp_required_for_login"
     t.string "otp_backup_codes", array: true
+    t.string "string", array: true
     t.index ["ft_id"], name: "index_users_on_ft_id", unique: true
+  end
+
+  create_table "wars", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "guild_1"
+    t.string "guild_2"
+    t.string "guild_1_score"
+    t.string "guild_2_score"
+    t.integer "guild_1_matches_won"
+    t.integer "guild_1_matches_lost"
+    t.integer "guild_1_matches_unanswered"
+    t.integer "guild_2_matches_won"
+    t.integer "guild_2_matches_lost"
+    t.integer "guild_2_matches_unanswered"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.integer "wager"
+    t.string "match_list"
+    t.integer "status"
+    t.boolean "match_ongoing"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "channel_messages", "channels"
