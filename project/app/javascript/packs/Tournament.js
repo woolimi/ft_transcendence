@@ -18,9 +18,9 @@ $(() => {
 		initialize: async function(id){
 			this.id = id
 			this.model_backbone = new TournamentModel({id: id})
-			// debugger
+			debugger
 			await Helper.fetch(this.model_backbone)
-			// debugger
+			debugger
 			this.model = this.model_backbone.attributes
 			this.playerNames = {}
 			for(let i=0; i < 4; i++){

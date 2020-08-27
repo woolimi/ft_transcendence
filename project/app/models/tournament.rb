@@ -15,7 +15,7 @@ class Tournament < ApplicationRecord
 	validates :name, presence: true
 	
 	def check_player_limit(arg)
-		raise "tournament full" if players.count >= 8
+		raise "tournament full" if players.count >= 4
 	end
 
 	def semis_done?

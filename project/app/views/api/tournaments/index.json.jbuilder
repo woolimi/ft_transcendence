@@ -7,11 +7,11 @@ json.array! @tournaments do |tournament|
 	json.players tournament.players.pluck(:id)
 	if tournament.status == "started"
 		json.semis do
-			json.partial! 'api/games/games', collection: tournament.games.tournament_semi, as: :game
+			json.partial! 'api/matches/matches', collection: tournament.matches.where(matcht_type: 'tournament_semi'), as: :match
 		end
 		if tournament.semis_done?
 			json.final do
-				json.partial! 'api/games/games', game: tournament.games.tournament_final.first
+				json.partial! 'api/matches/matches', match: tournament.matches.where(matcht_type: 'tournament_final').first
 			end
 		end
 	end

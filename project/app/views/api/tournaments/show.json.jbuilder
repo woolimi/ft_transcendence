@@ -10,12 +10,12 @@ json.players do
 		json.name player.user_profile.name
 	end
 end
-json.winner @tournament.winner.id if @tournament.finished? && @tournament.winner
+json.winner @tournament.winner if @tournament.winner != ''
 json.semis do
-	json.partial! 'api/games/games', collection: @tournament.games.tournament_semi, as: :game
+	json.partial! 'api/matches/matches', collection: @tournament.matches.where(match_type: 'tournament_semi'), as: :match
 end
 if @tournament.semis_done?
 	json.final do
-		json.partial! 'api/games/games', game: @tournament.games.tournament_final.first
+		json.partial! 'api/matches/matches', match: @tournament.matches.where(match_type: 'tournament_final').first
 	end
 end
