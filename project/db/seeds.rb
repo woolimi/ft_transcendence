@@ -22,7 +22,7 @@ if User.find_by({ email: "doby@asdf.com" }).blank?
 		avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",
 		user_id: u[:id])
 end
-user1= u;
+user1= User.find_by({ email: "doby@asdf.com" });
 
 if User.find_by({ email: "jai@asdf.com"}).blank?
 	j = User.create!(
@@ -37,7 +37,7 @@ if User.find_by({ email: "jai@asdf.com"}).blank?
 		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
 		user_id: j[:id])
 end
-user2=j
+user2=User.find_by({ email: "jai@asdf.com"})
 
 if User.find_by({ email: "email3@email.com"}).blank?
 	user3 = User.create!(
@@ -51,6 +51,8 @@ if User.find_by({ email: "email3@email.com"}).blank?
 		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
 		user_id: user3[:id])
 end
+user3=User.find_by({ email: "email3@email.com"})
+
 
 if User.find_by({ email: "email4@email.com"}).blank?
 	user4 = User.create!(
@@ -64,6 +66,7 @@ if User.find_by({ email: "email4@email.com"}).blank?
 		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
 		user_id: user4[:id])
 end
+user4=User.find_by({ email: "email4@email.com"})
 
 if Tournament.find_by(name: 'tournament1').blank?
 	tournament = Tournament.create(name: 'tournament1', 
@@ -75,7 +78,6 @@ if Tournament.find_by(name: 'tournament1').blank?
 	tournament.players.clear
 	tournament.players.push users
 
-	byebug
 	match1=Match.create(
 		match_type: 'tournament_semi',
 		tournament: tournament,
