@@ -2,8 +2,6 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 
-
-
 const War = {};
 
 $(() => {
@@ -28,6 +26,7 @@ $(() => {
     });
 
     War.data = new WarData();
+
 
     War.Content = Backbone.View.extend({
         el: $("#view-content"),
