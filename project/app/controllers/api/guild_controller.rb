@@ -11,8 +11,6 @@ class Api::GuildController < ApplicationController
       guild.save()
       me = UserProfile.find_by(user_id: current_user[:id])
       me.guild_id = guild.id
-      me.is_owner = true
-      me.is_officer = true
       me.save()
     end
   end
