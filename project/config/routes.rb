@@ -45,5 +45,6 @@ Rails.application.routes.draw do
 
       put "/last_visited", to: 'channels#update_last_visited'
     end
-  end
+    resources :matches, param: :id, only: [:create, :show]
+  end # namespace api
 end
