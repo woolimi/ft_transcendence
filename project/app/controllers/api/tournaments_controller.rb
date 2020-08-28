@@ -10,9 +10,13 @@ class Api::TournamentsController < ApplicationController
 	end
 
 	def create
-		# return head :unauthorized unless current_user.admin?
-		@tournament = Tournament.create!(tournament_params)
-		render :show
+		# return render plain: 'forbidden', status: :forbidden if !current_user.user_profile.admin
+		@tournament = Tournament.create!(
+			name: tournament_params[:name],
+			registration_start: DateTime.now,
+			registration_end: DateTime.now + 1.hour
+		)
+		# render :show
 	end
 
 	def show
