@@ -35,10 +35,11 @@
 
     <%= render "spa/backboneTemplates/tournaments/tournament" %>
 
-
 		<%= stylesheet_link_tag "simpleNotification.min.css" %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    
+    <%= javascript_include_tag 'simpleNotification.min.js' %>
+		<%= javascript_pack_tag 'application' %>
+
   </head>
   <body>
     <%= yield %>
@@ -52,9 +53,5 @@
     <% end %>
     </script>
 
-		<!-- https://stackoverflow.com/questions/17622858/javascript-include-tag-rails-4-generating-javascripts-instead-of-assets-i -->
-		<!-- https://github.com/rails/sprockets-rails/issues/458 -->
-		<%= javascript_include_tag 'simpleNotification.min.js' %>
-		<%= javascript_pack_tag 'application' %>
   </body>
 </html>

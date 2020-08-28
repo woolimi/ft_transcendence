@@ -6,6 +6,8 @@ import Tournament from "./Tournament.js";
 
 const Tournaments = {};
 
+if ($('html').data().isLogin) {
+
 $(() => {
 	const TournamentsCollection = Backbone.Collection.extend({
 		url: "/api/tournaments"
@@ -58,4 +60,5 @@ $(() => {
 	});
 })
 
+}
 export default Tournaments;

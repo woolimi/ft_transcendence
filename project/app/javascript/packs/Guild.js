@@ -6,6 +6,8 @@ import Router from "./Router.js"
 
 const Guild = {};
 
+if ($('html').data().isLogin) {
+
 $(() => {
 
 	const AllGuilds = Backbone.Model.extend({
@@ -87,5 +89,7 @@ $(() => {
 
 	Guild.content = new GuildContent();
 })
+
+}
 
 export default Guild;
