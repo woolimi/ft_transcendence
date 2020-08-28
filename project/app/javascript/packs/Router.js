@@ -51,11 +51,11 @@ if ($('html').data().isLogin) {
                 "channels/:channel_id": "channel",
                 "war": "war",
                 "game/tournaments/:id": "tournament",
-				        "game/tournaments": "tournaments"
+                "game/tournaments": "tournaments"
             },
             game: function() {
                 remove_channel();
-                Game.content.render();
+                Game.content = new Game.Content();
             },
             game_duel: async function(match_id) {
                 remove_channel();
@@ -77,7 +77,6 @@ if ($('html').data().isLogin) {
             guild: function() {
                 remove_channel();
                 Guild.content.render();
-
             },
             guildHistory: function(guild_id) {
                 WarHistory.histView = new WarHistory.HistContent({ guild_id: guild_id });
@@ -94,13 +93,13 @@ if ($('html').data().isLogin) {
                 War.content = new War.Content();
             },
             tournaments: function(){
-				      remove_channel();
-				      Tournaments.content.render();
-			      },
-			      tournament: function(id){
-      				remove_channel();
-			      	Tournament.content = new Tournament.Content(id);
-			      }
+                remove_channel();
+                Tournaments.content.render();
+            },
+            tournament: function(id){
+                remove_channel();
+                Tournament.content = new Tournament.Content(id);
+            }
         });
         const router = new RouterClass();
         Router.router = router;
