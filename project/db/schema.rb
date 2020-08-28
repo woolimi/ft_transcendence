@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_26_124357) do
+ActiveRecord::Schema.define(version: 2020_08_27_164052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -72,11 +72,15 @@ ActiveRecord::Schema.define(version: 2020_08_26_124357) do
     t.datetime "created_at"
     t.datetime "started_at"
     t.boolean "match_finished"
-    t.uuid "player_left"
-    t.uuid "player_right"
+    t.uuid "player_left_id"
+    t.uuid "player_right_id"
     t.integer "score_left"
     t.integer "score_right"
     t.uuid "war_id"
+    t.uuid "tournament_id"
+    t.index ["player_left_id"], name: "index_matches_on_player_left_id"
+    t.index ["player_right_id"], name: "index_matches_on_player_right_id"
+    t.index ["tournament_id"], name: "index_matches_on_tournament_id"
     t.index ["war_id"], name: "index_matches_on_war_id"
   end
 

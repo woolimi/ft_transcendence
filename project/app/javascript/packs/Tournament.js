@@ -18,23 +18,21 @@ $(() => {
 		initialize: async function(id){
 			this.id = id
 			this.model_backbone = new TournamentModel({id: id})
-			// debugger
 			await Helper.fetch(this.model_backbone)
-			// debugger
 			this.model = this.model_backbone.attributes
-			// this.playerNames = {}
-			// for(let i=0; i < 4; i++){
-			// 	this.playerNames[this.model.players[i].id] 
-			// 		= this.model.players[i].name
-			// }
+			this.playerNames = {}
+			for(let i=0; i < 4; i++){
+				this.playerNames[this.model.players[i].id] 
+					= this.model.players[i].name
+			}
 			this.render()
 		},
 
-		// getPlayerName: function(id){ // todo : fetch
-		// 	// let playerNames = ['', 'Tom', 'John', 'Cena', 'Max']
-		// 	// debugger
-		// 	return this.playerNames[id]
-		// },
+		getPlayerName: function(id){ // todo : fetch
+			// let playerNames = ['', 'Tom', 'John', 'Cena', 'Max']
+			// debugger
+			return this.playerNames[id]
+		},
 
 		getWinnerClass: function(winnerId, id){
 			if(winnerId == id)
@@ -57,19 +55,19 @@ $(() => {
 					match_id: this.model.semis[0].id,
 					left_score: this.model.semis[0].player_one.points,
 					right_score: this.model.semis[0].player_two.points,
-					winner_name: this.model.semis[0].winner
+					winner_id: this.model.semis[0].winner
 				},
 				semiFinal_2:{
 					match_id: this.model.semis[1].id,
 					left_score: this.model.semis[1].player_one.points,
 					right_score: this.model.semis[1].player_two.points,
-					winner_name: this.model.semis[1].winner
+					winner_id: this.model.semis[1].winner
 				},
 				final:{
 					match_id: this.model.final.id,
 					left_score: this.model.final.player_one.points,
 					right_score: this.model.final.player_two.points,
-					winner_name: this.model.final.winner
+					winner_id: this.model.final.winner
 				}
 			}
 			return tournament
@@ -80,6 +78,7 @@ $(() => {
 			// const content = this.template();
 			// todo : model, use id to get specific tournament
 			let tournament = this.getTournament(); 
+			console.log(tournament)
 			let content = `<div id="tournamentBody">
 			<h3>Tournament</h3><br>
 			<p> <strong>Tournament name:</strong> ${tournament.name} </p>
@@ -121,13 +120,13 @@ $(() => {
         
 				<li class="gameTour game-top 
 					${this.getWinnerClass(tournament.final.winner_id, tournament.semiFinal_1.winner_id)}">
-					${tournament.semiFinal_1.winner_name}
+					${this.getPlayerName(tournament.semiFinal_1.winner_id)}
 					<span>${tournament.final.left_score}</span>
 				</li>
         <li class="gameTour game-spacer">&nbsp;</li>
 				<li class="gameTour game-bottom 
 					${this.getWinnerClass(tournament.final.winner_id, tournament.semiFinal_2.winner_id)}">
-					${tournament.semiFinal_2.winner_name} 
+					${this.getPlayerName(tournament.semiFinal_2.winner_id)} 
 					<span>${tournament.final.right_score}</span>
 				</li>
         

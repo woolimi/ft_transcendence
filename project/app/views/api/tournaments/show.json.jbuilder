@@ -10,7 +10,7 @@ json.players do
 		json.name player.user_profile.name
 	end
 end
-json.winner @tournament.winner if @tournament.winner != ''
+# json.winner @tournament.winner if @tournament.winner
 json.semis do
 	json.partial! 'api/matches/matches', collection: @tournament.matches.where(match_type: 'tournament_semi'), as: :match
 end

@@ -68,45 +68,47 @@ if User.find_by({ email: "email4@email.com"}).blank?
 end
 user4=User.find_by({ email: "email4@email.com"})
 
-if Tournament.find_by(name: 'tournament1').blank?
-	tournament = Tournament.create(name: 'tournament1', 
-		status: :finished, 
-		registration_start: DateTime.now - 3.day, 
-		registration_end: DateTime.now - 2.day)
+Tournament.delete_all
+tournament = Tournament.create(name: 'tournament1', 
+	status: :finished, 
+	registration_start: DateTime.now - 3.day, 
+	registration_end: DateTime.now - 2.day)
 
-	users=[user1,user2,user3,user4]
-	tournament.players.clear
-	tournament.players.push users
+users=[user1,user2,user3,user4]
+tournament.players.clear
+tournament.players.push users
 
-	match1=Match.create(
-		match_type: 'tournament_semi',
-		tournament: tournament,
-		player_left: user1,
-		player_right: user2,
-		player_1: {score: 10},
-		player_2: {score: 8},
-		winner: user1.user_profile.name,
-		loser: user2.user_profile.name,
-		# created_at: Time.now()
-	)
-	match2=Match.create(
-		match_type: 'tournament_semi',
-		tournament: tournament,
-		player_left: user3,
-		player_right: user4,
-		player_1: {score: 10},
-		player_2: {score: 8},
-		winner: user3.user_profile.name,
-		loser: user4.user_profile.name
-	)
-	match3=Match.create(
-		match_type: 'tournament_final',
-		tournament: tournament,
-		player_left: user1,
-		player_right: user3,
-		player_1: {score: 10},
-		player_2: {score: 8},
-		winner: user1.user_profile.name,
-		loser: user3.user_profile.name
-	)
-end
+match1=Match.create(
+	match_type: 'tournament_semi',
+	tournament: tournament,
+	player_left: user1,
+	player_right: user2,
+	player_1: {score: 10},
+	player_2: {score: 8},
+	winner: user1.id,
+	loser: user2.id,
+	match_finished: true
+	# created_at: Time.now()
+)
+match2=Match.create(
+	match_type: 'tournament_semi',
+	tournament: tournament,
+	player_left: user3,
+	player_right: user4,
+	player_1: {score: 10},
+	player_2: {score: 8},
+	winner: user3.id,
+	loser: user4.id,
+	match_finished: true
+)
+match3=Match.create(
+	match_type: 'tournament_final',
+	tournament: tournament,
+	player_left: user1,
+	player_right: user3,
+	player_1: {score: 10},
+	player_2: {score: 8},
+	winner: user1.id,
+	loser: user3.id,
+	match_finished: true
+)
