@@ -2,7 +2,7 @@ class Api::GuildsController < ApplicationController
   before_action :authenticate_user!
 
   def show
-  allGuilds = Guild.select("id, name, anagram, total_score, owner, guild_officers")
+  allGuilds = Guild.select("id, name, anagram, total_score, owner, guild_officers").order("total_score DESC")
       render json: allGuilds
   end
   
