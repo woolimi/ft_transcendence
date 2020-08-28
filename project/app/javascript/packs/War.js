@@ -17,6 +17,7 @@ $(() => {
             match_ongoing: "undefined",
             guild_1_score: "undefined",
             guild_2_score: "undefined",
+            status: "",
         },
         urlRoot: "/api/war/",
         idAttribute: "user_id",
@@ -38,7 +39,11 @@ $(() => {
                 console.log("Model: " + JSON.stringify(this.model));
                 this.render();
             } catch (error) {
-                Helper.flash_message("danger", "Error while loading war!");
+                console.log(JSON.stringify(error));
+                if (error.responseText == "user does not have any guild")
+                    Helper.flash_message("danger", "You are not inside any guild!");
+                else
+                    Helper.flash_message("danger", "Error while loading war!");
             }
         },
         render: function() {
