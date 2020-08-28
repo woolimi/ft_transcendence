@@ -34,12 +34,15 @@ $(() => {
 				this.render_players(match_data);
 				this.render_game();
 				MatchChannel.subscribe(match_data, this.recv_callback, this);
+				const wrapper = document.getElementById("game-screen-wrapper");
+				const canvas = document.getElementById("game-screen");
+				this.pong = new Pong(wrapper, canvas, options.id);
+				if (match_data.started_at	&& !match_data.match_finished
+					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id))
+					this.pong.on();
 			} catch (error) {
 				console.error(error);
 			}
-			const wrapper = document.getElementById("game-screen-wrapper");
-			const canvas = document.getElementById("game-screen");
-			this.pong = new Pong(wrapper, canvas, options.id);
 		},
 		check_ready(e) {
 			e.stopImmediatePropagation();
@@ -91,6 +94,8 @@ $(() => {
 
 				if (data.end) {
 					this.pong.off();
+					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
+					this.render_players(match_data);
 					return;
 				}
 

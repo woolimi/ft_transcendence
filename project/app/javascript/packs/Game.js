@@ -1,32 +1,37 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
-import Router from "./Router.js"
 
 const Game = {};
 
 $(() => {
     Game.Content = Backbone.View.extend({
         el: $("#view-content"),
-        index_template: _.template($("script[name='tmpl-game-index']").html()),
-        render: function() {
-            this.$el.html(this.index_template());
-            return this;
+        page_template: _.template($("script[name='tmpl-game-index']").html()),
+        list_template: _.template($("script[name='tmpl-ingame-list']").html()),
+        async initialize() {
+            try {
+                this.render_page();
+                this.render_list();                
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        render_page: function() {
+            this.$el.html(this.page_template());
+        },
+        render_list: function(data) {
+            this.$el.find("#game-ingame-list").html(this.list_template(data));
         },
         events: {
             "click .game-type": "move_page",
-            "click #war": "goToWarPage"
         },
         move_page: function(e) {
             e.stopImmediatePropagation();
             const link = $(e.currentTarget).data().link;
             window.location.hash = `game/${link}`;
         },
-        goToWarPage: function() {
-            console.log("War page");
-        }
     });
-    Game.content = new Game.Content();
 })
 
 export default Game;
