@@ -5,35 +5,32 @@ const WarHistory = {};
 
 $(() => {
     const warHistoryModel = Backbone.Model.extend({
-        initialize: function(options){
+        initialize: function(options) {
             this.id_attribute = options.guild_id;
             console.log(options.guild_id);
         },
         urlRoot: "/api/war_history/",
-		url: function (options) {
-			return this.urlRoot + encodeURIComponent(this.get('guild_id'));
-		},
+        url: function(options) {
+            return this.urlRoot + encodeURIComponent(this.get('guild_id'));
+        },
     });
 
-	WarHistory.HistContent = Backbone.View.extend({
+    WarHistory.HistContent = Backbone.View.extend({
         el: $("#view-content"),
         template: _.template($("script[name='tmpl-war-history']").html()),
-        initialize: async function(options)
-        {
-            var model =  new warHistoryModel({guild_id: options.guild_id});
+        initialize: async function(options) {
+            var model = new warHistoryModel({ guild_id: options.guild_id });
             await Helper.fetch(model);
             console.log(model.toJSON());
             this.render(model);
         },
-        render: function(model)
-        {
-            console.log(model.toJSON());
+        render: function(model) {
             var wars = model.toJSON();
             delete wars.guild_id;
             const content = this.template({
                 wars: wars,
             });
-			this.$el.html(content);
+            this.$el.html(content);
         }
     });
 })
