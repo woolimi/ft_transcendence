@@ -1,6 +1,9 @@
 <!-- gulid content -->
 <script type="text/template" name="tmpl-war-history">
-    Guild War History Page
+   <h1> Guild War History Page for <%%= guild_name %> </h1>
+    <%% if(_.size(wars) == 0){%>
+        <h2>No wars completed yet for <%%= guild_name %></h2>
+	<%% } %>
     <ul>
         <%% _.each(wars, function(wars, i) { %>
 		<li class="list-group-item d-flex justify-content-between align-items-center">
