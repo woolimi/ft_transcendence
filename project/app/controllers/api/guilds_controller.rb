@@ -1,4 +1,4 @@
-class Api::GuildController < ApplicationController
+class Api::GuildsController < ApplicationController
   before_action :authenticate_user!
 
   def show
@@ -6,7 +6,7 @@ class Api::GuildController < ApplicationController
       render json: allGuilds
   end
   
-  def update
+  def create
     guild = Guild.new(name: params[:guildName], anagram: "xxxxx", owner: current_user[:id], guild_officers: current_user[:id])
     guild.save()
     me = UserProfile.find_by(user_id: current_user[:id])
