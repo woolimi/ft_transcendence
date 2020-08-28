@@ -14,10 +14,14 @@ $(() => {
             position: "undefined",
             start_date: "undefined",
             end_date: "undefined",
-            match_ongoing: "undefined",
-            guild_1_score: "undefined",
-            guild_2_score: "undefined",
             status: "",
+            position: "undefined",
+            wins: 0,
+            losses: 0,
+            unanswered: 0,
+            player_guild_anag: "undefined",
+            opponent_guild_anag: "undefined",
+            match_ongoing: false,
         },
         urlRoot: "/api/war/",
         idAttribute: "user_id",
@@ -47,6 +51,9 @@ $(() => {
             this.$el.html(content);
             this.renderTimer(this.model.toJSON().end_date);
         },
+        events: {
+            "click #attack": "attack",
+        },
         renderTimer: function(end_date) {
             this.intervalId = setInterval(function() {
                 var dds = new Date(end_date);
@@ -68,6 +75,20 @@ $(() => {
                     document.getElementById("clock").innerHTML = "WAR EXPIRED";
                 }
             }, 1000);
+        },
+        attack: async function() {
+            console.log("Attacking");
+            this.model.set({
+                match_ongoing: true
+            });
+            try {
+                await this.model.save();
+                Helper.flash_message("War", "success!");
+                console.log("Success");
+            } catch (error) {
+                Helper.flash_message("War", "failure!");
+                console.log("Failure");
+            }
         }
     })
 })
