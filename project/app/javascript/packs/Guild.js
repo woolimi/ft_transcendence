@@ -9,7 +9,7 @@ const Guild = {};
 $(() => {
 
     const AllGuilds = Backbone.Model.extend({
-        urlRoot: "/api/guild/",
+        urlRoot: "/api/guilds/",
         idAttribute: 'user_id',
         url: function() {
             return this.urlRoot + encodeURIComponent(this.get('user_id'));
@@ -61,7 +61,7 @@ $(() => {
                 if (guildArr[i].name == guildName)
                     return Helper.flash_message("danger", "Guild already exists");
             }
-            await Helper.ajax(`/api/guild/${this.user_id}`, "guildName=" + guildName, "PUT");
+            await Helper.ajax(`/api/guilds`, "guildName=" + guildName, "POST");
             await Helper.fetch(this.model);
             this.render();
             console.log($(".newGuildName").val());
