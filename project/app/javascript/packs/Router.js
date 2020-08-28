@@ -76,7 +76,7 @@ if ($('html').data().isLogin) {
             },
             guild: function() {
                 remove_channel();
-                Guild.content.render();
+                Guild.contentLoad = new Guild.content().render();
 
             },
             guildHistory: function(guild_id) {

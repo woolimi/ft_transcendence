@@ -85,7 +85,7 @@ $(() => {
 		}
 	});
 
-	Guild.content = new GuildContent();
+	Guild.content = GuildContent;
 })
 
 export default Guild;
