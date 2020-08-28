@@ -9,7 +9,7 @@ class Api::WarController < ApplicationController
             puts user["guild_id"]
             puts ">>>>>>>>>>>>>>>>>>>>>>>"
             if (!user["guild_id"])
-                response = "user does not have any guild"
+                response = "{'status':'user does not have any guild'}"
                 return render json: response, status: :ok
             end
             

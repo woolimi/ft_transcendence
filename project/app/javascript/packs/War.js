@@ -39,11 +39,7 @@ $(() => {
                 console.log("Model: " + JSON.stringify(this.model));
                 this.render();
             } catch (error) {
-                console.log(JSON.stringify(error));
-                if (error.responseText == "user does not have any guild")
-                    Helper.flash_message("danger", "You are not inside any guild!");
-                else
-                    Helper.flash_message("danger", "Error while loading war!");
+                Helper.flash_message("danger", "Error while loading war!");
             }
         },
         render: function() {
