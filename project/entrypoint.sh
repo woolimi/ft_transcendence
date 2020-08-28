@@ -13,6 +13,6 @@ bundle exec rake db:exists && bundle exec rake db:migrate || bundle exec rake db
 bundle exec rake db:seed
 
 # https://stackoverflow.com/questions/25775266/how-to-keep-docker-container-running-after-starting-services
+rails s -b 0.0.0.0 &
 tail -f /dev/null
 
-# bundle exec rails s -b 0.0.0.0
