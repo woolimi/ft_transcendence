@@ -19,7 +19,7 @@
         <%% if(user.guild_id == guilds[i].id){ %>
         <button type="button" class="btn btn-danger btn-sm leaveGuild">Leave Guild</button>
 		<%% } %>
-        <button type="button" class="btn btn-info btn-sm warHistory" data-guild_id="<%%= guilds[i].id%>">War History</button>
+        <button type="button" class="btn btn-info btn-sm warHistory" data-guild_id="<%%= guilds[i].id%>" data-guild_name="<%%= guilds[i].name%>">War History</button>
         </span></li>
 	<%% }) %>
         </ul>

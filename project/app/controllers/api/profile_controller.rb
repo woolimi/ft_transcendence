@@ -22,9 +22,6 @@ class Api::ProfileController < ApplicationController
 
 	# PATCH / PUT
 	def update
-		puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-		puts "HERE WE GO!"
-		puts ">>>>>>>>>>>>>>>>>>>"
 		me = UserProfile.find_by(user_id: current_user[:id])
 		# puts me.photo.as_json()
 		if ((params[:nickname] <=> me.nickname) != 0)

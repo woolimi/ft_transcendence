@@ -40,10 +40,8 @@ $(() => {
             }
         },
         joinGuild: async function(e) {
-            console.log("Here we go!");
             const guild_data = $(e.target).data();
             Profile.userProfile.set('guild_id', guild_data.guild_id);
-            console.log(Profile.userProfile.toJSON());
             await Helper.save(Profile.userProfile);
             this.render();
         },
@@ -70,10 +68,9 @@ $(() => {
         },
         warHistory: async function(e) {
             const guild_data = $(e.target).data();
-            Router.router.navigate("/guild/war_history/" + guild_data.guild_id, { trigger: true });
+            Router.router.navigate("/guild/war_history/" + guild_data.guild_name + "/" + guild_data.guild_id, { trigger: true });
         },
         render: async function() {
-            console.log("Rendering guilds");
             await Helper.fetch(Profile.userProfile);
             var guild = this.model.toJSON();
             const content = this.template({
