@@ -49,9 +49,9 @@ if ($('html').data().isLogin) {
                 "guild/war_history/:guild_id": "guildHistory",
                 "chats/:room": "chat",
                 "channels/:channel_id": "channel",
-                "war": "war",
+                "game/war": "war",
                 "game/tournaments/:id": "tournament",
-				        "game/tournaments": "tournaments"
+                "game/tournaments": "tournaments"
             },
             game: function() {
                 remove_channel();
@@ -91,16 +91,17 @@ if ($('html').data().isLogin) {
                 Channel.content = new Channel.Content({ channel_id: channel_id });
             },
             war: function() {
+                remove_channel();
                 War.content = new War.Content();
             },
-            tournaments: function(){
-				      remove_channel();
-				      Tournaments.content.render();
-			      },
-			      tournament: function(id){
-      				remove_channel();
-			      	Tournament.content = new Tournament.Content(id);
-			      }
+            tournaments: function() {
+                remove_channel();
+                Tournaments.content.render();
+            },
+            tournament: function(id) {
+                remove_channel();
+                Tournament.content = new Tournament.Content(id);
+            }
         });
         const router = new RouterClass();
         Router.router = router;
