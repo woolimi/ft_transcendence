@@ -46,7 +46,7 @@ if ($('html').data().isLogin) {
                 "game/duel/:match_id": "game_duel",
                 "profile": "profile",
                 "guild": "guild",
-                "guild/war_history/:guild_id": "guildHistory",
+                "guild/war_history/:guild_name/:guild_id": "guildHistory",
                 "chats/:room": "chat",
                 "channels/:channel_id": "channel",
                 "game/war": "war",
@@ -78,8 +78,8 @@ if ($('html').data().isLogin) {
                 remove_channel();
                 Guild.content.render();
             },
-            guildHistory: function(guild_id) {
-                WarHistory.histView = new WarHistory.HistContent({ guild_id: guild_id });
+            guildHistory: function(guild_name, guild_id) {
+                WarHistory.histView = new WarHistory.HistContent({ guild_id: guild_id, guild_name: guild_name });
             },
             chat: function(room) {
                 remove_channel();
