@@ -94,7 +94,7 @@ if ($('html').data().isLogin) {
             },
             tournaments: function(){
                 remove_channel();
-                Tournaments.content.render();
+                Tournaments.content = new Tournaments.Content();
             },
             tournament: function(id){
                 remove_channel();
