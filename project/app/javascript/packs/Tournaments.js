@@ -2,8 +2,11 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Helper from "./Helper.js"
+import Tournament from "./Tournament.js";
 
 const Tournaments = {};
+
+if ($('html').data().isLogin) {
 
 $(() => {
 	const TournamentsCollection = Backbone.Collection.extend({
@@ -12,77 +15,50 @@ $(() => {
 
 	Tournaments.collection = new TournamentsCollection();
 
-	const TournamentsContent = Backbone.View.extend({
+	Tournaments.Content = Backbone.View.extend({
 		el: $("#view-content"),
+		page_template: _.template($("script[name='tmpl-tournaments-page']").html()),
+		list_template: _.template($("script[name='tmpl-tournaments-list']").html()),
 		tournamentsList_backbone: Tournaments.collection,
-		tournamentList:[],
-		initialize: async function(){
-			// debugger
-			await Helper.fetch(this.tournamentsList_backbone)
-			// debugger
-			// console.log(this.tournamentsList)
-			// for(const tournament of this.tournamentsList){
-			// 	console.log(tournament.attributes)
-			// }
-			this.tournamentList =
-			this.tournamentsList_backbone.models.map(e => e.attributes)
+		events: {
+			"click .tournamentItem": "go_to_tournament"
 		},
-		// template: _.template($("script[name='tmpl-tournaments-list']").html()),
-		getTournaments(){
-			// todo : Backbone.collection, then Helper.fetch() or Helper.ajax
-			// return [{id: 1, name: 'Tournament for heroes', status: 'finished'},
-			// 				{id: 2, name: 'Tournament of the century', status: 'running'}]
-			return this.tournamentList
+		initialize: async function(){
+			try {
+				await Helper.fetch(this.tournamentsList_backbone)
+				this.tournamentList = this.tournamentsList_backbone.toJSON();
+				this.render_page();
+				this.render_list();				
+			} catch (error) {
+				console.error(error);
+			}
+		},
+		render_page() {
+			this.$el.html(this.page_template());
+		},
+		render_list() {
+			this.$el.find('#tournaments-list').html(this.list_template({list: this.tournamentList}))
+		},
+		go_to_tournament(e) {
+			e.stopImmediatePropagation();
+			const id = $(e.currentTarget).data().id;
+			window.location.hash = `game/tournaments/${id}`
 		},
 		render: async function () {
-			// const content = this.template();
-			let tournaments = this.getTournaments();
-			let content = $('<div/>',{
-				class: 'tournamentList'
-			})
-			for(const tournament of tournaments){
-				// content += `<li><a href='#tournaments/${tournament.id}'>
-				//             ${tournament.name}</li>`
-				let contentElem = $('<div/>',{
-					class: 'tournamentItem'
-				})
-				contentElem.on('click', ()=>{
-
-					location.href = `#game/tournaments/${tournament.id}`;
-				})
-				contentElem.html(tournament.name)
-				if(tournament.status == 'finished'){
-					contentElem.css('background-color','#7c7e7c')
-					contentElem.css('border','#484848 5px solid')
-				} else if (tournament.status == 'pending'){
-					contentElem.css('background-color', '#19d81f')
-					contentElem.css('border', '5px solid #008814')
-				} else if (tournament.status == 'started'){
-					contentElem.css('background-color', '#ff9b22')
-					contentElem.css('border', '5px solid #a95d01')
-				}
-				content.append(contentElem)
-			}
-
-			// ------------------
-			// Test notification
-			
-			// this.$el.html('<button id=test>Test</button>');
-			// // users = await Helper.ajax("/api/users", "", "GET")
-			// $('#test').on('click', async function (){
-			// 	// user_id = users[1].id;
-			// 	let email = 'doby@asdf.com'
-			// 	await Helper.ajax("/api/test_notification", {email: email}, "POST")
-			// })
-
-			// ------------------------------
-
-			this.$el.append(content)
-			return this;
+			// contentElem.html(tournament.name)
+			// if(tournament.status == 'finished'){
+			// 	contentElem.css('background-color','#7c7e7c')
+			// 	contentElem.css('border','#484848 5px solid')
+			// } else if (tournament.status == 'pending'){
+			// 	contentElem.css('background-color', '#19d81f')
+			// 	contentElem.css('border', '5px solid #008814')
+			// } else if (tournament.status == 'started'){
+			// 	contentElem.css('background-color', '#ff9b22')
+			// 	contentElem.css('border', '5px solid #a95d01')
+			// }
 		}
 	});
-	
-	Tournaments.content = new TournamentsContent();
 })
 
+}
 export default Tournaments;

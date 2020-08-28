@@ -1,5 +1,5 @@
 import MatchChannel from "../channels/match_channel"
-import Match from "./Match";
+import $ from "jquery"
 
 var SIDE;
 (function (SIDE) {

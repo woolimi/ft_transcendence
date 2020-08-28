@@ -3,6 +3,8 @@ import _ from "underscore"
 import Backbone from "backbone"
 const WarHistory = {};
 
+if ($('html').data().isLogin) {
+
 $(() => {
     const warHistoryModel = Backbone.Model.extend({
         initialize: function(options){
@@ -37,5 +39,7 @@ $(() => {
         }
     });
 })
+
+}
 
 export default WarHistory;

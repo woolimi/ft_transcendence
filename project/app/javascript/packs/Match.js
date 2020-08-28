@@ -6,6 +6,8 @@ import MatchChannel from '../channels/match_channel'
 
 const Match = {};
 
+if ($('html').data().isLogin) {
+
 $(() => {
 	Match.Content = Backbone.View.extend({
 		el: $("#view-content"),
@@ -116,5 +118,7 @@ $(() => {
 		}
 	});
 })
+
+}
 
 export default Match;

@@ -290,6 +290,19 @@ html, body, #app{
 	align-items: center;
 }
 
+.tournament-finished {
+  background-color: #7c7e7c;
+  border: #484848 5px solid;
+}
+
+.tournament-pending {
+
+}
+
+.tournament-started {
+
+}
+
 // ---------------------
 // Tournament show
 // https://blog.codepen.io/2018/02/16/need-make-tournament-bracket/
