@@ -21,6 +21,9 @@ SPA.start = function() {
 		// 		403: redirectToLogin
 		// 	}
 		// });
+		
+		// Test -->
+		// SimpleNotification.genericRequestError('coucou')
 
 		Backbone.history.start();
 		Backbone.history.loadUrl(Backbone.history.fragment);
