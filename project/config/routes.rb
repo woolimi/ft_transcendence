@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   #Devise
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks", sessions: "users/sessions" }
   devise_scope :user do
@@ -14,7 +15,8 @@ Rails.application.routes.draw do
   #   get 'sign_in', :to => 'devise/sessions#new', :as => :new_user_session
   # delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
   # end
-  namespace :api do
+	namespace :api do
+		# post "/test_notification", to: 'tournaments#test_notification'
     resources :two_factors, only: [:show, :update, :create], param: :user_id
     resources :user_info, only: [:index, :show], param: :user_id
     resources :profile, only: [:show, :update], param: :user_id
