@@ -29,8 +29,11 @@ $(() => {
 			this.model = this.model_backbone.attributes
 			this.playerNames = {}
 			for(let i=0; i < 4; i++){
-				this.playerNames[this.model.players[i].id] 
-					= this.model.players[i].name
+				if(this.model.players[i])
+					this.playerNames[this.model.players[i].id] = this.model.players[i].name
+				else{
+					this.model.players[i] = {id: 0, name:''}
+				}
 			}
 			this.render_page()
 			this.render_infos()
