@@ -43,19 +43,6 @@ $(() => {
 			e.stopImmediatePropagation();
 			const id = $(e.currentTarget).data().id;
 			window.location.hash = `game/tournaments/${id}`
-		},
-		render: async function () {
-			// contentElem.html(tournament.name)
-			// if(tournament.status == 'finished'){
-			// 	contentElem.css('background-color','#7c7e7c')
-			// 	contentElem.css('border','#484848 5px solid')
-			// } else if (tournament.status == 'pending'){
-			// 	contentElem.css('background-color', '#19d81f')
-			// 	contentElem.css('border', '5px solid #008814')
-			// } else if (tournament.status == 'started'){
-			// 	contentElem.css('background-color', '#ff9b22')
-			// 	contentElem.css('border', '5px solid #a95d01')
-			// }
 		}
 	});
 })
