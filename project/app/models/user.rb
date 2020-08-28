@@ -51,4 +51,13 @@ class User < ApplicationRecord
 		game.game_users.find_by(user_id: self.id).points
 	end
 
+	def send_notification(notificationType, notificationContent)
+		NotificationChannel.broadcast_to(
+			self,
+			{
+				type: notificationType,
+				content: notificationContent
+			}
+		)
+	end
 end

@@ -6,6 +6,7 @@ import UserModal from "./UserModal.js"
 import Friends from "./Friends.js"
 import MessageNotificationChannel from "../channels/message_notification_channel"
 import Channel from "./Channel"
+import NotificationChannel from '../channels/notification_channel'
 
 const SPA = {}
 
@@ -40,6 +41,8 @@ SPA.start = function() {
 		Channel.channel_list = new Channel.V_ChannelList();
 		/* message notification channel */
 		MessageNotificationChannel.subscribe();
+		/* Notification channel */
+		NotificationChannel.subscribe()
 	})
 }
 
