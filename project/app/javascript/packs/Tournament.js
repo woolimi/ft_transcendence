@@ -5,6 +5,8 @@ import Helper from "./Helper.js"
 
 const Tournament = {};
 
+if ($('html').data().isLogin) {
+
 $(() => {
 	const TournamentModel = Backbone.Model.extend({
 		urlRoot: "/api/tournaments/" 
@@ -142,4 +144,5 @@ $(() => {
 	
 })
 
+}
 export default Tournament;

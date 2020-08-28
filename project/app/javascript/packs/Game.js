@@ -4,6 +4,8 @@ import Backbone from "backbone"
 
 const Game = {};
 
+if ($('html').data().isLogin) {
+    
 $(() => {
     Game.Content = Backbone.View.extend({
         el: $("#view-content"),
@@ -34,4 +36,5 @@ $(() => {
     });
 })
 
+}
 export default Game;
