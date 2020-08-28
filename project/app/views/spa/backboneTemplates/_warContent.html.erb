@@ -21,7 +21,7 @@
     }
     
     #score {
-        font-size: 40px;
+        font-size: 200%;
         margin-right: 1rem !important;
         border-right: 6px solid white;
         border-width: thin;
@@ -59,10 +59,10 @@
                             <table style="width:100%" id="score-table">
                                 <tr>
                                     <th>
-                                        Guild 1
+                                       <%%=  player_guild_anag %>
                                     </th>
                                     <th>
-                                        Guild 2
+                                        <%%= opponent_guild_anag %>
                                     </th>
                                 </tr>
                                 <tr>
@@ -78,19 +78,19 @@
                     </div>
                     <div class="col-1"></div>
                     <div id="other_statistics" class="col-4">
-                        <p class="text-md-center">Others stats</p>
+                        <p class="text-md-center"><%%=  player_guild_anag %> stats</p>
                         <table style="width:100%" id="score-table">
                             <tr>
                                 <td>Wins</td>
-                                <td>10</td>
+                                <td><%%= wins %></td>
                             </tr>
                             <tr>
                                 <td>Losses</td>
-                                <td>10</td>
+                                <td><%%= losses %></td>
                             </tr>
                             <tr>
-                                <td>Draws</td>
-                                <td>10</td>
+                                <td>UAC</td>
+                                <td><%%= unanswered %></td>
                             </tr>
                         </table>
                     </div>
@@ -99,10 +99,6 @@
         </div>
     </div>
     <div>
-        <%% if(match_ongoing === false) {%>
-            <button type="button" class="btn btn-warning btn-lg btn-block">Attack!</button>
-            <%% } %>
-
-
+            <button type="button" class="btn btn-warning btn-lg btn-block" id="attack">Attack!</button>
     </div>
 </script>

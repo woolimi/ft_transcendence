@@ -115,7 +115,7 @@ if Guild.find_by(name: 'Mumbai Indians').blank?
 	u1 = User.find_by({ email: "jai@asdf.com"})
 	g1 = Guild.create(
 		name: "Mumbai Indians",
-		anagram: "Mindia",
+		anagram: "mindia",
 		total_score: 5,
 		guild_officers: "{}",
 		owner: u1[:id]
@@ -126,7 +126,7 @@ if Guild.find_by(name: 'Chennai Super Kings').blank?
 	u2 = UserProfile.find_by({ name: "dongbin"})
 	g2 = Guild.create(
 		name: "Chennai Super Kings",
-		anagram: "Csk",
+		anagram: "chenia",
 		total_score: 4,
 		guild_officers: "{}",
 		owner: u2[:user_id]
