@@ -5,6 +5,6 @@
 
 <script type="text/template" name="tmpl-tournaments-list">
 	<%% _.forEach(list, (item)=> { %>
-		<div data-id="<%%= item.id %>" class="tournamentItem tournament-<%%= item.status %>">item.name</div>
+		<div data-id="<%%= item.id %>" class="tournamentItem tournament-<%%= item.status %>"><%%= item.name %></div>
 	<%% }) %>
 </script>
