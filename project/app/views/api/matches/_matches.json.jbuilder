@@ -17,4 +17,4 @@ json.player_two do
 end
 json.match_type match.match_type
 # json.status match.status
-json.winner match.winner if match.winner != ''
+json.winner match.winner if match.match_finished
