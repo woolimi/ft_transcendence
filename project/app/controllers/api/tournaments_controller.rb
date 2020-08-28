@@ -1,4 +1,9 @@
 class Api::TournamentsController < ApplicationController
+	# def test_notification
+	# 	other = User.find_by(email: params[:email])
+	# 	other.send_notification('coucou', {senderName: current_user.user_profile.name})
+	# end
+
 	def index
 		@tournaments = Tournament.all
 		# render 'index.json.jbuilder'
