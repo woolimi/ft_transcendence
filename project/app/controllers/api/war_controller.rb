@@ -4,15 +4,10 @@ class Api::WarController < ApplicationController
     def show
         if (params[:user_id] == current_user[:id])
             user = UserProfile.find_by(user_id: current_user[:id]).as_json(only: [:guild_id])
-
-            puts ">>>>>>>>>>>>>>>>>>>>>>>"
-            puts user["guild_id"]
-            puts ">>>>>>>>>>>>>>>>>>>>>>>"
             if (!user["guild_id"])
                 response = "{'status':'user does not have any guild'}"
                 return render json: response, status: :ok
             end
-            
             war = War.find_by(guild_1: user["guild_id"]).as_json()
             if (!war)
                 war = War.find_by(guild_2: user["guild_id"]).as_json()
@@ -20,30 +15,41 @@ class Api::WarController < ApplicationController
                     return render json: "{}", status: :ok
                 end
             end
-
-
-            puts ">>>>>>>>>>>>>>>>>>>>>>>"
-            puts war.to_json
-            puts ">>>>>>>>>>>>>>>>>>>>>>>"
-    
+            guild_info = check_guild_number(war, user["guild_id"]).split(':')
+            guilds = Guild.where(id: war["guild_1"]).or(Guild.where(id: war["guild_2"])).as_json
             
-
-            user_guild_number = check_guild_number(war, user["guild_id"])
-            if ((war[user_guild_number + "_score"] === war["guild_1_score"]) && (war["guild_1_score"] > war["guild_2_score"]))
-                war["position"] = "win"
-            elsif ((war[user_guild_number + "_score"] === war["guild_2_score"]) && (war["guild_2_score"] > war["guild_1_score"]))
-                war["position"] = "win"
-            elsif ((war[user_guild_number + "_score"] === war["guild_2_score"]) && (war["guild_2_score"] < war["guild_1_score"]))
-                war["position"] = "loss"
-            elsif ((war[user_guild_number + "_score"] === war["guild_1_score"]) && (war["guild_1_score"] < war["guild_1_score"]))
-                war["position"] = "loss"
-            else
-                war["position"] = "draw"
+            if (guilds[0]["id"] == war[(guild_info[0])])
+                war["player_guild_anag"] = guilds[0]["anagram"]
+                war["opponent_guild_anag"] = guilds[1]["anagram"]
+            elsif (guilds[1]["id"] == war[(guild_info[0])])
+                war["player_guild_anag"] = guilds[1]["anagram"]
+                war["opponent_guild_anag"] = guilds[0]["anagram"]
             end
-            # war["user_guild_name"] = war[user_guild_number+"_name"]
+
+            if ((war[(guild_info[0] + "_score")]).to_i > (war[(guild_info[1]  + "_score")].to_i))
+                war["position"] = "win";
+            elsif ((war[(guild_info[0] + "_score")]).to_i == (war[(guild_info[1]  + "_score")].to_i))
+                war["position"] = "draw";
+            else
+                war["position"] = "loss";
+            end
+            war["wins"] = war[guild_info[0] + "_matches_won"]
+            war["losses"] = war[guild_info[0] + "_matches_lost"]
+            war["unanswered"] = war[guild_info[0] + "_matches_unanswered"]
             return render json: war, status: :ok
         else
 			return render plain: "Forbidden", status: :forbidden 
+        end
+    end
+
+    def update
+        war = War.find_by(id: params["id"])
+        if (war.match_ongoing == true)
+            return render json: "ONGOING!", status: :forbidden
+        else
+            war[:match_ongoing] = true;
+            war.save();
+            return render json: "SUCCESS!", status: :ok
         end
     end
 
@@ -51,9 +57,9 @@ class Api::WarController < ApplicationController
 
     def check_guild_number(war, user_guild_id)
         if (war["guild_1"] == user_guild_id)
-            return ("guild_1");
+            return ("guild_1:guild_2");
         elsif (war["guild_2"] == user_guild_id)
-            return ("guild_2");
+            return ("guild_2:guild_1");
         else
             return ("undefined");
         end
