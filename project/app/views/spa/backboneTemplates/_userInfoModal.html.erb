@@ -2,18 +2,56 @@
 <script type="text/template" name="tmpl-user-info-modal">
 <div class="container">
 	<div class="row">
-	<div class="w-50 fit-content">
+	<div class="col-sm-6 text-center mb-3">
 		<img class="rounded-circle userinfo-avatar" src="<%%= user.avatar_url %>" />
 	</div>
-	<div class="w-50">
-		<div>nickname: <%%= user.nickname %> </div>
-		<div>name: <%%= user.name %></div>
-		<div>wins: 10</div>
-		<div>loss: 10</div>
+	<div class="col-sm-6 box p-3 mb-3">
+		<div class="row">
+			<div class="w-50 pl-2"><div>nickname:</div></div>
+			<div class="w-50"><%%= user.nickname %></div>
+		</div>
+		<div class="row">
+			<div class="w-50 pl-2"><div>name:</div></div>
+			<div class="w-50"><%%= user.name %></div>
+		</div>
+		<div class="row">
+			<div class="w-50 pl-2"><div>win:</div></div>
+			<div class="w-50"><%%= user.win %></div>
+		</div>
+		<div class="row">
+			<div class="w-50 pl-2"><div>loss:</div></div>
+			<div class="w-50"><%%= user.loss %></div>
+		</div>
 		<%% if (user.user_id !== $('html').data().userId) { %>
-		<button type="button" class="btn btn-success btn-sm" id="start-chat" data-room="<%%= Helper.make_room(user.user_id, $('html').data().userId) %>">send message</button>
+		<div class="mt-2">
+			<button type="button" class="btn btn-success btn-sm" id="start-chat"
+				data-room="<%%= Helper.make_room(user.user_id, $('html').data().userId) %>">send message</button>
+			<button type="button" class="btn btn-success btn-sm" id="start-chat"
+				data-room="<%%= Helper.make_room(user.user_id, $('html').data().userId) %>">ask battle</button>
+		</div>
 		<%% } %>
+
 	</div>
+	</div>
+
+	<div class="row">
+		<div class="card w-100" id="user-match-history">
+			<div class="card-header  bg-dark text-white d-flex justify-content-center">
+				match history (latest 10)
+			</div>
+			<div class="card-body bg-secondary text-white overflow-auto">
+				<ul class="list-group" id="view-channels-list">
+				<%% _.forEach(user.matches, (item) => { %>
+				<li class="pl-3 list-group-item side-list-item d-flex justify-content-between">
+					<div><%%= item.player_left %> VS <%%= item.player_right %></div>
+					<%% const win = (item.winner === user.user_id ? true : false)%>
+					<div class="<%%= win ? "text-info" : "text-danger" %>"><%%= win ? "win" : "lose" %>(<%%= item.score_left %> : <%%= item.score_right %>)</div>
+					<div><%%=  new Date(item.started_at).toLocaleString().slice(0, -3) %></div>
+				</li>
+				<%% }) %>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
 </script>
