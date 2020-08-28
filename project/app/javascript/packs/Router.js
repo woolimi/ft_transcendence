@@ -15,6 +15,7 @@ import Match from "./Match.js"
 import MatchChannel from "../channels/match_channel.js"
 import War from "./War.js"
 import WarHistory from "./WarHistory.js"
+import UserStatusChannel from "../channels/user_status_channel"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -114,6 +115,8 @@ if ($('html').data().isLogin) {
         Router.router.on("route", function(curRoute, params) {
             Navbar.currentRoute.set({ route: curRoute });
         });
+
+        UserStatusChannel.subscribe();
     });
 }
 
