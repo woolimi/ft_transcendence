@@ -19,7 +19,7 @@ class Tournament < ApplicationRecord
 	end
 
 	def semis_done?
-		matches.where(match_type: 'tournament_semi').where.not(winner: '').count == 2
+		matches.where(match_type: 'tournament_semi').where(match_finished: true).count == 2
 	end
 
 	def winner

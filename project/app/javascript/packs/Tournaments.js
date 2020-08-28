@@ -34,7 +34,7 @@ $(() => {
 			// 				{id: 2, name: 'Tournament of the century', status: 'running'}]
 			return this.tournamentList
 		},
-		render: function () {
+		render: async function () {
 			// const content = this.template();
 			let tournaments = this.getTournaments();
 			let content = $('<div/>',{
@@ -47,7 +47,8 @@ $(() => {
 					class: 'tournamentItem'
 				})
 				contentElem.on('click', ()=>{
-					location.href = `#tournaments/${tournament.id}`;
+
+					location.href = `#game/tournaments/${tournament.id}`;
 				})
 				contentElem.html(tournament.name)
 				if(tournament.status == 'finished'){
@@ -62,7 +63,20 @@ $(() => {
 				}
 				content.append(contentElem)
 			}
-			this.$el.html('');
+
+			// ------------------
+			// Test notification
+			
+			// this.$el.html('<button id=test>Test</button>');
+			// // users = await Helper.ajax("/api/users", "", "GET")
+			// $('#test').on('click', async function (){
+			// 	// user_id = users[1].id;
+			// 	let email = 'doby@asdf.com'
+			// 	await Helper.ajax("/api/test_notification", {email: email}, "POST")
+			// })
+
+			// ------------------------------
+
 			this.$el.append(content)
 			return this;
 		}
