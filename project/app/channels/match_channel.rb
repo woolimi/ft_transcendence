@@ -4,10 +4,9 @@ class MatchChannel < ApplicationCable::Channel
   #   score: [0, 0]
   #   player_1: {x, y} 10
   #   player_2: {x, y} 390
-  #   user_ids: [..., ...]
+  #   players: [uuid1, uuid2]
   # }
   @@matches = {}
-  @@DIRECTION = { :IDLE => 0, :UP => 1, :DOWN => 2, :LEFT => 3, :RIGHT => 4 }
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
   @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 3 }
   def subscribed
@@ -42,9 +41,11 @@ class MatchChannel < ApplicationCable::Channel
     if (match.player_1["ready"] && match.player_2["ready"])
       # set match started_at ...
       match.started_at = Time.now()
+      match.player_left_id = match.player_1["user_id"]
+      match.player_right_id = match.player_2["user_id"]
       match.save()
       ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { all_ready: true })
-      return game_start(match[:id], [match.player_1["user_id"], match.player_2["user_id"]])
+      return game_start(match[:id], [match.player_left_id, match.player_right_id])
     end
   end
 
@@ -53,6 +54,7 @@ class MatchChannel < ApplicationCable::Channel
     return if current_user[:id] != data["from"]
     return if @@matches[data["match_id"]]["over"] == true
     player_nb = @@matches[data["match_id"]]["players"].find_index(data["from"]) + 1
+    return if player_nb.nil? 
     new_pos = @@matches[data["match_id"]]["player_#{player_nb}"].deep_dup
     new_pos["y"] -= @@PADDLE[:SPEED] if data["move"] == "up"
     new_pos["y"] += @@PADDLE[:SPEED] if data["move"] == "down"
@@ -64,7 +66,7 @@ class MatchChannel < ApplicationCable::Channel
   private
   def game_start(match_id, players)
     @@matches[match_id] = {
-      "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => @@DIRECTION[:IDLE], "moveY" => @@DIRECTION[:IDLE], "speed" => 4 },
+      "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => 0, "moveY" => 0, "speed" => 4 },
       "score" => [0, 0],
       "player_1" => { "x" => 10, "y" => 90 },
       "player_2" => { "x" => 390, "y" => 90 },
@@ -128,6 +130,8 @@ class MatchChannel < ApplicationCable::Channel
           # set winner, loser, finished
           match.winner = game["score"][0] > game["score"][1] ? match.player_1["user_id"] : match.player_2["user_id"]
           match.loser = game["score"][0] < game["score"][1] ? match.player_1["user_id"] : match.player_2["user_id"]
+          match.score_left = game["score"][0]
+          match.score_right = game["score"][1]
           match.match_finished = true
           match.save()
           break

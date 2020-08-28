@@ -134,6 +134,7 @@ class Pong {
 	}
 	off() {
 		this.keyListener_off();
+		cancelAnimationFrame(this.reqId);
 	}
 	keyListener_on() {
 		document.addEventListener("keyup", keyup_cb);
@@ -142,7 +143,6 @@ class Pong {
 	keyListener_off() {
 		document.removeEventListener("keyup", keyup_cb);
 		document.removeEventListener("keydown", keydown_cb);
-		cancelAnimationFrame(this.reqId);
 	}
 	keyPressed(key) {
 		if (key === "ArrowUp")

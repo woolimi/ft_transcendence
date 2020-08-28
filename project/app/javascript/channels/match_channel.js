@@ -13,7 +13,9 @@ if ($('html').data().isLogin) {
       }
     }
 
+    let self = null;
     MatchChannel.subscribe = function (match_data, recv_callback, me) {
+      self = me;
       if (this.channel)
         return;
 
@@ -35,7 +37,7 @@ if ($('html').data().isLogin) {
 
         received(data) {
           // Called when there's incoming data on the websocket for this channel
-          recv_callback.bind(me)(data);
+          recv_callback.bind(self)(data);
         }
       });
     }

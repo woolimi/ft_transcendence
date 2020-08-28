@@ -241,39 +241,12 @@ html, body, #app{
 }
 
 .game-type {
-  display: flex;
-  height: 80%;
-  width: 40%;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  border: 1px black solid;
   position:relative;
 }
 
 .game-type:hover {
   top: -3px;
   left: -3px;  
-}
-
-#game-ladder {
-  // background-image: url("https://cdn1.sklum.com/fr/41451/escalera-leit.jpg");
-  // background-position: center center;
-  // background-repeat: no-repeat;
-  // background-size: cover;
-  background-color: white;
-}
-
-#game-duel {
-  background-color: white;
-}
-
-#game-tournament {
-  background-color: white;
-}
-
-#game-guild {
-  background-color: white;
 }
 
 @media (max-width: 767px) {
@@ -398,4 +371,16 @@ html, body, #app{
     transform: translate(-50%, -98%);
     color: #f1f1f1;
     width: 3em;
+}
+
+#game-ingame-list {
+  margin: 1em;
+  overflow-y: scroll;
+  height: 40vh;
+  width: 100%;
+}
+
+.box {
+  background: #a5a5a5;
+  border-radius: 10px;
 }

@@ -1,32 +1,37 @@
 <!-- game content -->
 <script type="text/template" name="tmpl-game-index">
-	<div class="container-fluid h-50">
-		<div class="row h-50 justify-content-around align-items-center">
-			<div class="game-type shadow-lg cursor" id="game-ladder" data-link="ladder">
-				<h3>
-					Ladder
-				</h3>
+	<div class="container-fluid">
+		<h3 class="text-center mt-3">Games</h3>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="card m-3 game-type cursor text-white bg-dark" data-link="ladder">
+					<%= image_tag("game-ladder.webp", class: "card-img-top") %>
+					<div class="card-header text-center">Ladder</div>
+				</div>
 			</div>
-			<div class="game-type shadow-lg cursor" id="game-friendly" data-link="duel">
-				<h3>
-					Duel
-				</h3>
+			<div class="col-sm-6">
+				<div class="card m-3 game-type cursor text-white bg-danger" data-link="duel">
+					<%= image_tag("game-duel.webp", class: "card-img-top") %>
+					<div class="card-header text-center">Duel</div>			
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="card m-3 game-type cursor text-white bg-info" data-link="tournaments">
+					<%= image_tag("game-tournament.webp", class: "card-img-top") %>
+					<div class="card-header text-center">Tournament</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="card m-3 game-type cursor text-white bg-success" data-link="war">
+					<%= image_tag("game-war.webp", class: "card-img-top") %>
+					<div class="card-header text-center">Guild war</div>
+				</div>
 			</div>
 		</div>
-		<div class="row h-50 justify-content-around align-items-center">
-			<div class="game-type shadow-lg cursor" id="game-tournament" data-link="tournament">
-				<h3>
-					Tournament
-				</h3>
-			</div>
-			<div class="game-type shadow-lg cursor" id="game-guild" data-link="guild">
-				<h3>
-					Guild match
-				</h3>
+		<h3 class="text-center mt-3">In game list</h3>
+		<div class="row box mb-3">
+			<div id="game-ingame-list">
 			</div>
 		</div>
-	</div>
-	<div class="container-fluid h-50">
-		On game list...
 	</div>
 </script>
