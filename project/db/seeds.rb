@@ -20,7 +20,9 @@ if User.find_by({ email: "doby@asdf.com" }).blank?
 		name: "dongbin",
 		nickname: "doby",
 		avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",
-		user_id: u[:id])
+		user_id: u[:id],
+		admin: true
+	)
 end
 user1= User.find_by({ email: "doby@asdf.com" });
 

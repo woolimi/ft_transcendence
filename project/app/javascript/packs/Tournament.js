@@ -15,134 +15,150 @@ $(() => {
 
 	Tournament.Content = Backbone.View.extend({
 		el: $("#view-content"),
-		model_backbone: {},
-		model:{},
-		initialize: async function(id){
-			this.id = id
-			this.model_backbone = new TournamentModel({id: id})
-			await Helper.fetch(this.model_backbone)
-			this.model = this.model_backbone.attributes
+		self: this,
+		events: {
+			"click #button-join": "join",
+			"click #button-quit": "quit"
+		},
+
+		page_template: _.template($("script[name='tmpl-tournament-page']").html()),
+		info_template: _.template($("script[name='tmpl-tournament-infos']").html()),
+		tree_template: _.template($("script[name='tmpl-tournament-tree']").html()),
+		match_template: _.template($("script[name='tmpl-tournament-match']").html()),
+		participants_template: _.template($("script[name='tmpl-tournament-participants']").html()),
+		join_button_template: _.template($("script[name='tmpl-tournament-join-button']").html()),
+
+		preinitialize: async function(id){
+			this.id = id,
+			this.user_id = $('html').data().userId,
+			this.model = new TournamentModel({id: id})
+			await Helper.fetch(this.model)
+			console.log(this.model.attributes)
 			this.playerNames = {}
 			for(let i=0; i < 4; i++){
-				this.playerNames[this.model.players[i].id] 
-					= this.model.players[i].name
+				if(this.model.attributes.players[i])
+					this.playerNames[this.model.attributes.players[i].id] = this.model.attributes.players[i].name
 			}
-			this.render()
+			this.end = new Date(this.model.attributes.registration_end)
+			this.render_page()
+			this.render_infos()
+			this.render_tree()
+			this.render_join_button()
+			this.render_participant_list()
+			this.render_timer()
 		},
 
-		getPlayerName: function(id){ // todo : fetch
-			// let playerNames = ['', 'Tom', 'John', 'Cena', 'Max']
-			// debugger
-			return this.playerNames[id]
+		render_page: function() {
+			this.$el.html(this.page_template());
 		},
 
-		getWinnerClass: function(winnerId, id){
-			if(winnerId == id)
-				return 'winner'
+		render_infos: function() {
+			this.$el.find('#tournament-infos').html(
+				this.info_template({model: this.model.attributes})
+			)
+		},
+
+		render_tree: function() {
+			this.$el.find('#tournament-tree').html(
+				this.tree_template()
+			)
+			this.render_match('#semi-final-1', this.model.attributes.semis[0])
+			this.render_match('#semi-final-2', this.model.attributes.semis[1])
+			this.render_match('#final', this.model.attributes.final)
+		},
+
+		render_match: function(selector, match){
+			this.$el.find(selector).html(
+				this.match_template({
+					match: match,
+					playerNames: this.playerNames
+				})
+			)
+		},
+
+		get_time_string: function(distance){
+			let negative = distance < 0
+			distance = Math.abs(distance)
+			let seconds = distance % 60;
+			distance = (distance / 60) >> 0
+			let minutes = distance % 60;
+			distance = (distance / 60) >> 0;
+			let hours = distance % 24;
+			distance = (distance / 24) >> 0;
+			let days = distance;
+			let answer = `${days}d ${hours}h ${minutes}m ${seconds}s`
+			if (negative)
+				answer = answer + ' ago'
 			else
-				return ''
+				answer = 'in ' + answer
+			return answer
 		},
 
-		getTournament: function(){
-			// todo : model and fetch it
-			let tournament = {
-				id: this.model.id,
-				name: this.model.name,
-				status: this.model.status,
-				id_player_1: this.model.players[0].id,
-				id_player_2: this.model.players[1].id,
-				id_player_3: this.model.players[2].id,
-				id_player_4: this.model.players[3].id,
-				semiFinal_1: {
-					match_id: this.model.semis[0].id,
-					left_score: this.model.semis[0].player_one.points,
-					right_score: this.model.semis[0].player_two.points,
-					winner_id: this.model.semis[0].winner
-				},
-				semiFinal_2:{
-					match_id: this.model.semis[1].id,
-					left_score: this.model.semis[1].player_one.points,
-					right_score: this.model.semis[1].player_two.points,
-					winner_id: this.model.semis[1].winner
-				},
-				final:{
-					match_id: this.model.final.id,
-					left_score: this.model.final.player_one.points,
-					right_score: this.model.final.player_two.points,
-					winner_id: this.model.final.winner
+		render_timer: function() {
+			var self = this
+			let now = new Date();
+			let distance = ((this.end - now)/1000) >> 0
+			console.log('render_timer')
+			$('#clock').html(this.get_time_string(distance))
+			setTimeout(() => {
+				if ($('#clock').length) {
+					this.render_timer(self.end);
 				}
-			}
-			return tournament
+			}, 1000);
 		},
 
-		// template: _.template($("script[name='tmpl-tournaments-list']").html()),
-		render: function() {
-			// const content = this.template();
-			// todo : model, use id to get specific tournament
-			let tournament = this.getTournament(); 
-			console.log(tournament)
-			let content = `<div id="tournamentBody">
-			<h3>Tournament</h3><br>
-			<p> <strong>Tournament name:</strong> ${tournament.name} </p>
-			<p> <strong>Status:</strong> ${tournament.status}</p>
-		<div id="tournamentMain">
-    <ul class="round round-3">
-        <li class="spacer">&nbsp;</li>
-        
-				<li class="gameTour game-top 
-					${this.getWinnerClass(tournament.semiFinal_1.winner_id, tournament.id_player_1)}">
-					${this.model.players[0].name} 
-					<span>${tournament.semiFinal_1.left_score}</span>
-				</li>
-        <li class="gameTour game-spacer">&nbsp;</li>
-				<li class="gameTour game-bottom 
-					${this.getWinnerClass(tournament.semiFinal_1.winner_id, tournament.id_player_2)}">
-					${this.model.players[1].name} 
-					<span>${tournament.semiFinal_1.right_score}</span>
-				</li>
+		render_participant_list: function(){
+			this.$el.find('#participant-list').html(
+				this.participants_template({users: this.model.attributes.players})
+			)
+		},
 
-        <li class="spacer">&nbsp;</li>
-        
-				<li class="gameTour game-top 
-					${this.getWinnerClass(tournament.semiFinal_2.winner_id, tournament.id_player_3)}">
-					${this.model.players[2].name}
-					<span>${tournament.semiFinal_2.left_score}</span>
-				</li>
-        <li class="gameTour game-spacer">&nbsp;</li>
-				<li class="gameTour game-bottom 
-					${this.getWinnerClass(tournament.semiFinal_2.winner_id, tournament.id_player_4)}">
-					${this.model.players[3].name}
-					<span>${tournament.semiFinal_2.right_score}</span>
-				</li>
+		render_join_button: function(){
+			let users = this.model.attributes.players
+			let started = (users.length === 4)
+			let hasJoined = (users.find((o)=>(o.id == this.user_id))) !== undefined
+			let now = new Date();
+			let timeOut = (now > this.end)
+			this.$el.find('#join-button').html(
+				this.join_button_template({
+					started: started,
+					hasJoined: hasJoined,
+					timeOut: timeOut
+				})
+			)
+		},
 
-        <li class="spacer">&nbsp;</li>
-    </ul>
-    <ul class="round round-4">
-        <li class="spacer">&nbsp;</li>
-        
-				<li class="gameTour game-top 
-					${this.getWinnerClass(tournament.final.winner_id, tournament.semiFinal_1.winner_id)}">
-					${this.getPlayerName(tournament.semiFinal_1.winner_id)}
-					<span>${tournament.final.left_score}</span>
-				</li>
-        <li class="gameTour game-spacer">&nbsp;</li>
-				<li class="gameTour game-bottom 
-					${this.getWinnerClass(tournament.final.winner_id, tournament.semiFinal_2.winner_id)}">
-					${this.getPlayerName(tournament.semiFinal_2.winner_id)} 
-					<span>${tournament.final.right_score}</span>
-				</li>
-        
-        <li class="spacer">&nbsp;</li>
-    </ul>       
-</div>
-</div>
-			`
-			this.$el.html(content);
-			return this;
-		}
+		join: async function(e){
+			e.preventDefault()
+			e.stopImmediatePropagation();
+			try {
+				await Helper.ajax(`/api/tournaments/${this.id}/join`, '','PUT')
+				await Helper.fetch(this.model)
+			} catch (error) {
+				Helper.flash_message("danger", error.responseText)
+				// console.log(error.responseText)
+			}
+			this.render_participant_list()
+			this.render_join_button()
+		},
+
+		quit: async function(e){
+			e.preventDefault()
+			e.stopImmediatePropagation();
+			try {
+				await Helper.ajax(`/api/tournaments/${this.id}/quit`, '','DELETE')
+				await Helper.fetch(this.model)
+			} catch (error) {
+				Helper.flash_message("danger", error.responseText)
+				// console.log(error.responseText)
+			}
+			this.render_participant_list()
+			this.render_join_button()
+		},
 	});
 	
 })
 
 }
+
 export default Tournament;

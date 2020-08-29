@@ -7,7 +7,7 @@ class Api::ProfileController < ApplicationController
 	# GET api/profile/:user_id
 	def show
 		if (params[:user_id] == current_user[:id])
-			profile = UserProfile.find_by(user_id: current_user[:id]).as_json(only: [:user_id, :name, :nickname, :avatar_url, :two_factor, :photo, :guild_id])
+			profile = UserProfile.find_by(user_id: current_user[:id]).as_json(only: [:user_id, :name, :nickname, :avatar_url, :two_factor, :photo, :guild_id, :admin])
 			block_id_list = UserProfile.find_by(user_id: current_user[:id])[:block_list];
 			res = []
 			block_id_list.each do |id|

@@ -3,6 +3,7 @@ import _ from "underscore"
 import Backbone from "backbone"
 import Profile from "./Profile.js"
 import Router from "./Router.js"
+import Helper from "./Helper.js"
 
 const Guild = {};
 

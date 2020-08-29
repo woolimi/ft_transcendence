@@ -1,0 +1,88 @@
+<script type="text/template" name="tmpl-tournament-page">
+	<div id="tournamentMain">
+		<div id="tournament-infos"></div>
+		<div id="tournament-tree"></div>
+	</div>
+</script>
+
+
+<script type="text/template" name="tmpl-tournament-infos">
+	<h3>Tournament</h3><br>
+	<p> 
+		<strong>Tournament name :</strong> <%%= model.name %>
+		<br>
+		<strong>Status :</strong> <%%= model.status %> 
+		<br>
+		<strong>Time to registration : </strong>
+		<span id=clock></span>
+		<br>
+		<span id=participant-list></span>
+		<span class="text-center" id=join-button></span>
+	</p>
+</script>
+
+
+<script type="text/template" name="tmpl-tournament-tree">
+	<ul class="round round-3">
+		<li class="spacer">&nbsp;</li>
+			<div id=semi-final-1></div>
+		<li class="spacer">&nbsp;</li>
+			<div id=semi-final-2></div>
+		<li class="spacer">&nbsp;</li>
+	</ul>
+	<ul class="round round-4">
+		<li class="spacer">&nbsp;</li>
+			<div id=final></div>
+		<li class="spacer">&nbsp;</li>
+	</ul>
+</script>
+
+
+<script type="text/template" name="tmpl-tournament-match">
+	<%% if(match) { %>
+		<li class="gameTour game-top 
+			<%%= (match.winner == match.player_one.id ? 'winner' : '') %>">
+			<%%= playerNames[match.player_one.id] %>
+			<span><%%= match.player_one.points %></span>
+		</li>
+		<li class="gameTour game-spacer">&nbsp;</li>
+		<li class="gameTour game-bottom 
+			<%%= (match.winner == match.player_two.id ? 'winner' : '') %>">
+			<%%= playerNames[match.player_two.id] %>
+			<span><%%= match.player_two.points %></span>
+		</li>
+	<%% } else { %>
+		<li class="gameTour game-top">
+			<span></span>
+		</li>
+		<li class="gameTour game-spacer">&nbsp;</li>
+		<li class="gameTour game-bottom">
+			<span></span>
+		</li>
+	<%% } %>
+</script>
+
+
+<script type="text/template" name="tmpl-tournament-participants">
+	<strong>Participants : </strong>
+	<%% if(users.length > 0) { %>
+		<ul>
+			<%% for(const user of users) { %>
+				<li><%%= user.name %></li>
+			<%% } %>
+		</ul>
+	<%% } else { %>
+		<%%= 'no participant. <br>' %>
+	<%% } %>
+</script>
+
+
+<script type="text/template" name="tmpl-tournament-join-button">
+	<%% if(!started && !timeOut) { %>
+		<%% if( ! hasJoined ) { %>
+			<button id=button-join class="btn btn-success">Join tournament</button>
+		<%% } else { %>
+			<button id=button-quit class="btn btn-danger">Quit tournament</button>
+		<%% } %>
+	<%% } %>
+</script>

@@ -296,23 +296,25 @@ html, body, #app{
 }
 
 .tournament-pending {
-
+  background-color: #19d81f;
+  border: 5px solid #008814;
 }
 
 .tournament-started {
-
+  background-color: #ff9b22;
+  border: #a95d01 5px solid;
 }
 
 // ---------------------
 // Tournament show
 // https://blog.codepen.io/2018/02/16/need-make-tournament-bracket/
 
-#tournamentMain{
+#tournament-tree{
   display:flex;
   flex-direction:row;
 }
 
-#tournamentMain .round{
+#tournament-tree .round{
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -321,49 +323,49 @@ html, body, #app{
   padding:0;
 }
 
-#tournamentMain .round .spacer{ 
+#tournament-tree .round .spacer{ 
 	flex-grow:1;
 }
 
-#tournamentMain .round .spacer:first-child,
-#tournamentMain .round .spacer:last-child{ 
+#tournament-tree .round .spacer:first-child,
+#tournament-tree .round .spacer:last-child{ 
 	flex-grow:.5; 
 }
 
-#tournamentMain .round .game-spacer{
+#tournament-tree .round .game-spacer{
 	flex-grow:1;
 }
 
-#tournamentBody {
+#tournament-tree {
   font-family:sans-serif;
   font-size:small;
   padding:10px;
   line-height:1.4em;
 }
 
-#tournamentMain li.gameTour {
+#tournament-tree li.gameTour {
   padding-left:20px;
 }
 
-#tournamentMain li.gameTour.winner{
+#tournament-tree li.gameTour.winner{
 	font-weight:bold;
 }
 
-#tournamentMain li.gameTour span{
+#tournament-tree li.gameTour span{
 	float:right;
 	margin-right:5px;
 }
 
-#tournamentMain li.game-top{ 
+#tournament-tree li.game-top{ 
 	border-bottom:1px solid #aaa;
 }
 
-#tournamentMain li.game-spacer{ 
+#tournament-tree li.game-spacer{ 
 	border-right:1px solid #aaa;
 	min-height:40px;
 }
 
-#tournamentMain li.game-bottom{ 
+#tournament-tree li.game-bottom{ 
 	border-top:1px solid #aaa;
 }
 
