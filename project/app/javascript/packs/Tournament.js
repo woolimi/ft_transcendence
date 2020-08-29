@@ -18,7 +18,8 @@ $(() => {
 		page_template: _.template($("script[name='tmpl-tournament-page']").html()),
 		info_template: _.template($("script[name='tmpl-tournament-infos']").html()),
 		tree_template: _.template($("script[name='tmpl-tournament-tree']").html()),
-
+		match_template: _.template($("script[name='tmpl-tournament-match']").html()),
+		
 		model_backbone: {},
 		model:{},
 
@@ -31,13 +32,13 @@ $(() => {
 			for(let i=0; i < 4; i++){
 				if(this.model.players[i])
 					this.playerNames[this.model.players[i].id] = this.model.players[i].name
-				else{
-					this.model.players[i] = {id: 0, name:''}
-				}
 			}
 			this.render_page()
 			this.render_infos()
 			this.render_tree()
+			this.render_match('#semi-final-1', this.model.semis[0])
+			this.render_match('#semi-final-2', this.model.semis[1])
+			this.render_match('#final', this.model.final)
 		},
 
 		render_page() {
@@ -50,12 +51,17 @@ $(() => {
 		},
 		render_tree() {
 			this.$el.find('#tournament-tree').html(
-				this.tree_template({
-					model: this.model,
+				this.tree_template()
+			)
+		},
+		render_match(selector, match){
+			this.$el.find(selector).html(
+				this.match_template({
+					match: match,
 					playerNames: this.playerNames
 				})
 			)
-		},
+		}
 	});
 	
 })

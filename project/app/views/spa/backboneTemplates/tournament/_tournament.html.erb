@@ -14,50 +14,38 @@
 <script type="text/template" name="tmpl-tournament-tree">
 	<ul class="round round-3">
 		<li class="spacer">&nbsp;</li>
-		<li class="gameTour game-top 
-			<%%= (model.semis[0].winner == model.players[0].id ? 'winner' : '') %>">
-			<%%= model.players[0].name %>
-			<span><%%= model.semis[0].player_one.points %></span>
-		</li>
-		<li class="gameTour game-spacer">&nbsp;</li>
-		<li class="gameTour game-bottom 
-			<%%= (model.semis[0].winner == model.players[1].id ? 'winner' : '') %>">
-			<%%= model.players[1].name %>
-			<span><%%= model.semis[0].player_two.points %></span>
-		</li>
-
+			<div id=semi-final-1></div>
 		<li class="spacer">&nbsp;</li>
-		
-		<li class="gameTour game-top 
-			<%%= (model.semis[1].winner == model.players[2].id ? 'winner' : '') %>">
-			<%%= model.players[2].name %>
-			<span><%%= model.semis[1].player_one.points %></span>
-		</li>
-		<li class="gameTour game-spacer">&nbsp;</li>
-		<li class="gameTour game-bottom 
-			<%%= (model.semis[1].winner == model.players[3].id ? 'winner' : '') %>">
-			<%%= model.players[3].name %>
-			<span><%%= model.semis[1].player_two.points %></span>
-		</li>
-
+			<div id=semi-final-2></div>
 		<li class="spacer">&nbsp;</li>
 	</ul>
 	<ul class="round round-4">
 		<li class="spacer">&nbsp;</li>
-		
-		<li class="gameTour game-top 
-			<%%= (model.final.winner == model.semis[0].winner ? 'winner' : '') %>">
-			<%%= playerNames[model.semis[0].winner] %>
-			<span><%%= model.final.player_one.points %></span>
-		</li>
-		<li class="gameTour game-spacer">&nbsp;</li>
-		<li class="gameTour game-bottom 
-			<%%= (model.final.winner == model.semis[1].winner ? 'winner' : '') %>">
-			<%%= playerNames[model.semis[1].winner] %>
-			<span><%%= model.final.player_two.points %></span>
-		</li>
-		
+			<div id=final></div>
 		<li class="spacer">&nbsp;</li>
 	</ul>
 </script>
 
+<script type="text/template" name="tmpl-tournament-match">
+	<%% if(match) { %>
+		<li class="gameTour game-top 
+			<%%= (match.winner == match.player_one.id ? 'winner' : '') %>">
+			<%%= playerNames[match.player_one.id] %>
+			<span><%%= match.player_one.points %></span>
+		</li>
+		<li class="gameTour game-spacer">&nbsp;</li>
+		<li class="gameTour game-bottom 
+			<%%= (match.winner == match.player_two.id ? 'winner' : '') %>">
+			<%%= playerNames[match.player_two.id] %>
+			<span><%%= match.player_two.points %></span>
+		</li>
+	<%% } else { %>
+		<li class="gameTour game-top">
+			<span></span>
+		</li>
+		<li class="gameTour game-spacer">&nbsp;</li>
+		<li class="gameTour game-bottom">
+			<span></span>
+		</li>
+	<%% } %>
+</script>
