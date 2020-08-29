@@ -19,15 +19,11 @@ if ($('html').data().isLogin)
       this.channel = consumer.subscriptions.create({
 				channel: "NotificationChannel"
 			}, {
-        received: async function(data) {
-					console.log(data)
+        received: function(data) {
 					switch(data.type){
-						// case 'coucou':
-						// 	SimpleNotification.message({ 
-						// 		title: 'Coucou',
-						// 		text: `Hello from ${data.content.senderName}`
-						// 	})
-						// break;
+            case "game-request":
+              handle_game_request(data);
+						break;
 						default:
 							break;
 					}
@@ -38,6 +34,33 @@ if ($('html').data().isLogin)
       }); 
     }
     
+
+    function handle_game_request(data) {
+      SimpleNotification.message({
+        text: data.content,
+        buttons: [{
+          value: 'YES', // The text inside the button
+          type: 'success', // The type of the button, same as for the notifications
+          onClick: (notification) => {
+            // The onClick function receive the notification from which the button has been clicked
+            // You can call notification.remove(), notification.close() or notification.closeFadeout()
+            // if you wish to remove the notification by clicking on  the buttons
+            notification.close();
+          }
+        },
+        {
+          value: 'NO', // The text inside the button
+          type: 'error', // The type of the button, same as for the notifications
+          onClick: (notification) => {
+            // The onClick function receive the notification from which the button has been clicked
+            // You can call notification.remove(), notification.close() or notification.closeFadeout()
+            // if you wish to remove the notification by clicking on  the buttons
+            notification.close();
+          }
+        }]
+      }, { removeAllOnDisplay: true, closeButton: false, closeOnClick: false })
+    }
+
   }); // window.onload
 }
 

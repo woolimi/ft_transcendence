@@ -1,4 +1,5 @@
 import consumer from "./consumer"
+import UserStatusChannel from "./user_status_channel"
 
 const MatchChannel = {};
 MatchChannel.channel = null;
@@ -8,6 +9,7 @@ if ($('html').data().isLogin) {
 
     MatchChannel.unsubscribe = function() {
       if (this.channel) {
+        UserStatusChannel.channel.perform("set_status", { user_id: $('html').data().userId, status: 1 });
         this.channel.unsubscribe(this.match_id);
         this.channel = null;
       }
