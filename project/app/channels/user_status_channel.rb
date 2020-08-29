@@ -14,4 +14,11 @@ class UserStatusChannel < ApplicationCable::Channel
     data = {:user_id => current_user[:id], :status => 0}
     ActionCable.server.broadcast "user_status_channel", data
   end
+
+  def set_status(data)
+    return if data["user_id"] != current_user[:id]
+    user_status = UserProfile.find_by(user_id: data["user_id"])
+    user_status.update(status: data["status"])
+    ActionCable.server.broadcast "user_status_channel", data
+  end
 end
