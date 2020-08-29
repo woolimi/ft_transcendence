@@ -21,8 +21,8 @@ $(() => {
 		render_players: function(data) {
 			this.$el.find('#game-players').html(this.players_template(data));
 		},
-		render_game: function() {
-			this.$el.find('#game-game').html(this.game_template());
+		render_game: function (data) {
+			this.$el.find('#game-game').html(this.game_template(data));
 		},
 		events: {
 			"click .ready-status": "check_ready", 
@@ -35,7 +35,7 @@ $(() => {
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
 				this.render_page();
 				this.render_players(match_data);
-				this.render_game();
+				this.render_game(match_data);
 				MatchChannel.subscribe(match_data, this.recv_callback, this);
 				const wrapper = document.getElementById("game-screen-wrapper");
 				const canvas = document.getElementById("game-screen");

@@ -11,7 +11,8 @@ class NotificationChannel < ApplicationCable::Channel
     NotificationChannel.broadcast_to(User.find_by(id: data["user_id"]),
     {
       type: data["type"],
-      content: data["content"]
+      content: data["content"],
+      from: data["from"],
     })
   end
 end
