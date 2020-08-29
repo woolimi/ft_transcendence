@@ -10,9 +10,10 @@ class Api::TournamentsController < ApplicationController
 		@tournament = Tournament.create!(
 			name: tournament_params[:name],
 			registration_start: DateTime.now,
-			registration_end: DateTime.now + 1.hour
+			registration_end: DateTime.now + 10.minutes
 		)
-		# render :show
+		TournamentRegistrationLimitJob.set(wait_until: @tournament.registration_end).perform_later(@tournament)
+		# todo : notify all users about the creation of a new tournament
 	end
 
 	def show
@@ -28,11 +29,17 @@ class Api::TournamentsController < ApplicationController
 		rescue => exception
 			return render plain: "can't join", status: :forbidden
 		end
+		if tournament.players.count == 4
+			tournament.started!
+			# todo:
+			# creation of matches, invitations to the users
+		end
 	end
 
 	def quit
 		tournament = Tournament.find(params[:id])
 		return render plain: "user is not a participant, so he can't quit", status: :forbidden if ( ! tournament.players.find(current_user.id) )
+		return render plain: "the tournament already started, you cannot quit anymore", status: :forbidden if ( ! tournament.pending! )
 		tournament.players.delete(current_user)
 	end
 
