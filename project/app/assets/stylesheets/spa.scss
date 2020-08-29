@@ -388,8 +388,8 @@ html, body, #app{
 
 #game-ingame-list {
   margin: 1em;
-  overflow-y: scroll;
-  height: 40vh;
+  overflow-y: auto;
+  max-height: 40vh;
   width: 100%;
 }
 

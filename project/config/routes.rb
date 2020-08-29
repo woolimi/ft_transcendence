@@ -56,6 +56,6 @@ Rails.application.routes.draw do
             delete :quit
         end
     end
-    resources :matches, param: :id, only: [:create, :show]
+    resources :matches, param: :id, only: [:index, :create, :show]
   end # namespace api      
 end

@@ -73,15 +73,11 @@ if ($('html').data().isLogin)
             notification.close();
             return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
           }
-        },
-        {
+        }, {
           value: 'NO', // The text inside the button
           type: 'error', // The type of the button, same as for the notifications
           onClick: (notification) => {
-            NotificationChannel.channel.perform("send_notification", {
-              user_id: data.from,
-              type: "duel-reject",
-            })            
+            NotificationChannel.channel.perform("send_notification", { user_id: data.from, type: "duel-reject" })            
             notification.close();
           }
         }]
@@ -92,12 +88,8 @@ if ($('html').data().isLogin)
         closeOnClick: false,
         events: {
           onDeath(notification) {
-            console.log("on Death")
-            NotificationChannel.channel.perform("send_notification", {
-              user_id: data.from,
-              type: "duel-reject",
-            })
-            notification.close();       
+            NotificationChannel.channel.perform("send_notification", { user_id: data.from, type: "duel-reject" })
+            notification.close();
           }
         }})
     }

@@ -45,6 +45,7 @@ class MatchChannel < ApplicationCable::Channel
       match.player_right_id = match.player_2["user_id"]
       match.save()
       ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { all_ready: true })
+      ActionCable.server.broadcast("game_channel", {type: "match"});
       return game_start(match[:id], [match.player_left_id, match.player_right_id])
     end
   end
@@ -126,7 +127,7 @@ class MatchChannel < ApplicationCable::Channel
         match.player_1["score"] = game["score"][0]
         match.player_2["score"] = game["score"][1]
         match.save()
-        if (game["score"][0] == 3 || game["score"][1] == 3)
+        if (game["score"][0] == 5 || game["score"][1] == 5)
           # set winner, loser, finished
           match.winner = game["score"][0] > game["score"][1] ? match.player_1["user_id"] : match.player_2["user_id"]
           match.loser = game["score"][0] < game["score"][1] ? match.player_1["user_id"] : match.player_2["user_id"]
@@ -147,6 +148,7 @@ class MatchChannel < ApplicationCable::Channel
     end # end while
 
     ActionCable.server.broadcast("match_#{match_id}_channel", {end: true})
+    ActionCable.server.broadcast("game_channel", {type: "match"});
     @@matches.delete(match_id)
   end
 

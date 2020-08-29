@@ -1,6 +1,11 @@
 class Api::MatchesController < ApplicationController
 	protect_from_forgery
 	before_action :authenticate_user!
+
+	def index
+		return render json: Match.where("started_at IS NOT NULL").where(match_finished: false), status: :ok
+	end
+
 	def show 
 		room = Match.find_by(id: params[:id])
 		return render plain: "forbidden", status: :forbidden if room.blank?
@@ -19,6 +24,7 @@ class Api::MatchesController < ApplicationController
 				match_type: params[:match_type],
 				player_1: {user_id: player_1.user_id, avatar_url: player_1.avatar_url, nickname: player_1.nickname, ready: false, score: 0},
 				player_2: {user_id: player_2.user_id, avatar_url: player_2.avatar_url, nickname: player_2.nickname, ready: false, score: 0},
+				match_finished: false,
 				created_at: Time.now())
 			return render json: room if (room.present?)
 		end
@@ -31,6 +37,7 @@ class Api::MatchesController < ApplicationController
 			single_room = Match.create(
 				match_type: params[:match_type],
 				player_1: {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0},
+				match_finished: false,
 				created_at: Time.now())
 			return render json: single_room if (single_room.present? && me.present?)
 		else # if single_room is exist, enter into it

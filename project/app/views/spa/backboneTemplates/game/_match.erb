@@ -54,12 +54,15 @@
 </script>
 
 <script type="text/template" name="tmpl-ingame-list">
+	<%% if (list.length === 0) { %>
+		<p class="text-center">No match in game</p>
+	<%% } else { %>
 	<ul class="list-group">
-		<li class="list-group-item">
-			Duel wpark vs doby 10:05
+		<%% _.forEach(list, (item) => { %>
+		<li class="list-group-item ingame-match cursor" data-match-id="<%%= item.id %>" data-match-type="<%%= item.match_type %>">
+			(<%%= item.match_type %>) <%%= item.player_1.nickname %> vs <%%= item.player_2.nickname %>
 		</li>
-		<li class="list-group-item">
-			Duel wpark vs doby 10:05
-		</li>
+		<%% }) %>
 	</ul>
+	<%% } %>
 </script>
