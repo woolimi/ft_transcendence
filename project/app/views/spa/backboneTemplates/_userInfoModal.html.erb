@@ -25,9 +25,9 @@
 		<%% if (user.user_id !== $('html').data().userId) { %>
 		<div class="mt-2">
 			<button type="button" class="btn btn-success btn-sm" id="start-chat"
-				data-room="<%%= Helper.make_room(user.user_id, $('html').data().userId) %>">send message</button>
-			<button type="button" class="btn btn-success btn-sm" id="start-chat"
-				data-room="<%%= Helper.make_room(user.user_id, $('html').data().userId) %>">ask battle</button>
+				data-room="<%%= Helper.make_room(user.user_id, $('html').data().userId) %>">message</button>
+			<button type="button" class="btn btn-danger btn-sm" id="ask-game"
+				data-opponent="<%%= user.user_id %>">ask game</button>
 		</div>
 		<%% } %>
 
