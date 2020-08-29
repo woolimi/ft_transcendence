@@ -2,60 +2,50 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Router from "./Router.js"
+import Helper from "./Helper.js";
+import NotificationChannel from "../channels/notification_channel.js";
 
 const UserModal = {};
 
 if ($('html').data().isLogin) {
 	$(() => {
-
-		/* Model */
-		const User = Backbone.Model.extend({
-			defaults: {
-				user_id: "undefined",
-				name: "undefined",
-				nickname: "undefined",
-				avatar_url: "#",
-			},
-			urlRoot: "/api/user_info/",
-			idAttribute: 'user_id',
-			url: function () {
-				return this.urlRoot + encodeURIComponent(this.get('user_id'));
-			},
-		})
-
-		const user = new User();
-
 		/* View */
 		const UserModalView = Backbone.View.extend({
 			template: _.template($("script[name='tmpl-user-info-modal']").html()),
-			initialize: function () {
-				this.listenTo(this.model, "change:user_id", this.fetch_and_render);
-			},
 			el: $("#app"),
-			model: user,
 			events: {
-				"click .userInfoModal": "change_uid",
+				"click .userInfoModal": "render_user",
 				"click #start-chat": "start_chat",
+				"click #ask-game": "ask_game"
 			},
-			render() {
-				$('#view-user-info-modal').html(this.template({ user: this.model.toJSON() }));
-			},
-			change_uid: function (e) {
-				const user_id = $(e.currentTarget).data().userId;
-				this.model.set({ user_id: user_id });
-			},
-			fetch_and_render: function () {
-				const self = this;
-				this.model.fetch({
-					success: function () {
-						self.render();
-					}
-				});
+			async render_user(e) {
+				try {
+					const user_id = $(e.currentTarget).data().userId;
+					const user = await Helper.ajax(`/api/user_info/${user_id}`, '', 'GET');
+					$('#view-user-info-modal').html(this.template({ user: user }));
+				} catch (error) {
+					console.error(error);
+				}
 			},
 			start_chat(e) {
 				const room = $(e.currentTarget).data().room;
 				Router.router.navigate("/chats/" + room, { trigger: true });
 				$('#userInfoModal').modal('toggle');
+			},
+			ask_game(e) {
+				// check if user is login and not in game
+				const opponent = $(e.currentTarget).data().opponent;
+				// send notification to user
+				// NotificationChannel#send_notification
+
+				NotificationChannel.channel.perform("send_notification", {
+					user_id: opponent,
+					type: "game-request",
+					content: "Let's play game with me !",
+				})
+
+				// check if user accept or not
+				// console.log(opponent)
 			}
 		});
 
