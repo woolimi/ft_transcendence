@@ -1,5 +1,6 @@
 import consumer from "./consumer"
 import Helper from "../packs/Helper";
+import Router from "../packs/Router";
 
 const NotificationChannel = {};
 NotificationChannel.channel = null;
@@ -21,9 +22,15 @@ if ($('html').data().isLogin)
 			}, {
         received: function(data) {
 					switch(data.type){
-            case "game-request":
-              handle_game_request(data);
-						break;
+            case "duel-request":
+              handle_duel_request(data);
+              break;
+            case "duel-accept":
+              handle_duel_accept(data);
+  						break;
+            case "duel-reject":
+              handle_duel_reject();
+              break;
 						default:
 							break;
 					}
@@ -33,32 +40,66 @@ if ($('html').data().isLogin)
         // rejected() {}
       }); 
     }
-    
 
-    function handle_game_request(data) {
+    function handle_duel_reject() {
+      Helper.flash_message('danger', 'Your request is rejected');
+    }
+
+    function handle_duel_accept(data) {
+      $('#userInfoModal').modal('hide');
+      Helper.flash_message('success', 'Your request is accepted')
+      return Router.router.navigate(`/game/duel/${data.from}`, { trigger: true });
+    }
+
+    function handle_duel_request(data) {
       SimpleNotification.message({
         text: data.content,
         buttons: [{
           value: 'YES', // The text inside the button
           type: 'success', // The type of the button, same as for the notifications
-          onClick: (notification) => {
-            // The onClick function receive the notification from which the button has been clicked
-            // You can call notification.remove(), notification.close() or notification.closeFadeout()
-            // if you wish to remove the notification by clicking on  the buttons
+          async onClick(notification) {
+            const status = await Helper.ajax(`/api/user_status/${data.from}`, '', "GET");
+            if (status === 0)
+              return Helper.flash_message("danger", "User is not logged in");
+            else if (status === 2)
+              return Helper.flash_message("danger", "User is in game");
+            const new_match = await Helper.ajax('/api/matches/',
+              `match_type=duel&player_1=${data.from}&player_2=${$('html').data().userId}`, 'POST');
+            NotificationChannel.channel.perform("send_notification", {
+              user_id: data.from,
+              type: "duel-accept",
+              from: new_match.id,
+            })            
             notification.close();
+            return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
           }
         },
         {
           value: 'NO', // The text inside the button
           type: 'error', // The type of the button, same as for the notifications
           onClick: (notification) => {
-            // The onClick function receive the notification from which the button has been clicked
-            // You can call notification.remove(), notification.close() or notification.closeFadeout()
-            // if you wish to remove the notification by clicking on  the buttons
+            NotificationChannel.channel.perform("send_notification", {
+              user_id: data.from,
+              type: "duel-reject",
+            })            
             notification.close();
           }
         }]
-      }, { removeAllOnDisplay: true, closeButton: false, closeOnClick: false })
+      }, { // options
+        duration: 10000, 
+        removeAllOnDisplay: true, 
+        closeButton: false, 
+        closeOnClick: false,
+        events: {
+          onDeath(notification) {
+            console.log("on Death")
+            NotificationChannel.channel.perform("send_notification", {
+              user_id: data.from,
+              type: "duel-reject",
+            })
+            notification.close();       
+          }
+        }})
     }
 
   }); // window.onload

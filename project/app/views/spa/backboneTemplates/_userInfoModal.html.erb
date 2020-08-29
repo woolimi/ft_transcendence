@@ -39,8 +39,8 @@
 			<div class="card-header  bg-dark text-white d-flex justify-content-center">
 				match history (latest 10)
 			</div>
-			<div class="card-body bg-secondary text-white overflow-auto">
-				<ul class="list-group" id="view-channels-list">
+			<div class="card-body bg-secondary text-white overflow-auto" id="userinfo-match-history">
+				<ul class="list-group">
 				<%% _.forEach(user.matches, (item) => { %>
 				<li class="pl-3 list-group-item side-list-item d-flex justify-content-between">
 					<div><%%= item.player_left %> VS <%%= item.player_right %></div>
