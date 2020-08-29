@@ -1,0 +1,14 @@
+<script type="text/template" name="tmpl-tournaments-page">
+	<div id=tournament-add-button></div>
+	<div id="tournaments-list"></div>
+</script>
+
+<script type="text/template" name="tmpl-tournaments-list">
+	<%% _.forEach(list, (item)=> { %>
+		<div data-id="<%%= item.id %>" class="tournamentItem tournament-<%%= item.status %>"><%%= item.name %></div>
+	<%% }) %>
+</script>
+
+<script type="text/template" name="tmpl-tournaments-button">
+	<button id=create-tournament-button class="btn btn-primary align-items-center btn-lg btn-block btn-huge mt-3 mb-4">Create tournament</button>
+</script>

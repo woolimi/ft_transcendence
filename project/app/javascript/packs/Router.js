@@ -22,6 +22,8 @@ const Router = {};
 if ($('html').data().isLogin) {
     $(() => {
         const remove_channel = function() {
+            if (Tournament.content)
+                Tournament.content.loop = false
             if (ChatChannel.channel)
                 ChatChannel.unsubscribe();
             if (ChannelChannel.channel)
