@@ -17,6 +17,7 @@
 		<span id=clock></span>
 		<br>
 		<span id=participant-list></span>
+		<span class="text-center" id=join-button></span>
 	</p>
 </script>
 
@@ -64,10 +65,24 @@
 
 <script type="text/template" name="tmpl-tournament-participants">
 	<strong>Participants : </strong>
-	<ul>
-		<%% for(const user of users) { %>
-			<li><%%= user.name %></li>
-		<%% } %>
-	</ul>
+	<%% if(users.length > 0) { %>
+		<ul>
+			<%% for(const user of users) { %>
+				<li><%%= user.name %></li>
+			<%% } %>
+		</ul>
+	<%% } else { %>
+		<%%= 'no participant yet. <br>' %>
+	<%% } %>
 </script>
 
+
+<script type="text/template" name="tmpl-tournament-join-button">
+	<%% if(!started) { %>
+		<%% if( ! hasJoined ) { %>
+			<button id=button-join class="btn btn-success">Join tournament</button>
+		<%% } else { %>
+			<button id=button-quit class="btn btn-danger">Quit tournament</button>
+		<%% } %>
+	<%% } %>
+</script>

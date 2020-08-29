@@ -33,7 +33,9 @@ if ($('html').data().isLogin) {
             if (Match.content)
                 Match.content.undelegateEvents();
             if (War.content)
-                clearInterval(War.content.intervalId);
+								clearInterval(War.content.intervalId);
+						if (Tournament.content)
+							clearInterval(Tournament.content.intervalId)
             $(window).off("resize");
         };
 
