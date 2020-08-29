@@ -20,6 +20,8 @@ const Router = {};
 if ($('html').data().isLogin) {
     $(() => {
         const remove_channel = function() {
+            if (Tournament.content)
+                Tournament.content.loop = false
             if (ChatChannel.channel)
                 ChatChannel.unsubscribe();
             if (ChannelChannel.channel)
@@ -33,9 +35,7 @@ if ($('html').data().isLogin) {
             if (Match.content)
                 Match.content.undelegateEvents();
             if (War.content)
-								clearInterval(War.content.intervalId);
-						if (Tournament.content)
-							clearInterval(Tournament.content.intervalId)
+				clearInterval(War.content.intervalId);
             $(window).off("resize");
         };
 
