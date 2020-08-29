@@ -6,9 +6,6 @@ class Api::WarHistoryController < ApplicationController
             i[:guild_1] = Guild.find_by(id: i[:guild_1])[:name]
             i[:guild_2] = Guild.find_by(id: i[:guild_2])[:name]
         end
-        puts ">>>>>>>>>>>>>"
-        puts war.as_json
-        puts ">>>>>>>>>>>>>"
         render json: war
     end 
 end
