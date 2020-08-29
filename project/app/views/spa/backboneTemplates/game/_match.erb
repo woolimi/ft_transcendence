@@ -8,7 +8,7 @@
 	<div class="container-fluid d-flex" id="match" data-match-id=<%%=id%>>
 		<div class="col-sm-4 text-center p-1 mt-4" id="match-player1" data-user-id=<%%=player_1 ? player_1.user_id : ''%>>
 			<%% if (player_1) { %>
-			<img class="rounded-circle game-avatar" src="<%%=player_1.avatar_url%>">
+			<img class="userInfoModal cursor rounded-circle game-avatar" src="<%%=player_1.avatar_url%>" data-user-id="<%%= player_1.user_id %>" data-toggle="modal" data-target="#userInfoModal">
 			<%% } else { %>
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
@@ -29,7 +29,7 @@
 		</div>
 		<div class="col-sm-4 text-center p-1 mt-4" id="match-player2">
 			<%% if (player_2) { %>
-			<img class="rounded-circle game-avatar" src="<%%= player_2.avatar_url %>">
+			<img class="userInfoModal cursor rounded-circle game-avatar" src="<%%= player_2.avatar_url %>" data-user-id="<%%= player_2.user_id %>" data-toggle="modal" data-target="#userInfoModal">
 			<%% } else { %>
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
@@ -48,8 +48,15 @@
 </script>
 <script type="text/template" name="tmpl-game-game">
 	<div id="game-timer" class="d-none"></div>
+	<%% let color = "#353535"; %>
+	<%% if (match_type == "duel") {
+			color = "#982400";
+		} else if (match_type == "ladder") {
+			color = "#353535";
+		}
+	%>
 	<div id="game-screen-wrapper">
-		<canvas id="game-screen" style="background-color:#353535"></canvas>
+		<canvas id="game-screen" style="background-color:<%%= color %>"></canvas>
 	</div>
 </script>
 

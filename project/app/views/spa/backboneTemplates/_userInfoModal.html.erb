@@ -43,10 +43,11 @@
 				<ul class="list-group">
 				<%% _.forEach(user.matches, (item) => { %>
 				<li class="pl-3 list-group-item side-list-item d-flex justify-content-between">
+					<div><%%= item.match_type %></div>
 					<div><%%= item.player_left %> VS <%%= item.player_right %></div>
 					<%% const win = (item.winner === user.user_id ? true : false)%>
 					<div class="<%%= win ? "text-info" : "text-danger" %>"><%%= win ? "win" : "lose" %>(<%%= item.score_left %> : <%%= item.score_right %>)</div>
-					<div><%%=  new Date(item.started_at).toLocaleString().slice(0, -3) %></div>
+					<div><%%=  new Date(item.started_at).toLocaleString().slice(0, -3).slice(5) %></div>
 				</li>
 				<%% }) %>
 				</ul>
