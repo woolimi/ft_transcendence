@@ -19,6 +19,7 @@ $(() => {
 		el: $("#view-content"),
 		page_template: _.template($("script[name='tmpl-tournaments-page']").html()),
 		list_template: _.template($("script[name='tmpl-tournaments-list']").html()),
+		button_template: _.template($("script[name='tmpl-tournaments-button']").html()),
 		tournamentsList: Tournaments.collection,
 		user_id: $('html').data().userId,
 		events: {
@@ -27,7 +28,6 @@ $(() => {
 		initialize: async function(){
 			try {
 				await Helper.fetch(this.tournamentsList)
-				// console.log(this.tournamentList)
 				this.render_page();
 				this.render_list();
 				this.render_create_button();
@@ -43,9 +43,9 @@ $(() => {
 		},
 		render_create_button: async function () {
 			let me = await Helper.ajax(`/api/profile/${this.user_id}`)
-			if(true){ // me.admin
+			if(me.admin){
+				this.$el.find('#tournament-add-button').html(this.button_template())
 				let button = this.$el.find('#create-tournament-button')
-				button.show()
 				button.on('click', async () => {
 					$('#createTournamentModal').modal('show')
 					$('button[type=submit]').on('click', async (e) =>{
