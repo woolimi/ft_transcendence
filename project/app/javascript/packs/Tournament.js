@@ -44,20 +44,22 @@ $(() => {
 			this.render_tree()
 			this.render_join_button()
 			this.render_participant_list()
-			this.render_timer(this.model.attributes.registration_end)
+			let end = new Date(this.model.attributes.registration_end)
+			this.loop = true;
+			this.render_timer(end)
 		},
 
-		render_page() {
+		render_page: function() {
 			this.$el.html(this.page_template());
 		},
 
-		render_infos() {
+		render_infos: function() {
 			this.$el.find('#tournament-infos').html(
 				this.info_template({model: this.model.attributes})
 			)
 		},
 
-		render_tree() {
+		render_tree: function() {
 			this.$el.find('#tournament-tree').html(
 				this.tree_template()
 			)
@@ -66,7 +68,7 @@ $(() => {
 			this.render_match('#final', this.model.attributes.final)
 		},
 
-		render_match(selector, match){
+		render_match: function(selector, match){
 			this.$el.find(selector).html(
 				this.match_template({
 					match: match,
@@ -75,34 +77,43 @@ $(() => {
 			)
 		},
 
-		render_timer(end_date) {
-			this.intervalId = setInterval(function() {
-					var dds = new Date(end_date);
-					var countDownDate = dds.getTime();
-					var now = Date.now();
+		get_time_string: function(distance){
+			let negative = distance < 0
+			distance = Math.abs(distance)
+			let seconds = distance % 60;
+			distance = (distance / 60) >> 0
+			let minutes = distance % 60;
+			distance = (distance / 60) >> 0;
+			let hours = distance % 24;
+			distance = (distance / 24) >> 0;
+			let days = distance;
+			let answer = `${days}d ${hours}h ${minutes}m ${seconds}s`
+			if (negative)
+				answer = answer + ' ago'
+			else
+				answer = 'in ' + answer
+			return answer
+		},
 
-					var distance = countDownDate - now;
-					var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-					var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-					var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-					var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-					if (distance < 0) {
-						clearInterval(this.intervalId);
-						$('#clock').html("Registration time has passed.");
-					} else {
-						$('#clock').html(days + "d " + hours + "h " +
-						minutes + "m " + seconds + "s ")
-					}
+		render_timer: function(end) {
+			let now = new Date();
+			let distance = ((end - now)/1000) >> 0
+			console.log('render_timer')
+			$('#clock').html(this.get_time_string(distance))
+			setTimeout(() => {
+				if (this.loop) {
+					this.render_timer(end);
+				}
 			}, 1000);
 		},
 
-		render_participant_list(){
+		render_participant_list: function(){
 			this.$el.find('#participant-list').html(
 				this.participants_template({users: this.model.attributes.players})
 			)
 		},
 
-		render_join_button(){
+		render_join_button: function(){
 			let users = this.model.attributes.players
 			let started = (users.length === 4)
 			let hasJoined = (users.find((o)=>(o.id == this.user_id))) !== undefined
@@ -114,7 +125,7 @@ $(() => {
 			)
 		},
 
-		async join(e){
+		join: async function(e){
 			e.preventDefault()
 			e.stopImmediatePropagation();
 			try {
@@ -128,7 +139,7 @@ $(() => {
 			this.render_join_button()
 		},
 
-		async quit(e){
+		quit: async function(e){
 			e.preventDefault()
 			e.stopImmediatePropagation();
 			try {
