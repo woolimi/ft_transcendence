@@ -33,20 +33,19 @@ $(() => {
 			this.user_id = $('html').data().userId,
 			this.model = new TournamentModel({id: id})
 			await Helper.fetch(this.model)
-			// console.log(this.model.attributes)
+			console.log(this.model.attributes)
 			this.playerNames = {}
 			for(let i=0; i < 4; i++){
 				if(this.model.attributes.players[i])
 					this.playerNames[this.model.attributes.players[i].id] = this.model.attributes.players[i].name
 			}
+			this.end = new Date(this.model.attributes.registration_end)
 			this.render_page()
 			this.render_infos()
 			this.render_tree()
 			this.render_join_button()
 			this.render_participant_list()
-			let end = new Date(this.model.attributes.registration_end)
-			this.loop = true;
-			this.render_timer(end)
+			this.render_timer()
 		},
 
 		render_page: function() {
@@ -95,14 +94,15 @@ $(() => {
 			return answer
 		},
 
-		render_timer: function(end) {
+		render_timer: function() {
+			var self = this
 			let now = new Date();
-			let distance = ((end - now)/1000) >> 0
+			let distance = ((this.end - now)/1000) >> 0
 			console.log('render_timer')
 			$('#clock').html(this.get_time_string(distance))
 			setTimeout(() => {
-				if (this.loop) {
-					this.render_timer(end);
+				if ($('#clock').length) {
+					this.render_timer(self.end);
 				}
 			}, 1000);
 		},
@@ -117,10 +117,13 @@ $(() => {
 			let users = this.model.attributes.players
 			let started = (users.length === 4)
 			let hasJoined = (users.find((o)=>(o.id == this.user_id))) !== undefined
+			let now = new Date();
+			let timeOut = (now > this.end)
 			this.$el.find('#join-button').html(
 				this.join_button_template({
 					started: started,
-					hasJoined: hasJoined
+					hasJoined: hasJoined,
+					timeOut: timeOut
 				})
 			)
 		},

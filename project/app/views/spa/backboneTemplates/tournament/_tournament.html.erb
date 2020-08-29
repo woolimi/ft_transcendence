@@ -78,7 +78,7 @@
 
 
 <script type="text/template" name="tmpl-tournament-join-button">
-	<%% if(!started) { %>
+	<%% if(!started && !timeOut) { %>
 		<%% if( ! hasJoined ) { %>
 			<button id=button-join class="btn btn-success">Join tournament</button>
 		<%% } else { %>
