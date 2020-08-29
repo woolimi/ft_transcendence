@@ -3,6 +3,7 @@ import _ from "underscore"
 import Backbone from "backbone"
 import { Pong } from "./Pong.js"
 import MatchChannel from '../channels/match_channel'
+import UserStatusChannel from "../channels/user_status_channel.js"
 
 const Match = {};
 
@@ -42,6 +43,7 @@ $(() => {
 				if (match_data.started_at	&& !match_data.match_finished
 					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id))
 					this.pong.on();
+				UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
 			} catch (error) {
 				console.error(error);
 			}
