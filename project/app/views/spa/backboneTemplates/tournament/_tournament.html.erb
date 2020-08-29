@@ -5,11 +5,21 @@
 	</div>
 </script>
 
+
 <script type="text/template" name="tmpl-tournament-infos">
 	<h3>Tournament</h3><br>
-	<p> <strong>Tournament name:</strong> <%%= model.name %> </p>
-	<p> <strong>Status:</strong> <%%= model.status %> </p>
+	<p> 
+		<strong>Tournament name :</strong> <%%= model.name %>
+		<br>
+		<strong>Status :</strong> <%%= model.status %> 
+		<br>
+		<strong>Time until registration : </strong>
+		<span id=clock></span>
+		<br>
+		<span id=participant-list></span>
+	</p>
 </script>
+
 
 <script type="text/template" name="tmpl-tournament-tree">
 	<ul class="round round-3">
@@ -25,6 +35,7 @@
 		<li class="spacer">&nbsp;</li>
 	</ul>
 </script>
+
 
 <script type="text/template" name="tmpl-tournament-match">
 	<%% if(match) { %>
@@ -49,3 +60,14 @@
 		</li>
 	<%% } %>
 </script>
+
+
+<script type="text/template" name="tmpl-tournament-participants">
+	<strong>Participants : </strong>
+	<ul>
+		<%% for(const user of users) { %>
+			<li><%%= user.name %></li>
+		<%% } %>
+	</ul>
+</script>
+
