@@ -1,18 +1,64 @@
 <!-- gulid content -->
 <script type="text/template" name="tmpl-war-history">
-   <h1> Guild War History Page for <%%= guild_name %> </h1>
+   <div><h1 style="text-align:center" class="row list-group-item d-flex full-height justify-content-center align-items-center bg-dark text-white"> Guild War History Page for <%%= guild_name %> </h1></div>
     <%% if(_.size(wars) == 0){%>
-        <h2>No wars completed yet for <%%= guild_name %></h2>
+	    <div class="row full-height justify-content-center align-items-center">
+        
+        <strong>No wars completed yet for <%%= guild_name %></strong></div>
 	<%% } %>
-    <ul>
+    <ul id="war-hist-list">
         <%% _.each(wars, function(wars, i) { %>
-		<li class="list-group-item d-flex justify-content-between align-items-center">
-        <span>
-            Challenger: <%%= wars.guild_1 %><br>
-            Accepter: <%%= wars.guild_2 %><br>
-            Start Date: <%%= wars.start_date %>   End Date: <%%= wars.end_date %>
-
-        </span>
+		<li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+        <table style="width:100%">
+         <tr>
+            <td <%% if(guild_name == wars.guild_1) { %> style="font-weight:bold" <%% } %>>
+            Challenger: <%%= wars.guild_1 %></td>
+        </tr>
+        <tr>
+            <td <%% if(guild_name == wars.guild_2) { %> style="font-weight:bold" <%% } %>>
+            Accepter: &nbsp;&nbsp;<%%= wars.guild_2 %></td>
+        </tr>
+        <tr>
+            <td>War Start:&nbsp;&nbsp;<%%= wars.start_date %><br>War End:&nbsp;&nbsp;&nbsp;<%%= wars.end_date %></td>
+        </tr>
+        <tr>
+            <td>Wager: <b><%%= wars.wager %></b></td>
+        </tr>
+        <tr>
+            <td>Total Matches: <b><%%= (wars.guild_1_matches_won + wars.guild_1_matches_lost + wars.guild_1_matches_unanswered) %></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+         <tr>
+            <td>&nbsp</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><b><u>Challenger Stats</u></b></td>
+        </tr>
+        <tr>
+            <td>Score: <b><%%= wars.guild_1_score %></b></td>
+            <td>Wins: <b><%%= wars.guild_1_matches_won %></b></td>
+            <td>Losses: <b><%%= wars.guild_1_matches_lost%></b></td>
+            <td>Unanswered: <b><%%= wars.guild_1_matches_unanswered %><b></td>
+        </tr>
+        <tr>
+            <td>&nbsp</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><b><u>Accepter Stats</u></b></td>
+        </tr>
+        <tr>
+            <td>Score: <b><%%= wars.guild_2_score %></b></td>
+            <td>Wins: <b><%%= wars.guild_2_matches_won %></b></td>
+            <td>Losses: <b><%%= wars.guild_2_matches_lost%></b></td>
+            <td>Unanswered: <b><%%= wars.guild_2_matches_unanswered %><b></td>
+        </tr>
+        </table>
         </li>
 	<%% }) %>
         </ul>

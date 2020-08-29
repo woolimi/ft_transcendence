@@ -32,10 +32,6 @@ class Api::ProfileController < ApplicationController
 			me.nickname = params[:nickname]
 		end
 		if (params[:guild_id] != me.guild_id)
-			if(params[:guild_id].nil?)
-				guild = Guild.find_by(:id => me.guild_id)
-				puts ">>>>>>>>>>>>>"
-			end
 			me.guild_id = params[:guild_id]
 		end
 		arr =  params[:block_list].as_json();
