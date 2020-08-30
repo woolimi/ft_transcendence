@@ -109,23 +109,31 @@ if ($('html').data().isLogin)
     }
 
     function handle_tournament_start(data){
-      // tournament_id: self.id,
-			// tournament_name: self.name,
-			// match_id: match1.id,
-      // opponent_name: players[1].user_profile.name
       SimpleNotification.message({
-        text: `The tournament "${data.tournament_name}" started.`
+        text: `The tournament "${data.tournament_name}" started. Your first match is against ${data.opponent_name}.`,
+        buttons: [{
+          value: 'Join match',
+          type: 'success',
+          async onClick(notification) {
+            notification.close();
+            return Router.router.navigate(`/game/tournaments/${data.tournament_id}/${data.match_id}`, { trigger: true });
+          }
+        }]
       })
-      // todo: link to tournament match
     }
 
     function handle_tournament_created(data) {
-      // tournament_id: @tournament.id,
-      // tournament_name: @tournament.name
       SimpleNotification.message({
-        text: `The tournament "${data.tournament_name}" has been created.`
+        text: `The tournament "${data.tournament_name}" has been created.`,
+        buttons: [{
+          value: 'See details',
+          type: 'message',
+          async onClick(notification) {
+            notification.close();
+            return Router.router.navigate(`/game/tournaments/${data.tournament_id}`, { trigger: true });
+          }
+        }]
       })
-      // todo: link to tournament page
     }
   }); // window.onload
 }
