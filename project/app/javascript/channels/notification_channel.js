@@ -22,6 +22,14 @@ if ($('html').data().isLogin)
 			}, {
         received: function(data) {
 					switch(data.type){
+            case 'tournament_canceled':
+              handle_tournament_canceled(data.content);
+              break;
+            case 'tournament_start':
+              handle_tournament_start(data.content);
+              break;
+            case 'tournament_created':
+              handle_tournament_created(data.content)
             case "duel-request":
               handle_duel_request(data);
               break;
@@ -94,6 +102,39 @@ if ($('html').data().isLogin)
         }})
     }
 
+    function handle_tournament_canceled(data){
+      SimpleNotification.error({
+        text: `The tournament "${data.name}" has been canceled (not enough participants)`
+      })
+    }
+
+    function handle_tournament_start(data){
+      SimpleNotification.message({
+        text: `The tournament "${data.tournament_name}" started. Your first match is against ${data.opponent_name}.`,
+        buttons: [{
+          value: 'Join match',
+          type: 'success',
+          async onClick(notification) {
+            notification.close();
+            return Router.router.navigate(`/game/tournaments/${data.tournament_id}/${data.match_id}`, { trigger: true });
+          }
+        }]
+      })
+    }
+
+    function handle_tournament_created(data) {
+      SimpleNotification.message({
+        text: `The tournament "${data.tournament_name}" has been created.`,
+        buttons: [{
+          value: 'See details',
+          type: 'message',
+          async onClick(notification) {
+            notification.close();
+            return Router.router.navigate(`/game/tournaments/${data.tournament_id}`, { trigger: true });
+          }
+        }]
+      })
+    }
   }); // window.onload
 }
 

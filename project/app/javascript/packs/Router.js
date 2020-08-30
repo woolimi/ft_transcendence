@@ -58,6 +58,7 @@ if ($('html').data().isLogin) {
                 "chats/:room": "chat",
                 "channels/:channel_id": "channel",
                 "war": "war",
+                "game/tournaments/:tournament_id/:match_id": "game_tournament",
                 "game/tournaments/:id": "tournament",
                 "game/tournaments": "tournaments",
             },
@@ -116,6 +117,10 @@ if ($('html').data().isLogin) {
             ladder() {
                 Ladder.content = new Ladder.Content(); 
             },
+            game_tournament: function(id){
+                remove_channel();
+                // todo
+            }
         });
         const router = new RouterClass();
         Router.router = router;

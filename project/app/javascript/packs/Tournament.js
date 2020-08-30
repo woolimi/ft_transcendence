@@ -46,6 +46,7 @@ $(() => {
 			this.render_join_button()
 			this.render_participant_list()
 			this.render_timer()
+			// todo : join match button
 		},
 
 		render_page: function() {
@@ -129,9 +130,11 @@ $(() => {
 		},
 
 		join: async function(e){
+			var self = this
 			e.preventDefault()
 			e.stopImmediatePropagation();
 			try {
+				console.log('idi:', self.id)
 				await Helper.ajax(`/api/tournaments/${this.id}/join`, '','PUT')
 				await Helper.fetch(this.model)
 			} catch (error) {

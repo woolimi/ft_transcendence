@@ -45,6 +45,7 @@ if User.find_by({ email: "salty@asdf.com"}).blank?
 		email: "salty@asdf.com",
 		password: "asdfas",
 	)
+
 	UserProfile.create!(
 		name: "Adrien Hanot",
 		nickname: "salty",
@@ -68,7 +69,6 @@ if User.find_by({ email: "noich@asdf.com"}).blank?
 		user_id: u[:id])
 end
 
-
 if User.find_by({ email: "benny@asdf.com"}).blank?
 	u = User.create!(
 		ft_id: 5, 
@@ -76,6 +76,7 @@ if User.find_by({ email: "benny@asdf.com"}).blank?
 		password: "asdfas",
 		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
 	)
+
 	UserProfile.create!(
 		name: "Benny Scetbun",
 		nickname: "benny",
@@ -161,7 +162,6 @@ user2= User.find_by({ email: "jai@asdf.com" });
 user3= User.find_by({ email: "sophie@asdf.com" });
 user4= User.find_by({ email: "benny@asdf.com" });
 
-
 Tournament.delete_all
 tournament = Tournament.create(name: 'tournament1', 
 	status: :finished, 
@@ -207,5 +207,11 @@ match3=Match.create(
 	match_finished: true
 )
 
-
-
+tournament2 = Tournament.create(name: 'tournament 2', 
+	status: :pending, 
+	registration_start: DateTime.now, 
+	registration_end: DateTime.now + 100.day)
+users=[user1,user2,user3]
+tournament2.players.clear
+tournament2.players.push users
+	
