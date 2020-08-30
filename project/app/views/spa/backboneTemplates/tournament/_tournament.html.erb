@@ -1,5 +1,8 @@
 <script type="text/template" name="tmpl-tournament-page">
 	<div id="tournamentMain">
+		<button id="button-test-reset" class="btn btn-primary">
+			Reset to 3 users (for tests)
+		</button>
 		<div id="tournament-infos"></div>
 		<div id="tournament-tree"></div>
 	</div>
@@ -25,14 +28,14 @@
 <script type="text/template" name="tmpl-tournament-tree">
 	<ul class="round round-3">
 		<li class="spacer">&nbsp;</li>
-			<div id=semi-final-1></div>
+			<span id=semi-final-1></span>
 		<li class="spacer">&nbsp;</li>
-			<div id=semi-final-2></div>
+			<span id=semi-final-2></span>
 		<li class="spacer">&nbsp;</li>
 	</ul>
 	<ul class="round round-4">
 		<li class="spacer">&nbsp;</li>
-			<div id=final></div>
+			<span id=final></span>
 		<li class="spacer">&nbsp;</li>
 	</ul>
 </script>

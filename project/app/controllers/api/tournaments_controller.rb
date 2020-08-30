@@ -4,6 +4,20 @@ class Api::TournamentsController < ApplicationController
 		# render 'index.json.jbuilder'
 	end
 
+	def test_reset # for test purposes
+		tournament = Tournament.find(params[:id])
+		tournament.status = :pending
+		user1=User.find_by({ email: "john@asdf.com"})
+		user2=User.find_by({ email: "jai@asdf.com"})
+		user3= User.find_by({ email: "doby@asdf.com" })
+		users=[user1,user2,user3]
+		tournament.players.clear
+		tournament.players.push users
+		tournament.matches.clear()
+		@tournament = tournament
+		render 'show.json.jbuilder'
+	end
+
 	def create
 		return render plain: 'This tournament name is already taken', status: :forbidden if Tournament.find_by(name:tournament_params[:name])
 		return render plain: 'only an admin can create a tournament', status: :forbidden if !current_user.user_profile.admin

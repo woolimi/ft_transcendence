@@ -18,7 +18,8 @@ $(() => {
 		self: this,
 		events: {
 			"click #button-join": "join",
-			"click #button-quit": "quit"
+			"click #button-quit": "quit",
+			"click #button-test-reset": "test_reset"
 		},
 
 		page_template: _.template($("script[name='tmpl-tournament-page']").html()),
@@ -40,13 +41,17 @@ $(() => {
 					this.playerNames[this.model.attributes.players[i].id] = this.model.attributes.players[i].name
 			}
 			this.end = new Date(this.model.attributes.registration_end)
+			this.render()
+		},
+
+		render: function(){
 			this.render_page()
 			this.render_infos()
 			this.render_tree()
 			this.render_join_button()
 			this.render_participant_list()
 			this.render_timer()
-			// todo : join match button
+			// todo: enter match (or spectate match) buttons
 		},
 
 		render_page: function() {
@@ -139,25 +144,38 @@ $(() => {
 				await Helper.fetch(this.model)
 			} catch (error) {
 				Helper.flash_message("danger", error.responseText)
-				// console.log(error.responseText)
+				console.log(error.responseText)
 			}
-			this.render_participant_list()
-			this.render_join_button()
+			this.render()
 		},
 
 		quit: async function(e){
+			var self = this
 			e.preventDefault()
 			e.stopImmediatePropagation();
 			try {
-				await Helper.ajax(`/api/tournaments/${this.id}/quit`, '','DELETE')
-				await Helper.fetch(this.model)
+				await Helper.ajax(`/api/tournaments/${self.id}/quit`, '','DELETE')
+				await Helper.fetch(self.model)
 			} catch (error) {
 				Helper.flash_message("danger", error.responseText)
-				// console.log(error.responseText)
+				console.log(error.responseText)
 			}
-			this.render_participant_list()
-			this.render_join_button()
+			this.render()
 		},
+
+		test_reset: async function(e){
+			var self = this
+			e.preventDefault()
+			e.stopImmediatePropagation();
+			try {
+				self.model.attributes = await Helper.ajax(`/api/tournaments/${self.id}/test_reset`, '','PUT')
+				// await Helper.fetch(self.model)
+			} catch (error) {
+				Helper.flash_message("danger", error.responseText)
+				console.log(error.responseText)
+			}
+			self.render()
+		}
 	});
 	
 })
