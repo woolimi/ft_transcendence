@@ -46,6 +46,7 @@ $(() => {
 			this.render_join_button()
 			this.render_participant_list()
 			this.render_timer()
+			// todo : join match button
 		},
 
 		render_page: function() {
