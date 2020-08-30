@@ -129,11 +129,14 @@ class MatchChannel < ApplicationCable::Channel
         match.save()
         if (game["score"][0] == 5 || game["score"][1] == 5)
           # set winner, loser, finished
-          match.winner = game["score"][0] > game["score"][1] ? match.player_1["user_id"] : match.player_2["user_id"]
-          match.loser = game["score"][0] < game["score"][1] ? match.player_1["user_id"] : match.player_2["user_id"]
+          winner = game["score"][0] > game["score"][1] ? match.player_1 : match.player_2
+          loser = game["score"][0] < game["score"][1] ? match.player_1 : match.player_2
+          match.winner = winner["user_id"]
+          match.loser = loser["user_id"]
           match.score_left = game["score"][0]
           match.score_right = game["score"][1]
           match.match_finished = true
+          calculate_RP(winner, loser) if match.match_type == "ladder"
           match.save()
           break
         else
@@ -182,5 +185,26 @@ class MatchChannel < ApplicationCable::Channel
     data[:count] = "GO!"
     ActionCable.server.broadcast("match_#{match_id}_channel", data)
     sleep 1
+  end
+
+  def calculate_RP(winner, loser)
+    puts "\n\n\n\n\n"
+    puts winner["user_id"]
+    puts loser["user_id"]
+    puts "\n\n\n\n\n"
+    winner_profile = UserProfile.find_by(user_id: winner["user_id"])
+    loser_profile = UserProfile.find_by(user_id: loser["user_id"])
+    if (winner["rp"] - loser["rp"]).abs >= 200
+      bonus = (winner["rp"] - loser["rp"]).abs * 0.1
+      winner["rp"] = winner["rp"] + 20 +  bonus
+      loser["rp"] = (loser["rp"] - 20 - bonus < 0 ? 0 : loser["rp"] - 20 - bonus)
+    else
+      winner["rp"] = winner["rp"] + 20
+      loser["rp"] = (loser["rp"] - 20  < 0 ? 0 : loser["rp"] - 20)
+    end
+    winner_profile.rp = winner["rp"]
+    loser_profile.rp = loser["rp"]
+    winner_profile.save();
+    loser_profile.save();
   end
 end

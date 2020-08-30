@@ -14,61 +14,153 @@ if User.find_by({ email: "doby@asdf.com" }).blank?
 		ft_id: 1, 
 		email: "doby@asdf.com",
 		password: "asdfas",
-		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
 	)
 	UserProfile.create!(
 		name: "dongbin",
 		nickname: "doby",
 		avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",
+		rp: 900,
 		user_id: u[:id],
 		admin: true
 	)
 end
-user1= User.find_by({ email: "doby@asdf.com" });
 
 if User.find_by({ email: "jai@asdf.com"}).blank?
-	j = User.create!(
+	u = User.create!(
 		ft_id: 2, 
 		email: "jai@asdf.com",
 		password: "asdfas",
-		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
 	)
 	UserProfile.create!(
 		name: "jaeseok lee",
 		nickname: "jai",
 		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
-		user_id: j[:id])
+		rp: 1160,
+		user_id: u[:id])
 end
-user2=User.find_by({ email: "jai@asdf.com"})
 
-if User.find_by({ email: "john@asdf.com"}).blank?
-	user3 = User.create!(
-			ft_id: 3, 
-			email: "john@asdf.com",
-			password: "asdfas",
-		)
+if User.find_by({ email: "salty@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 3, 
+		email: "salty@asdf.com",
+		password: "asdfas",
+	)
+
 	UserProfile.create!(
-		name: "John",
-		nickname: "Jojo",
-		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
-		user_id: user3[:id])
+		name: "Adrien Hanot",
+		nickname: "salty",
+		avatar_url: "https://cdn.intra.42.fr/users/small_salty.jpg",
+		rp: 1320,
+		user_id: u[:id])
 end
-user3=User.find_by({ email: "john@asdf.com"})
 
-
-if User.find_by({ email: "max@asdf.com"}).blank?
-	user4 = User.create!(
-			ft_id: 4, 
-			email: "max@asdf.com",
-			password: "asdfas",
-		)
+if User.find_by({ email: "noich@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 4, 
+		email: "noich@asdf.com",
+		password: "asdfas",
+		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
+	)
 	UserProfile.create!(
-		name: "Maxime",
-		nickname: "Max",
-		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
-		user_id: user4[:id])
+		name: "Vincent Rey",
+		nickname: "noich",
+		avatar_url: "https://cdn.intra.42.fr/users/small_noich.jpg",
+		rp: 1560,
+		user_id: u[:id])
 end
-user4=User.find_by({ email: "max@asdf.com"})
+
+if User.find_by({ email: "benny@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 5, 
+		email: "benny@asdf.com",
+		password: "asdfas",
+		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
+	)
+
+	UserProfile.create!(
+		name: "Benny Scetbun",
+		nickname: "benny",
+		avatar_url: "https://cdn.intra.42.fr/users/small_benny.jpg",
+		rp: 1780,
+		user_id: u[:id])
+end
+
+if User.find_by({ email: "sophie@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 6, 
+		email: "sophie@asdf.com",
+		password: "asdfas",
+	)
+	UserProfile.create!(
+		name: "Sophie Viger",
+		nickname: "sophie",
+		avatar_url: "https://cdn.intra.42.fr/users/small_sophie.jpg",
+		rp: 1860,
+		user_id: u[:id])
+end
+
+if User.find_by({ email: "ol@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 7, 
+		email: "ol@asdf.com",
+		password: "asdfas",
+	)
+	UserProfile.create!(
+		name: "Olivier Crouzet",
+		nickname: "ol",
+		avatar_url: "https://cdn.intra.42.fr/users/small_ol.jpg",
+		rp: 1500,
+		user_id: u[:id])
+end
+
+
+if User.find_by({ email: "snow@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 8, 
+		email: "snow@asdf.com",
+		password: "asdfas",
+	)
+	UserProfile.create!(
+		name: "Abel Moreau",
+		nickname: "snow",
+		avatar_url: "https://cdn.intra.42.fr/users/small_snow.jpg",
+		rp: 1550,
+		user_id: u[:id])
+end
+
+if User.find_by({ email: "jerry@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 9, 
+		email: "jerry@asdf.com",
+		password: "asdfas",
+	)
+	UserProfile.create!(
+		name: "Theophile Delmas",
+		nickname: "jerry",
+		avatar_url: "https://cdn.intra.42.fr/users/small_jerry.gif",
+		rp: 1550,
+		user_id: u[:id])
+end
+
+if User.find_by({ email: "charly@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 10, 
+		email: "charly@asdf.com",
+		password: "asdfas",
+	)
+	UserProfile.create!(
+		name: "Charles Maublanc",
+		nickname: "charly",
+		avatar_url: "https://cdn.intra.42.fr/users/small_charly.gif",
+		rp: 1630,
+		user_id: u[:id])
+end
+
+
+user1= User.find_by({ email: "doby@asdf.com" });
+user2= User.find_by({ email: "jai@asdf.com" });
+user3= User.find_by({ email: "sophie@asdf.com" });
+user4= User.find_by({ email: "benny@asdf.com" });
 
 Tournament.delete_all
 tournament = Tournament.create(name: 'tournament1', 

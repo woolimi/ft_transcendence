@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 2020_08_28_203422) do
     t.string "two_factor", default: "off"
     t.string "block_list", default: [], array: true
     t.integer "status", default: 0
+    t.integer "rp", default: 1000
     t.uuid "guild_id"
     t.uuid "user_id"
     t.boolean "admin", default: false

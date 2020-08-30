@@ -56,5 +56,6 @@ Rails.application.routes.draw do
         end
     end
     resources :matches, param: :id, only: [:index, :create, :show]
-  end # namespace api      
+    resources :rank, param: :id, only: [:index]
+  end # namespace api
 end

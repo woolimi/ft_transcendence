@@ -14,7 +14,7 @@ class Api::MatchesController < ApplicationController
 
 	# /api/matches/ POST
 	def create
-		# reject if user have another game session
+		# if player_1 and player_2 already set (ex ask duel match)
 		if (params[:player_1].present? && params[:player_2].present?)
 			player_1 = UserProfile.find_by(user_id: params[:player_1])
 			player_2 = UserProfile.find_by(user_id: params[:player_2])
@@ -36,15 +36,15 @@ class Api::MatchesController < ApplicationController
 		if single_rooms.empty? # if single_room is empty, create new room
 			single_room = Match.create(
 				match_type: params[:match_type],
-				player_1: {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0},
+				player_1: {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp},
 				match_finished: false,
 				created_at: Time.now())
 			return render json: single_room if (single_room.present? && me.present?)
 		else # if single_room is exist, enter into it
 			if (single_rooms[0].player_1.blank?)
-				single_rooms[0].player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0}
+				single_rooms[0].player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp}
 			elsif (single_rooms[0].player_2.blank?)
-				single_rooms[0].player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0}
+				single_rooms[0].player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp}
 			end
 			return render json: single_rooms[0] if single_rooms[0].save()
 		end

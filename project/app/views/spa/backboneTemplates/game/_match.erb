@@ -12,7 +12,7 @@
 			<%% } else { %>
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
-			<div><%%=player_1 ? player_1.nickname : 'Waiting' %></div>
+			<div><%%= player_1 ? (match_type === "ladder" ? rank_image(player_1.rp) + player_1.nickname : player_1.nickname): 'Waiting' %></div>
 			<div id="player1-ready-status"><%%= player_1 ? (match_finished ? "Finished" : (player_1.ready ? "Ready" : "Not Ready")) : "" %></div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
 				<%% if (!match_finished && player_1 && player_1.user_id === $('html').data().userId) { %>
@@ -33,7 +33,7 @@
 			<%% } else { %>
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
-			<div><%%= player_2 ? player_2.nickname : 'Waiting'%></div>
+			<div><%%= player_2 ? (match_type === "ladder" ? rank_image(player_2.rp) + player_2.nickname : player_2.nickname) : 'Waiting'%></div>
 			<div id="player2-ready-status"><%%= player_2 ? (match_finished ? "Finished" : (player_2.ready ? "Ready" : "Not Ready")) : "" %></div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
 				<%% if (!match_finished && player_2 && player_2.user_id === $('html').data().userId) { %>
