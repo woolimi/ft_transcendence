@@ -23,7 +23,16 @@ if ($('html').data().isLogin)
 					switch(data.type){
             case "game-request":
               handle_game_request(data);
-						break;
+            break;
+            case 'tournament_canceled':
+              handle_tournament_canceled(data.content);
+              break;
+            case 'tournament_start':
+              handle_tournament_start(data.content);
+              break;
+            case 'tournament_created':
+              handle_tournament_created(data.content)
+              break;
 						default:
 							break;
 					}
@@ -34,7 +43,6 @@ if ($('html').data().isLogin)
       }); 
     }
     
-
     function handle_game_request(data) {
       SimpleNotification.message({
         text: data.content,
@@ -61,6 +69,31 @@ if ($('html').data().isLogin)
       }, { removeAllOnDisplay: true, closeButton: false, closeOnClick: false })
     }
 
+    function handle_tournament_canceled(data){
+      SimpleNotification.error({
+        text: `The tournament "${data.name}" has been canceled (not enough participants)`
+      })
+    }
+
+    function handle_tournament_start(data){
+      // tournament_id: self.id,
+			// tournament_name: self.name,
+			// match_id: match1.id,
+      // opponent_name: players[1].user_profile.name
+      SimpleNotification.message({
+        text: `The tournament "${data.tournament_name}" started.`
+      })
+      // todo: link to tournament match
+    }
+
+    function handle_tournament_created(data) {
+      // tournament_id: @tournament.id,
+      // tournament_name: @tournament.name
+      SimpleNotification.message({
+        text: `The tournament "${data.tournament_name}" has been created.`
+      })
+      // todo: link to tournament page
+    }
   }); // window.onload
 }
 
