@@ -30,22 +30,26 @@ if ($('html').data().isLogin) {
 			start_chat(e) {
 				const room = $(e.currentTarget).data().room;
 				Router.router.navigate("/chats/" + room, { trigger: true });
-				$('#userInfoModal').modal('toggle');
+				$('#userInfoModal').modal('hide');
 			},
-			ask_game(e) {
+			async ask_game(e) {
 				// check if user is login and not in game
-				const opponent = $(e.currentTarget).data().opponent;
+				const opponent_id = $(e.currentTarget).data().opponent;
+				const opponent = await Helper.ajax(`/api/user_status/${opponent_id}`);
+				const me = await Helper.ajax(`/api/user_info/${$('html').data().userId}`, '', 'GET')
+				if (me.status === 2)
+					return Helper.flash_message("danger", "Cannot send duel request during game");
+				if (opponent.status === 0)
+					return Helper.flash_message("danger", "User is not logged in");
+				if (opponent.status === 2)
+					return Helper.flash_message("danger", "User is in game");
 				// send notification to user
-				// NotificationChannel#send_notification
-
 				NotificationChannel.channel.perform("send_notification", {
-					user_id: opponent,
-					type: "game-request",
-					content: "Let's play game with me !",
+					user_id: opponent_id,
+					type: "duel-request",
+					content: `Let's play a game with ${me.nickname} !`,
+					from: $('html').data().userId,
 				})
-
-				// check if user accept or not
-				// console.log(opponent)
 			}
 		});
 

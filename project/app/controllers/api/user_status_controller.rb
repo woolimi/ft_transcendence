@@ -4,8 +4,8 @@ class Api::UserStatusController < ApplicationController
 
 	# GET /api/user_status/:user_id
 	def show
-		user_status = UserProfile.find_by(user_id: params[:user_id])
-		render json: user_status
+		user = UserProfile.find_by(user_id: params[:user_id])
+		render json: {user_id: user.id, status: user.status}
 	end
 
 	# PATCH | PUT /api/user_status/:user_id
