@@ -7,20 +7,24 @@
 	</div>
 	<div class="col-sm-6 box p-3 mb-3">
 		<div class="row">
-			<div class="w-50 pl-2"><div>nickname:</div></div>
+			<div class="w-50 pl-2">Nickname:</div>
 			<div class="w-50"><%%= user.nickname %></div>
 		</div>
 		<div class="row">
-			<div class="w-50 pl-2"><div>name:</div></div>
+			<div class="w-50 pl-2">Name:</div>
 			<div class="w-50"><%%= user.name %></div>
 		</div>
 		<div class="row">
-			<div class="w-50 pl-2"><div>win:</div></div>
+			<div class="w-50 pl-2">Win:</div>
 			<div class="w-50"><%%= user.win %></div>
 		</div>
 		<div class="row">
-			<div class="w-50 pl-2"><div>loss:</div></div>
+			<div class="w-50 pl-2">Loss:</div>
 			<div class="w-50"><%%= user.loss %></div>
+		</div>
+		<div class="row">
+			<div class="w-50 pl-2">Ladder:</div>
+			<div class="w-50"><%%= rank_image(user.rp) %><%%= user.rp %>RP</div>
 		</div>
 		<%% if (user.user_id !== $('html').data().userId) { %>
 		<div class="mt-2">

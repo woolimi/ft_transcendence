@@ -32,7 +32,7 @@ class Api::UserInfoController < ApplicationController
 		return render plain: "Forbidden", status: :forbidden if info.blank?
 		return render json: { user_id: info.user_id, name: info.name, 
 			nickname: info.nickname, avatar_url: info.avatar_url, win: win, loss: loss, 
-			status: info.status, matches: match_list
+			status: info.status, matches: match_list, rp: info.rp
 		}
 	end
 end

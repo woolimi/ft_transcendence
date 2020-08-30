@@ -17,6 +17,7 @@ import War from "./War.js"
 import WarHistory from "./WarHistory.js"
 import UserStatusChannel from "../channels/user_status_channel"
 import GameChannel from "../channels/game_channel"
+import Ladder from "./Ladder"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -48,8 +49,9 @@ if ($('html').data().isLogin) {
             routes: {
                 "": "game",
                 "game": "game",
-                "game/duel": "game_duel",
-                "game/duel/:match_id": "game_duel",
+                "game/duel": "duel",
+                "game/ladder": "ladder",
+                "game/:match_type/:match_id": "match",
                 "profile": "profile",
                 "guild": "guild",
                 "guild/war_history/:guild_id": "guildHistory",
@@ -58,54 +60,62 @@ if ($('html').data().isLogin) {
                 "war": "war",
                 "game/tournaments/:tournament_id/:match_id": "game_tournament",
                 "game/tournaments/:id": "tournament",
-                "game/tournaments": "tournaments"
+                "game/tournaments": "tournaments",
             },
-            game: function() {
+            game() {
                 remove_channel();
                 Game.content = new Game.Content();
             },
-            game_duel: async function(match_id) {
+            async duel() {
                 remove_channel();
-                if (urlHistory[0] && urlHistory[0].indexOf("#game/duel/") > -1)
+                try {
+                    const new_match = await Helper.ajax('/api/matches/', `match_type=duel`, 'POST');
+                    return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            async match(match_type, match_id) {
+                remove_channel();
+                if (urlHistory[0] && urlHistory[0].indexOf(`#game/${match_type}/`) > -1)
                     return Router.router.navigate(`/`, { trigger: true });
                 if (performance.getEntriesByType("navigation")[0].type === "reload")
                     return Router.router.navigate(`/`, { trigger: true });
-                if (!match_id) {
-                    const new_match = await Helper.ajax('/api/matches/', `match_type=duel`, 'POST');
-                    return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
-                }
-                Match.content = new Match.Content({ match_type: "duel", id: match_id });
+                Match.content = new Match.Content({ match_type: match_type, id: match_id });
             },
-            profile: function() {
+            profile() {
                 remove_channel();
                 Profile.content = new Profile.Content();
                 Profile.content.render();
             },
-            guild: function() {
+            guild() {
                 remove_channel();
                 Guild.content.render();
             },
-            guildHistory: function(guild_id) {
+            guildHistory(guild_id) {
                 WarHistory.histView = new WarHistory.HistContent({ guild_id: guild_id });
             },
-            chat: function(room) {
+            chat(room) {
                 remove_channel();
                 Chat.content = new Chat.Content({ room: room });
             },
-            channel: function(channel_id) {
+            channel(channel_id) {
                 remove_channel();
                 Channel.content = new Channel.Content({ channel_id: channel_id });
             },
-            war: function() {
+            war() {
                 War.content = new War.Content();
             },
-            tournaments: function(){
+            tournaments(){
                 remove_channel();
                 Tournaments.content = new Tournaments.Content();
             },
-            tournament: function(id){
+            tournament(id){
                 remove_channel();
                 Tournament.content = new Tournament.Content(id);
+            },
+            ladder() {
+                Ladder.content = new Ladder.Content(); 
             },
             game_tournament: function(id){
                 remove_channel();
