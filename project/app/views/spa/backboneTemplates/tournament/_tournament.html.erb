@@ -48,7 +48,17 @@
 			<%%= playerNames[match.player_one.id] %>
 			<span><%%= match.player_one.points %></span>
 		</li>
-		<li class="gameTour game-spacer">&nbsp;</li>
+		<!--li class="gameTour game-spacer">&nbsp;</li-->
+		
+		<button id=open-match class="btn btn-primary" 
+			data-match_id=<%%= match.id %>>
+			<%% if(user_id == match.player_one.id || user_id == match.player_two.id) { %>
+				Start
+			<%% } else { %>
+				Spectate
+			<%% } %>
+		</button>
+		
 		<li class="gameTour game-bottom 
 			<%%= (match.winner == match.player_two.id ? 'winner' : '') %>">
 			<%%= playerNames[match.player_two.id] %>

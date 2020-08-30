@@ -2,6 +2,7 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Helper from "./Helper.js"
+import Router from "../packs/Router";
 
 const Tournament = {};
 
@@ -19,7 +20,8 @@ $(() => {
 		events: {
 			"click #button-join": "join",
 			"click #button-quit": "quit",
-			"click #button-test-reset": "test_reset"
+			"click #button-test-reset": "test_reset",
+			"click #open-match": "open_match"
 		},
 
 		page_template: _.template($("script[name='tmpl-tournament-page']").html()),
@@ -77,7 +79,8 @@ $(() => {
 			this.$el.find(selector).html(
 				this.match_template({
 					match: match,
-					playerNames: this.playerNames
+					playerNames: this.playerNames,
+					user_id: this.user_id
 				})
 			)
 		},
@@ -175,6 +178,13 @@ $(() => {
 				console.log(error.responseText)
 			}
 			self.render()
+		},
+
+		open_match: function(e){
+			e.preventDefault()
+			e.stopImmediatePropagation();
+			let match_id = $(e.target).data().match_id
+			Router.router.navigate(`/game/tournaments/${this.id}/${match_id}`, { trigger: true });
 		}
 	});
 	
