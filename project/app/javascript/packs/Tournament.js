@@ -129,9 +129,11 @@ $(() => {
 		},
 
 		join: async function(e){
+			var self = this
 			e.preventDefault()
 			e.stopImmediatePropagation();
 			try {
+				console.log('idi:', self.id)
 				await Helper.ajax(`/api/tournaments/${this.id}/join`, '','PUT')
 				await Helper.fetch(this.model)
 			} catch (error) {
