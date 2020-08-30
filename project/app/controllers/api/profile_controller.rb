@@ -32,6 +32,79 @@ class Api::ProfileController < ApplicationController
 			me.nickname = params[:nickname]
 		end
 		if (params[:guild_id] != me.guild_id)
+			if(params[:guild_id].nil? == false)
+				guild = Guild.find_by(:id => params[:guild_id])
+				if(guild[:guild_members] != nil)
+					guild[:guild_members] = guild[:guild_members].push(current_user.user_profile)
+				else
+					guild[:guild_members] = [current_user.user_profile]
+				end
+				guild.save()
+			else
+				guild = Guild.find_by(:id => me.guild_id)
+				puts "HERE==========================="
+				puts guild[:id]
+				puts me.guild_id
+				if(guild[:guild_members].as_json.length == 1)
+					guild.destroy()
+				elsif (guild[:owner] == me.user_id && guild[:guild_officers].as_json.length == 1)
+					guild[:owner] = guild[:guild_members][1].values[3]
+					guild[:guild_officers] = guild[:guild_officers].push(guild[:guild_members][1])
+					#//remove from members list
+					mem_list = []
+					for i in guild[:guild_members]
+						if i.values[3] != me.user_id
+							mem_list.push(i)
+						end
+					end
+					guild[:guild_members] = mem_list
+					#remove from officer's list
+					off_list = []
+					for i in guild[:guild_officers]
+						if i.values[3] != me.user_id
+							off_list.push(i)
+						end
+					end
+					guild[:guild_officers] = off_list
+				elsif (guild[:owner] == me.user_id && guild[:guild_officers].as_json.length > 1)
+					guild[:owner] = guild[:guild_members][1].values[3]
+					#//remove from members list
+					mem_list = []
+					for i in guild[:guild_members]
+						if i.values[3] != me.user_id
+							mem_list.push(i)
+						end
+					end
+					guild[:guild_members] = mem_list
+					#remove from officer's list
+					off_list = []
+					for i in guild[:guild_officers]
+						if i.values[3] != me.user_id
+							off_list.push(i)
+						end
+					end
+					guild[:guild_officers] = off_list
+				else
+					#//remove from members list
+					mem_list = []
+					for i in guild[:guild_members]
+						if i.values[3] != me.user_id
+							mem_list.push(i)
+						end
+					end
+					guild[:guild_members] = mem_list
+
+					#remove from officer's list
+					off_list = []
+					for i in guild[:guild_officers]
+						if i.values[3] != me.user_id
+							off_list.push(i)
+						end
+					end
+					guild[:guild_officers] = off_list
+				end
+				guild.save()
+			end
 			me.guild_id = params[:guild_id]
 		end
 		arr =  params[:block_list].as_json();

@@ -3,6 +3,7 @@ import _ from "underscore"
 import Backbone from "backbone"
 import Profile from "./Profile.js"
 import Router from "./Router.js"
+import Helper from "./Helper.js"
 
 const Guild = {};
 
@@ -27,6 +28,8 @@ $(() => {
             "click .leaveGuild": "leaveGuild",
             "submit #create-guild": "createGuild",
             "click .warHistory": "warHistory",
+            "click .toggleOfficer": "toggleOfficer",
+            "click .kickMember": "kickMember",
         },
         initialize: async function() {
             try {
@@ -48,6 +51,7 @@ $(() => {
         leaveGuild: async function(e) {
             Profile.userProfile.set('guild_id', null);
             await Helper.save(Profile.userProfile);
+            await Helper.fetch(this.model);
             this.render();
         },
         createGuild: async function(e) {
@@ -70,12 +74,37 @@ $(() => {
             const guild_data = $(e.target).data();
             Router.router.navigate("/guild/war_history/" + guild_data.guild_name + "/" + guild_data.guild_id, { trigger: true });
         },
+        toggleOfficer: async function(e) {
+            const toggle_data = $(e.target).data();
+			await Helper.ajax(`/api/guilds/${this.user_id}`, "toggle_id="+ toggle_data.user_id + "&toggle_guild=" + toggle_data.guild_id, "PUT");
+            this.render();
+        },
+        kickMember: async function(e) {
+            const delete_data = $(e.target).data();
+			await Helper.ajax(`/api/guilds/${this.user_id}`, "delete_id="+ delete_data.user_id + "&guild_id=" + delete_data.guild_id, "DELETE");
+            this.render();
+        },
         render: async function() {
             await Helper.fetch(Profile.userProfile);
-            var guild = this.model.toJSON();
+            var new_model = new AllGuilds();
+            await Helper.fetch(new_model);
+            var guild = new_model.toJSON();
+            var mem_list = []
+            var current_guild
+            var i = 0
+            for(i = 0; i < Object.keys(guild).length; i++)
+            {
+                if(guild[i].id == Profile.userProfile.toJSON().guild_id)
+                {
+                    mem_list = guild[i].guild_members;
+                    current_guild = guild[i]
+                }
+            }
             const content = this.template({
                 guilds: guild,
                 user: Profile.userProfile.toJSON(),
+                guild_members: mem_list,
+                current_guild: current_guild,
             });
             this.$el.html(content);
             return this;
