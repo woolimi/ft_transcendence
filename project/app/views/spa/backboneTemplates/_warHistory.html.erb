@@ -2,10 +2,10 @@
 <script type="text/template" name="tmpl-war-history">
    <div><h1 style="text-align:center" class="row list-group-item d-flex full-height justify-content-center align-items-center bg-dark text-white"> Guild War History Page for <%%= guild_name %> </h1></div>
     <%% if(_.size(wars) == 0){%>
-	    <div class="row full-height justify-content-center align-items-center">
+	    <div class="row justify-content-center align-items-center">
         
         <strong>No wars completed yet for <%%= guild_name %></strong></div>
-	<%% } %>
+	<%% } else {%>
     <ul id="war-hist-list">
         <%% _.each(wars, function(wars, i) { %>
 		<li class="list-group-item d-flex justify-content-between align-items-center bg-light">
@@ -62,4 +62,5 @@
         </li>
 	<%% }) %>
         </ul>
+	<%% } %>
 </script>

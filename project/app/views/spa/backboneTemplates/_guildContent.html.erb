@@ -36,4 +36,34 @@
     </form>
     </div>
     <%% } %>
+    
+    <%% if(user.guild_id != null){ %>
+    <h1>My Guild Members</h1>
+    <div id="guild-content">
+    <ul>
+    <%% _.each(guild_members, function(guild_members, i) { %>
+
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+        <%%= guild_members.name %>
+         <span>
+        <%% if(current_guild.owner == user.user_id && guild_members.user_id != user.user_id) { %> 
+        <%% if(_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == guild_members.user_id }) == -1) {%>  
+        <button type="button" class="btn btn-success btn-sm toggleOfficer" data-user_id="<%%= guild_members.user_id %>" data-guild_id="<%%= current_guild.id %>">Make Officer</button>
+        <%% } %>
+        <%% if(_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == guild_members.user_id }) != -1) {%>  
+		<button type="button" class="btn btn-warning btn-sm toggleOfficer" data-user_id="<%%= guild_members.user_id %>" data-guild_id="<%%= current_guild.id %>">Remove Officer</button>
+        <%% } %>
+        <button type="button" class="btn btn-danger btn-sm kickMember" data-user_id="<%%= guild_members.user_id %>" data-guild_id="<%%= current_guild.id %>">Kick</button>
+        <%% } else if(guild_members.user_id == current_guild.owner) { %>
+        (Owner)
+        <%% } else if(_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == guild_members.user_id }) != -1) {%>
+        (Officer)
+        <%% } %>
+
+
+        </span>
+        </li>
+	<%% }) %>
+    </ul>
+    <%% } %>
 </script>

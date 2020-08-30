@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 2020_08_26_124357) do
     t.string "anagram"
     t.integer "total_score"
     t.jsonb "guild_officers"
+    t.jsonb "guild_members"
     t.uuid "owner"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
