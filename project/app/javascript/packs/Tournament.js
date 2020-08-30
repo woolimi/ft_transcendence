@@ -21,7 +21,8 @@ $(() => {
 			"click #button-join": "join",
 			"click #button-quit": "quit",
 			"click #button-test-reset": "test_reset",
-			"click #open-match": "open_match"
+			"click #start-match": "open_match",
+			"click #spectate-match": "open_match"
 		},
 
 		page_template: _.template($("script[name='tmpl-tournament-page']").html()),

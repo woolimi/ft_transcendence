@@ -28,14 +28,14 @@
 <script type="text/template" name="tmpl-tournament-tree">
 	<ul class="round round-3">
 		<li class="spacer">&nbsp;</li>
-			<span id=semi-final-1></span>
+		<span id=semi-final-1></span>
 		<li class="spacer">&nbsp;</li>
-			<span id=semi-final-2></span>
+		<span id=semi-final-2></span>
 		<li class="spacer">&nbsp;</li>
 	</ul>
 	<ul class="round round-4">
 		<li class="spacer">&nbsp;</li>
-			<span id=final></span>
+		<span id=final></span>
 		<li class="spacer">&nbsp;</li>
 	</ul>
 </script>
@@ -50,14 +50,17 @@
 		</li>
 		<li class="gameTour game-spacer">
 			<!-- &nbsp; -->
-			<button id=open-match class="btn btn-primary my-2" 
-					data-match_id=<%%= match.id %>>
+			<%% if(!match.winner) { %>
 				<%% if(user_id == match.player_one.id || user_id == match.player_two.id) { %>
-					Start
+					<button id=start-match class="btn btn-success my-2" 
+						data-match_id=<%%= match.id %>>Start</button>
 				<%% } else { %>
-					Spectate
+					<button id=spectate-match class="btn btn-primary my-2" 
+						data-match_id=<%%= match.id %>>Spectate</button>
 				<%% } %>
-			</button>
+			<%% } else { %>
+				<li class="gameTour game-spacer">&nbsp;</li>
+			<%% } %>
 		</li>
 		
 		<li class="gameTour game-bottom 
@@ -69,7 +72,6 @@
 		<li class="gameTour game-top">
 			<span></span>
 		</li>
-		<li class="gameTour game-spacer">&nbsp;</li>
 		<li class="gameTour game-spacer">&nbsp;</li>
 		<li class="gameTour game-spacer">&nbsp;</li>
 		<li class="gameTour game-bottom">
