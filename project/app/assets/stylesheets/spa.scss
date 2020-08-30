@@ -390,12 +390,16 @@ html, body, #app{
 
 #game-ingame-list {
   margin: 1em;
-  overflow-y: scroll;
-  height: 40vh;
+  overflow-y: auto;
+  max-height: 40vh;
   width: 100%;
 }
 
 .box {
   background: #dedede;
   border-radius: 10px;
+}
+
+#userinfo-match-history {
+  height: 200px;
 }
