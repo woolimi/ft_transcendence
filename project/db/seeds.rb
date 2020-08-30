@@ -41,11 +41,11 @@ if User.find_by({ email: "jai@asdf.com"}).blank?
 end
 user2=User.find_by({ email: "jai@asdf.com"})
 
-if User.find_by({ email: "email3@email.com"}).blank?
+if User.find_by({ email: "john@asdf.com"}).blank?
 	user3 = User.create!(
 			ft_id: 3, 
-			email: "email3@email.com",
-			password: "coucou",
+			email: "john@asdf.com",
+			password: "asdfas",
 		)
 	UserProfile.create!(
 		name: "John",
@@ -53,14 +53,14 @@ if User.find_by({ email: "email3@email.com"}).blank?
 		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
 		user_id: user3[:id])
 end
-user3=User.find_by({ email: "email3@email.com"})
+user3=User.find_by({ email: "john@asdf.com"})
 
 
-if User.find_by({ email: "email4@email.com"}).blank?
+if User.find_by({ email: "max@asdf.com"}).blank?
 	user4 = User.create!(
 			ft_id: 4, 
-			email: "email4@email.com",
-			password: "coucou",
+			email: "max@asdf.com",
+			password: "asdfas",
 		)
 	UserProfile.create!(
 		name: "Maxime",
@@ -68,7 +68,7 @@ if User.find_by({ email: "email4@email.com"}).blank?
 		avatar_url: "https://cdn.intra.42.fr/users/small_jai.jpg",
 		user_id: user4[:id])
 end
-user4=User.find_by({ email: "email4@email.com"})
+user4=User.find_by({ email: "max@asdf.com"})
 
 Tournament.delete_all
 tournament = Tournament.create(name: 'tournament1', 
@@ -114,3 +114,12 @@ match3=Match.create(
 	loser: user3.id,
 	match_finished: true
 )
+
+tournament2 = Tournament.create(name: 'tournament 2', 
+	status: :pending, 
+	registration_start: DateTime.now, 
+	registration_end: DateTime.now + 100.day)
+users=[user1,user2,user3]
+tournament2.players.clear
+tournament2.players.push users
+	
