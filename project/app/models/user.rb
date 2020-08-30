@@ -59,5 +59,12 @@ class User < ApplicationRecord
 				content: notificationContent
 			}
 		)
-	end
+  end
+  
+  def self.send_to_all(notificationType, notificationContent)
+    User.all.each do |user|
+      user.send_notification(notificationType, notificationContent)
+    end
+  end
 end
+
