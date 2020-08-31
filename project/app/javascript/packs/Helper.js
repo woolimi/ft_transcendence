@@ -67,4 +67,19 @@ Helper.contain = function(collection, callback) {
 	return false
 }
 
+Helper.getTimeString = function(distance){
+	if (distance < 0)
+		return null;
+	const seconds = distance % 60;
+	distance = (distance / 60) >> 0
+	const minutes = distance % 60;
+	distance = (distance / 60) >> 0;
+	const hours = distance % 24;
+	distance = (distance / 24) >> 0;
+	const days = distance;
+	let answer = `${days}d ${hours}h ${minutes}m ${seconds}s`
+	answer = 'in ' + answer
+	return answer
+}
+
 export default Helper;

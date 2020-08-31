@@ -1,26 +1,41 @@
 <script type="text/template" name="tmpl-tournament-page">
 	<div class="container-fluid">
-		<div id="tournament-infos"></div>
-		<div id="tournament-players"></div>
+		<div id="tournament-info"></div>
+		<div id="tournament-participants"></div>
 		<div id="tournament-tree"></div>	
 	</div>
 </script>
 
-
-<script type="text/template" name="tmpl-tournament-infos">
-	<h3>Tournament</h3><br>
-	<p> 
-		<strong>Tournament name :</strong> <%%= model.name %>
-		<br>
-		<strong>Status :</strong> <%%= model.status %> 
-		<br>
-		<strong>Time to registration : </strong>
-		<span id=clock></span>
-		<br>
-		<span id=participant-list></span>
-		<span class="text-center" id=join-button></span>
-	</p>
+<script type="text/template" name="tmpl-tournament-participants">
+	<div class="container box bg-white p-3">
+		<h5 class="text-center">Participants</h5>
+		<div class="d-flex justify-content-around">
+			<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+			<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+			<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+			<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>
+		</div>
+		<div class="mt-4 text-center">
+			<button class="btn btn-primary">Join</button>
+			<button class="btn btn-danger">Cancel</button>
+		</div>
+	</div>
+	<hr>
 </script>
+
+
+<script type="text/template" name="tmpl-tournament-info">
+	<%% let str_status; %>
+	<%% if (status === 0) str_status = "Waiting participants" %>
+	<%% if (status === 1) str_status = "Started" %>
+	<%% if (status === 2) str_status = "Finished" %>
+
+	<div class="container box bg-white p-3">
+		<h3><%%= name %> (<%%= str_status%>)</h3>
+		Time left until registration <span class="oi oi-timer"></span> <span id="tournament-timer" data-sec="<%%= (new Date(registration_end) - new Date()) / 1000 >> 0%>"></span>
+	</div>
+</script>
+
 
 
 <script type="text/template" name="tmpl-tournament-tree">

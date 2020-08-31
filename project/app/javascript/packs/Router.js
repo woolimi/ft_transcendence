@@ -43,6 +43,10 @@ if ($('html').data().isLogin) {
                 GameChannel.unsubscribe();
             if (Tournaments.content)
                 Tournaments.content.undelegateEvents();
+            if (Tournament.content) {
+                clearInterval(Tournament.intervalId);
+                Tournament.intervalId = null;
+            }
             $(window).off("resize");
         };
 
