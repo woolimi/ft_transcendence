@@ -28,27 +28,27 @@ class Api::TournamentsController < ApplicationController
 	end
 
 	def show
-		return render json: Tournament.find_by(id: params[:id]), status: :ok
+		return render json: jbuild(Tournament.find_by(id: params[:id])), status: :ok
 	end
 
+	# PUT /api/tournaments/:tournament_id/players
 	def join
-		tournament = Tournament.find_by(params[:id])
-		return render plain: 'too many participants', status: :forbidden if (tournament.players.count >= 4)
-		begin
-			tournament.players << current_user
-		rescue => exception
-			return render plain: "can't join", status: :forbidden
-		end
-		if tournament.players.count == 4
-			tournament.launch()
-		end
+		tournament = Tournament.find_by(id: params[:tournament_id])
+		return render plain: 'forbidden', status: :forbidden if tournament.blank?
+		return render plain: 'too many participants', status: :forbidden if tournament.players.length >= 4
+		return render plain: 'You are already in list', status: :forbidden if !tournament.players.find_index(current_user[:id]).nil?
+		tournament.players.push(current_user[:id])
+		return render json: jbuild(tournament) if tournament.save()
 	end
 
+	# DELETE /api/tournaments/:tournament_id/players
 	def quit
-		tournament = Tournament.find(params[:id])
-		return render plain: "user is not a participant, so he can't quit", status: :forbidden if ( ! tournament.players.find(current_user.id) )
-		return render plain: "the tournament already started, you cannot quit anymore", status: :forbidden if ( ! tournament.pending! )
-		tournament.players.delete(current_user)
+		tournament = Tournament.find(params[:tournament_id])
+		return render plain: 'forbidden', status: :forbidden if tournament.blank?
+		return render plain: "You aren't in list", status: :forbidden if tournament.players.find_index(current_user[:id]).nil?
+		# return render plain: "the tournament already started, you cannot quit anymore", status: :forbidden if ( ! tournament.pending! )
+		tournament.players.delete(current_user[:id])
+		return render json: jbuild(tournament) if tournament.save()
 	end
 
 	private
@@ -59,6 +59,15 @@ class Api::TournamentsController < ApplicationController
 			:registration_start,
 			:registration_end
 		)
+	end
+
+	def jbuild(tournament)
+		tournament.players.each{ |p|
+			u = UserProfile.find_by(user_id: p).as_json(only: [:user_id, :avatar_url, :nickname]);
+			tournament.players.delete(p)
+			tournament.players.push(u)
+		}
+		return tournament
 	end
 
 end
