@@ -211,7 +211,7 @@ tournament2 = Tournament.create(name: 'tournament 2',
 	status: :pending, 
 	registration_start: DateTime.now, 
 	registration_end: DateTime.now + 100.day)
-users=[user1,user2,user3]
+users=[user3,user2,user1]
 tournament2.players.clear
 tournament2.players.push users
 	
