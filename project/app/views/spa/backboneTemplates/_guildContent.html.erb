@@ -19,6 +19,9 @@
         <%% if(user.guild_id == guilds[i].id){ %>
         <button type="button" class="btn btn-danger btn-sm leaveGuild">Leave Guild</button>
 		<%% } %>
+        <%% if(user.guild_id != guilds[i].id && current_guild != null && (_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == user.user_id }) != -1)){ %>
+        <button type="button" class="btn btn-warning btn-sm challengeGuild">Declare War</button>
+		<%% } %>
         <button type="button" class="btn btn-info btn-sm warHistory" data-guild_id="<%%= guilds[i].id%>" data-guild_name="<%%= guilds[i].name%>">War History</button>
         </span></li>
 	<%% }) %>

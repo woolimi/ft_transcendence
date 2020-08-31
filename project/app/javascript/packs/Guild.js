@@ -51,7 +51,6 @@ $(() => {
         leaveGuild: async function(e) {
             Profile.userProfile.set('guild_id', null);
             await Helper.save(Profile.userProfile);
-            await Helper.fetch(this.model);
             this.render();
         },
         createGuild: async function(e) {
@@ -59,14 +58,16 @@ $(() => {
             const form = $("#create-guild");
             const guildName = $(".newGuildName").val();
             var i = 0
-            var guildArr = this.model.toJSON();
+            var new_model = new AllGuilds();
+            await Helper.fetch(new_model);
+            var guildArr = new_model.toJSON();
+            console.log(guildArr);
             const data = form.serialize();
             for (i = 0; i < Object.keys(guildArr).length; i++) {
                 if (guildArr[i].name == guildName)
                     return Helper.flash_message("danger", "Guild already exists");
             }
             await Helper.ajax(`/api/guilds`, "guildName=" + guildName, "POST");
-            await Helper.fetch(this.model);
             this.render();
             console.log($(".newGuildName").val());
         },
