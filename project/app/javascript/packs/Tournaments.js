@@ -2,74 +2,57 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Helper from "./Helper.js"
-import Tournament from "./Tournament.js";
 
 const Tournaments = {};
 
 if ($('html').data().isLogin) {
 
 $(() => {
-	const TournamentsCollection = Backbone.Collection.extend({
-		url: "/api/tournaments"
-	});
-
-	Tournaments.collection = new TournamentsCollection();
-
 	Tournaments.Content = Backbone.View.extend({
-		el: $("#view-content"),
+		el: $("#app"),
 		page_template: _.template($("script[name='tmpl-tournaments-page']").html()),
 		list_template: _.template($("script[name='tmpl-tournaments-list']").html()),
-		button_template: _.template($("script[name='tmpl-tournaments-button']").html()),
-		tournamentsList: Tournaments.collection,
 		user_id: $('html').data().userId,
 		events: {
-			"click .tournamentItem": "go_to_tournament"
+			"click .tournament-item": "go_to_tournament",
+			"submit #create-tournament-form": "create_tournament",
 		},
 		initialize: async function(){
 			try {
-				await Helper.fetch(this.tournamentsList)
-				this.render_page();
-				this.render_list();
-				this.render_create_button();
+				const list = await Helper.ajax('/api/tournaments', '', 'GET');
+				const me = await Helper.ajax(`/api/profile/${this.user_id}`);
+				this.render_page({me: me});
+				this.render_list({list: list});
 			} catch (error) {
-				console.error(error);
+				if (error.statusText)
+					Helper.flash_message("danger", error.statusText);
+				else
+					console.error(error);
 			}
 		},
-		render_page() {
-			this.$el.html(this.page_template());
+		render_page(data) {
+			this.$el.find("#view-content").html(this.page_template(data));
 		},
-		render_list() {
-			this.$el.find('#tournaments-list').html(this.list_template({list: this.tournamentsList.toJSON()}))
+		render_list(data) {
+			this.$el.find('#tournaments-list').html(this.list_template(data))
 		},
-		render_create_button: async function () {
-			let me = await Helper.ajax(`/api/profile/${this.user_id}`)
-			if(me.admin){
-				this.$el.find('#tournament-add-button').html(this.button_template())
-				let button = this.$el.find('#create-tournament-button')
-				button.on('click', async () => {
-					$('#createTournamentModal').modal('show')
-					$('button[type=submit]').on('click', async (e) =>{
-						e.preventDefault()
-						e.stopImmediatePropagation();
-						// const form = $("#create-tournament-form");
-						// const data = form.serializeArray();
-						// const sdata = form.serialize();
-						// await Helper.ajax('/api/tournaments', sdata, 'POST')
-
-						let name = $('#tournament-name').val()
-						// let registrationStart = Date.now().getTime() / 1000;
-						// let registrationEnd = dateStart + (60*60);
-						try{
-							await Helper.ajax('/api/tournaments', { name: name }, 'POST')
-							await Helper.fetch(this.tournamentsList);
-							this.render_list();
-						} catch (error) {
-							Helper.flash_message("danger", error.responseText)
-						}
-						$('#createTournamentModal').modal('hide')
-					})
-				})
-				this.$el.find('#tournaments-list').html(this.list_template({list: this.tournamentsList.toJSON()}))
+		async create_tournament(e) {
+			try {
+				e.preventDefault();
+				const data = $(e.currentTarget).serializeArray();
+				if (data[0].value.length < 4)
+					throw new Error("Tournament name is too short");
+				if (data[0].value.length >= 30)
+					throw new Error("Tournament name is too long");
+				await Helper.ajax('/api/tournaments', $(e.currentTarget).serialize(), 'POST')
+				const list = await Helper.ajax('/api/tournaments', '', 'GET');
+				this.render_list({ list: list });
+				$('#createTournamentModal').modal('hide')
+			} catch (error) {
+				if (error.statusText)
+					console.error(error);
+				else
+					Helper.flash_message("danger", error);
 			}
 		},
 		go_to_tournament(e) {

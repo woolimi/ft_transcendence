@@ -9,11 +9,6 @@ const Tournament = {};
 if ($('html').data().isLogin) {
 
 $(() => {
-	const TournamentModel = Backbone.Model.extend({
-		urlRoot: "/api/tournaments/" 
-		// Backbone.history.fragment.split("/")[1];
-	});
-
 	Tournament.Content = Backbone.View.extend({
 		el: $("#view-content"),
 		self: this,
@@ -24,41 +19,27 @@ $(() => {
 			"click #start-match": "open_match",
 			"click #spectate-match": "open_match"
 		},
-
 		page_template: _.template($("script[name='tmpl-tournament-page']").html()),
-		info_template: _.template($("script[name='tmpl-tournament-infos']").html()),
+		// info_template: _.template($("script[name='tmpl-tournament-infos']").html()),
 		tree_template: _.template($("script[name='tmpl-tournament-tree']").html()),
-		match_template: _.template($("script[name='tmpl-tournament-match']").html()),
-		participants_template: _.template($("script[name='tmpl-tournament-participants']").html()),
-		join_button_template: _.template($("script[name='tmpl-tournament-join-button']").html()),
+		// match_template: _.template($("script[name='tmpl-tournament-match']").html()),
+		// participants_template: _.template($("script[name='tmpl-tournament-participants']").html()),
+		// join_button_template: _.template($("script[name='tmpl-tournament-join-button']").html()),
 
-		preinitialize: async function(id){
+		initialize: async function(id){
 			this.id = id,
-			this.user_id = $('html').data().userId,
-			this.model = new TournamentModel({id: id})
-			await Helper.fetch(this.model)
-			console.log(this.model.attributes)
-			this.playerNames = {}
-			for(let i=0; i < 4; i++){
-				if(this.model.attributes.players[i])
-					this.playerNames[this.model.attributes.players[i].id] = this.model.attributes.players[i].name
-			}
-			this.end = new Date(this.model.attributes.registration_end)
-			this.render()
+			this.user_id = $('html').data().userId;
+			const info = await Helper.ajax(`/api/tournaments/${id}`, '', 'GET');
+			this.render_page();
+			this.render_info(info);
+			this.render_tree(info);
+			console.log(info);
 		},
-
-		render: function(){
-			this.render_page()
-			this.render_infos()
-			this.render_tree()
-			this.render_join_button()
-			this.render_participant_list()
-			this.render_timer()
-			// todo: enter match (or spectate match) buttons
-		},
-
 		render_page: function() {
 			this.$el.html(this.page_template());
+		},
+		render_tree: function () {
+			this.$el.find('#tournament-tree').html(this.tree_template())
 		},
 
 		render_infos: function() {
@@ -66,16 +47,6 @@ $(() => {
 				this.info_template({model: this.model.attributes})
 			)
 		},
-
-		render_tree: function() {
-			this.$el.find('#tournament-tree').html(
-				this.tree_template()
-			)
-			this.render_match('#semi-final-1', this.model.attributes.semis[0])
-			this.render_match('#semi-final-2', this.model.attributes.semis[1])
-			this.render_match('#final', this.model.attributes.final)
-		},
-
 		render_match: function(selector, match){
 			this.$el.find(selector).html(
 				this.match_template({

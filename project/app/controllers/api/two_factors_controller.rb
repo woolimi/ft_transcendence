@@ -1,5 +1,6 @@
 class Api::TwoFactorsController < ApplicationController
-    before_action :authenticate_user!
+	protect_from_forgery
+	before_action :authenticate_user!
 
     def show
         return render plain: "Forbidden", status: :forbidden if params[:user_id] != current_user[:id]

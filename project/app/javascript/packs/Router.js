@@ -41,6 +41,8 @@ if ($('html').data().isLogin) {
                 clearInterval(War.content.intervalId);
             if (GameChannel.channel)
                 GameChannel.unsubscribe();
+            if (Tournaments.content)
+                Tournaments.content.undelegateEvents();
             $(window).off("resize");
         };
 
@@ -51,6 +53,7 @@ if ($('html').data().isLogin) {
                 "game": "game",
                 "game/duel": "duel",
                 "game/ladder": "ladder",
+                "game/tournaments/:id": "tournament",
                 "game/:match_type/:match_id": "match",
                 "profile": "profile",
                 "guild": "guild",
@@ -59,7 +62,6 @@ if ($('html').data().isLogin) {
                 "channels/:channel_id": "channel",
                 "war": "war",
                 "game/tournaments/:tournament_id/:match_id": "game_tournament",
-                "game/tournaments/:id": "tournament",
                 "game/tournaments": "tournaments",
             },
             game() {
@@ -115,6 +117,7 @@ if ($('html').data().isLogin) {
                 Tournament.content = new Tournament.Content(id);
             },
             ladder() {
+                remove_channel();
                 Ladder.content = new Ladder.Content(); 
             },
             game_tournament: function(id){

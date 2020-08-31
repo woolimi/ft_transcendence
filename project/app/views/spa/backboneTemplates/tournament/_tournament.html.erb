@@ -1,10 +1,8 @@
 <script type="text/template" name="tmpl-tournament-page">
-	<div id="tournamentMain">
-		<button id="button-test-reset" class="btn btn-primary">
-			Reset to 3 users (for tests)
-		</button>
+	<div class="container-fluid">
 		<div id="tournament-infos"></div>
-		<div id="tournament-tree"></div>
+		<div id="tournament-players"></div>
+		<div id="tournament-tree"></div>	
 	</div>
 </script>
 
@@ -26,18 +24,127 @@
 
 
 <script type="text/template" name="tmpl-tournament-tree">
-	<ul class="round round-3">
-		<li class="spacer">&nbsp;</li>
-		<span id=semi-final-1></span>
-		<li class="spacer">&nbsp;</li>
-		<span id=semi-final-2></span>
-		<li class="spacer">&nbsp;</li>
-	</ul>
-	<ul class="round round-4">
-		<li class="spacer">&nbsp;</li>
-		<span id=final></span>
-		<li class="spacer">&nbsp;</li>
-	</ul>
+  <div class="tournament-bracket tournament-bracket--rounded">                                                     
+    <div class="tournament-bracket__round tournament-bracket__round--semifinals">
+      <h3 class="tournament-bracket__round-title">Semifinal</h3>
+      <ul class="tournament-bracket__list p-0">
+        <li class="tournament-bracket__item">
+          <div class="tournament-bracket__match" tabindex="0">
+            <table class="tournament-bracket__table">
+              <thead class="sr-only">
+                <tr>
+                  <th>User</th>
+                  <th>Score</th>
+                </tr>
+              </thead>  
+              <tbody class="tournament-bracket__content">
+                <tr class="tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <abbr class="tournament-bracket__code">Wpark</abbr>
+					<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number">1</span>
+                  </td>
+                </tr>
+                <tr class="tournament-bracket__team tournament-bracket__team--winner">
+                  <td class="tournament-bracket__user flex-column">
+                    <abbr class="tournament-bracket__code">Doby</abbr>
+					<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number">2</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+
+        <li class="tournament-bracket__item">
+          <div class="tournament-bracket__match" tabindex="0">
+            <table class="tournament-bracket__table">
+              <thead class="sr-only">
+                <tr>
+                  <th>User</th>
+                  <th>Score</th>
+                </tr>
+              </thead>  
+              <tbody class="tournament-bracket__content">
+                <tr class="tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <abbr class="tournament-bracket__code">Wpark</abbr>
+					<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number">4</span>
+                  </td>
+                </tr>
+                <tr class="tournament-bracket__team tournament-bracket__team--winner">
+                  <td class="tournament-bracket__user flex-column">
+                    <abbr class="tournament-bracket__code">Wpark</abbr>
+					<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number">7</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="tournament-bracket__round tournament-bracket__round--bronze">
+      <h3 class="tournament-bracket__round-title">Final</h3>
+      <ul class="tournament-bracket__list p-0">
+        <li class="tournament-bracket__item">
+          <div class="tournament-bracket__match" tabindex="0">
+            <table class="tournament-bracket__table">
+              <thead class="sr-only">
+                <tr>
+                  <th>User</th>
+                  <th>Score</th>
+                </tr>
+              </thead>  
+              <tbody class="tournament-bracket__content">
+                <tr class="tournament-bracket__team tournament-bracket__team--winner">
+                  <td class="tournament-bracket__user flex-column">
+                    <abbr class="tournament-bracket__code">Wpark</abbr>
+					<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number">3</span>
+                    <span class="tournament-bracket__medal tournament-bracket__medal--bronze fa fa-trophy" aria-label="Bronze medal"></span>
+                  </td>
+                </tr>
+                <tr class="tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <abbr class="tournament-bracket__code">Wpark</abbr>
+					<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number">2</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="tournament-bracket__round tournament-bracket__round--winner">
+      <h3 class="tournament-bracket__round-title">Winner</h3>
+      <ul class="tournament-bracket__list p-0">
+        <li class="tournament-bracket__item">
+          <div class="tournament-bracket__match align-items-center flex-column">
+				<abbr class="tournament-bracket__code">Wpark</abbr>
+				<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
 </script>
 
 
@@ -80,27 +187,3 @@
 	<%% } %>
 </script>
 
-
-<script type="text/template" name="tmpl-tournament-participants">
-	<strong>Participants : </strong>
-	<%% if(users.length > 0) { %>
-		<ul>
-			<%% for(const user of users) { %>
-				<li><%%= user.name %></li>
-			<%% } %>
-		</ul>
-	<%% } else { %>
-		<%%= 'no participant. <br>' %>
-	<%% } %>
-</script>
-
-
-<script type="text/template" name="tmpl-tournament-join-button">
-	<%% if(!started && !timeOut) { %>
-		<%% if( ! hasJoined ) { %>
-			<button id=button-join class="btn btn-success">Join tournament</button>
-		<%% } else { %>
-			<button id=button-quit class="btn btn-danger">Quit tournament</button>
-		<%% } %>
-	<%% } %>
-</script>

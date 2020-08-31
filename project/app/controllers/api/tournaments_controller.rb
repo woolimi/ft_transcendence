@@ -1,45 +1,38 @@
 class Api::TournamentsController < ApplicationController
+	protect_from_forgery
+	before_action :authenticate_user!
+	
+	# status 0 pending, 1 started, 2 finished
 	def index
-		@tournaments = Tournament.all
-		# render 'index.json.jbuilder'
-	end
-
-	def test_reset # for test purposes
-		tournament = Tournament.find(params[:id])
-		tournament.status = :pending
-		user1=User.find_by({ email: "john@asdf.com"})
-		user2=User.find_by({ email: "jai@asdf.com"})
-		user3= User.find_by({ email: "doby@asdf.com" })
-		users=[user1,user2,user3]
-		tournament.players.clear
-		tournament.players.push users
-		tournament.matches.clear()
-		@tournament = tournament
-		render 'show.json.jbuilder'
+		return render json: Tournament.where.not(status: 2), status: :ok
 	end
 
 	def create
-		return render plain: 'This tournament name is already taken', status: :forbidden if Tournament.find_by(name:tournament_params[:name])
+		return render plain: 'Tournament name is too short' if params[:name].length < 4
+		return render plain: 'Tournament name is too long' if params[:name].length >= 30
+		params[:name] = CGI::escapeHTML(params[:name])
+		return render plain: 'This tournament name is already taken', status: :forbidden if Tournament.find_by(name: params[:name])
 		return render plain: 'only an admin can create a tournament', status: :forbidden if !current_user.user_profile.admin
-		@tournament = Tournament.create!(
-			name: tournament_params[:name],
+		tournament = Tournament.create!(
+			name: params[:name],
+			status: 0,
+			players: [],
 			registration_start: DateTime.now,
 			registration_end: DateTime.now + 10.minute
 		)
-		User.send_to_all('tournament_created', {
-			tournament_id: @tournament.id,
-			tournament_name: @tournament.name
-		})
-		TournamentRegistrationLimitJob.set(wait_until: @tournament.registration_end).perform_later(@tournament)
+		# User.send_to_all('tournament_created', {
+		# 	tournament_id: tournament.id,
+		# 	tournament_name: tournament.name
+		# })
+		# TournamentRegistrationLimitJob.set(wait_until: @tournament.registration_end).perform_later(@tournament)
 	end
 
 	def show
-		@tournament = Tournament.find(params[:id])
-		# render 'show.json.jbuilder'
+		return render json: Tournament.find_by(id: params[:id]), status: :ok
 	end
 
 	def join
-		tournament = Tournament.find(params[:id])
+		tournament = Tournament.find_by(params[:id])
 		return render plain: 'too many participants', status: :forbidden if (tournament.players.count >= 4)
 		begin
 			tournament.players << current_user

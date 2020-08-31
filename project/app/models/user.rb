@@ -13,9 +13,6 @@ class User < ApplicationRecord
 	has_many :game_users, dependent: :destroy
 	has_many :games, through: :game_users, source: :game
 
-	has_many :tournament_users, dependent: :destroy
-	has_many :tournaments, through: :tournament_users, source: :tournament
-
   def self.from_omniauth(auth)
     user = User.find_by(ft_id: auth[:uid])
     if user.blank?
