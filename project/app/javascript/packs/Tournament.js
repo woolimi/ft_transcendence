@@ -2,6 +2,7 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Helper from "./Helper.js"
+import Router from "../packs/Router";
 
 const Tournament = {};
 
@@ -18,7 +19,10 @@ $(() => {
 		self: this,
 		events: {
 			"click #button-join": "join",
-			"click #button-quit": "quit"
+			"click #button-quit": "quit",
+			"click #button-test-reset": "test_reset",
+			"click #start-match": "open_match",
+			"click #spectate-match": "open_match"
 		},
 
 		page_template: _.template($("script[name='tmpl-tournament-page']").html()),
@@ -40,13 +44,17 @@ $(() => {
 					this.playerNames[this.model.attributes.players[i].id] = this.model.attributes.players[i].name
 			}
 			this.end = new Date(this.model.attributes.registration_end)
+			this.render()
+		},
+
+		render: function(){
 			this.render_page()
 			this.render_infos()
 			this.render_tree()
 			this.render_join_button()
 			this.render_participant_list()
 			this.render_timer()
-			// todo : join match button
+			// todo: enter match (or spectate match) buttons
 		},
 
 		render_page: function() {
@@ -72,7 +80,8 @@ $(() => {
 			this.$el.find(selector).html(
 				this.match_template({
 					match: match,
-					playerNames: this.playerNames
+					playerNames: this.playerNames,
+					user_id: this.user_id
 				})
 			)
 		},
@@ -135,29 +144,49 @@ $(() => {
 			e.stopImmediatePropagation();
 			try {
 				console.log('idi:', self.id)
-				await Helper.ajax(`/api/tournaments/${this.id}/join`, '','PUT')
-				await Helper.fetch(this.model)
+				await Helper.ajax(`/api/tournaments/${self.id}/join`, '','PUT')
+				await Helper.fetch(self.model)
 			} catch (error) {
 				Helper.flash_message("danger", error.responseText)
-				// console.log(error.responseText)
+				console.log(error.responseText)
 			}
-			this.render_participant_list()
-			this.render_join_button()
+			this.render()
 		},
 
 		quit: async function(e){
+			var self = this
 			e.preventDefault()
 			e.stopImmediatePropagation();
 			try {
-				await Helper.ajax(`/api/tournaments/${this.id}/quit`, '','DELETE')
-				await Helper.fetch(this.model)
+				await Helper.ajax(`/api/tournaments/${self.id}/quit`, '','DELETE')
+				await Helper.fetch(self.model)
 			} catch (error) {
 				Helper.flash_message("danger", error.responseText)
-				// console.log(error.responseText)
+				console.log(error.responseText)
 			}
-			this.render_participant_list()
-			this.render_join_button()
+			this.render()
 		},
+
+		test_reset: async function(e){
+			var self = this
+			e.preventDefault()
+			e.stopImmediatePropagation();
+			try {
+				self.model.attributes = await Helper.ajax(`/api/tournaments/${self.id}/test_reset`, '','PUT')
+				// await Helper.fetch(self.model)
+			} catch (error) {
+				Helper.flash_message("danger", error.responseText)
+				console.log(error.responseText)
+			}
+			self.render()
+		},
+
+		open_match: function(e){
+			e.preventDefault()
+			e.stopImmediatePropagation();
+			let match_id = $(e.target).data().match_id
+			Router.router.navigate(`/game/tournaments/${this.id}/${match_id}`, { trigger: true });
+		}
 	});
 	
 })
