@@ -24,7 +24,7 @@ class Api::TournamentsController < ApplicationController
 		@tournament = Tournament.create!(
 			name: tournament_params[:name],
 			registration_start: DateTime.now,
-			registration_end: DateTime.now + 1.hour
+			registration_end: DateTime.now + 10.minute
 		)
 		User.send_to_all('tournament_created', {
 			tournament_id: @tournament.id,
@@ -69,3 +69,4 @@ class Api::TournamentsController < ApplicationController
 	end
 
 end
+

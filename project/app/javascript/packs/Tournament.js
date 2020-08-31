@@ -144,8 +144,8 @@ $(() => {
 			e.stopImmediatePropagation();
 			try {
 				console.log('idi:', self.id)
-				await Helper.ajax(`/api/tournaments/${this.id}/join`, '','PUT')
-				await Helper.fetch(this.model)
+				await Helper.ajax(`/api/tournaments/${self.id}/join`, '','PUT')
+				await Helper.fetch(self.model)
 			} catch (error) {
 				Helper.flash_message("danger", error.responseText)
 				console.log(error.responseText)
