@@ -6,4 +6,8 @@ class TournamentChannel < ApplicationCable::Channel
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
   end
+
+  def update_player_list(data)
+    ActionCable.server.broadcast "tournament_#{params[:tournament_id]}_channel", data['info']
+  end
 end
