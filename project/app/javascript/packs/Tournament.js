@@ -74,21 +74,6 @@ $(() => {
 			}	
 		},
 
-		// render_timer() {
-		// 	clearInterval(Tournament.intervalId);
-		// 	Tournament.intervalId = setInterval(() => {
-		// 		const sec = $('#tournament-timer').data().sec;
-		// 		const str = Helper.getTimeString(sec);
-		// 		if (str === null) {
-		// 			$('#tournament-timer').html("registration finished");
-		// 			clearInterval(Tournament.intervalId);
-		// 			return;
-		// 		}
-		// 		$('#tournament-timer').html(str);
-		// 		$('#tournament-timer').data().sec -= 1;
-		// 	}, 1000);
-		// },
-
 		async join_tournament(e) {
 			e.stopPropagation();
 			try {
@@ -133,6 +118,7 @@ $(() => {
 			return Router.router.navigate(`/game/tournament/${match_id}`, { trigger: true });
 		},
 		recv_callback(data) {
+			console.log('hey man')
 			console.log(data);
 			this.render_participants(data)
 		},

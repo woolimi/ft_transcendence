@@ -59,6 +59,7 @@ class Tournament < ApplicationRecord
 		self.semiR_id = semiR.id
 		self.status = 1
 		self.save()
+		
 		ActionCable.server.broadcast("notification_channel_#{players[0]}", {
 			type: 'tournament_start',
 			content: {
@@ -91,6 +92,26 @@ class Tournament < ApplicationRecord
 				match_id: semiR.id
 			}
 		})
+	end
+
+	def jbuild()
+		return [] if self.nil?
+		nplayers = []
+		self.players.each{ |p|
+			u = UserProfile.find_by(user_id: p).as_json(only: [:user_id, :avatar_url, :nickname]);
+			nplayers.push(u)
+		}
+		self.players = nplayers
+		res = self.as_json
+		res.delete("semiL_id")
+		res.delete("semiR_id")
+		res.delete("final_id")
+		res["semiL"] = self.semiL.as_json
+		res["semiR"] = self.semiR.as_json
+		res["final"] = self.final.as_json
+		res["final"]["player_left"] = self.final.player_left.as_json if self.final.present?
+		res["final"]["player_right"] = self.final.player_right.as_json if self.final.present?
+		return res
 	end
 
 end
