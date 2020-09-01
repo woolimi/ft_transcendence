@@ -45,11 +45,8 @@ if ($('html').data().isLogin) {
                 Game.content.undelegateEvents();
             if (Tournaments.content)
                 Tournaments.content.undelegateEvents();
-            if (Tournament.content) {
+            if (Tournament.content)
                 Tournament.content.undelegateEvents();
-                clearInterval(Tournament.intervalId);
-                Tournament.intervalId = null;
-            }
             if (TournamentChannel.channel)
                 TournamentChannel.unsubscribe();
 

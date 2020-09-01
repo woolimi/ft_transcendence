@@ -46,13 +46,17 @@ class User < ApplicationRecord
 	end
 
 	def send_notification(notificationType, notificationContent)
-		NotificationChannel.broadcast_to(
-			self,
-			{
-				type: notificationType,
-				content: notificationContent
-			}
-		)
+		#NotificationChannel.broadcast_to(
+		#	self,
+		#	{
+		#		type: notificationType,
+		#		content: notificationContent
+		#	}
+    #)
+    ActionCable.server.broadcast("notification_channel_#{self.id}", {
+			type: notificationType,
+			content: notificationContent
+		})
   end
   
   def self.send_to_all(notificationType, notificationContent)
