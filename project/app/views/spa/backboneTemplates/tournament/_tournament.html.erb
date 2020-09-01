@@ -151,9 +151,9 @@
               <tbody class="tournament-bracket__content">
                 <tr class="tournament-bracket__team tournament-bracket__team">
                   <td class="tournament-bracket__user flex-column">
-                    <%% if (final) { %>
-                    <abbr class="tournament-bracket__code"><%%= final.player_left.nickname %></abbr>
-                		<img class="rounded-circle tournament-avatar" src="<%%= final.player_left.avatar_url %>" />
+                    <%% if (semiL && semiL.winner) { %>
+                    <abbr class="tournament-bracket__code"><%%= semiL.winner.nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= semiL.winner.avatar_url %>" />
                     <%% } else { %>
 				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
                     <%% } %>
@@ -165,9 +165,9 @@
                 </tr>
                 <tr class="tournament-bracket__team">
                   <td class="tournament-bracket__user flex-column">
-                    <%% if (final) { %>
-                    <abbr class="tournament-bracket__code"><%%= final.player_right.nickname %></abbr>
-                		<img class="rounded-circle tournament-avatar" src="<%%= final.player_right.avatar_url %>" />
+                    <%% if (semiR && semiR.winner) { %>
+                    <abbr class="tournament-bracket__code"><%%= semiR.winner.nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= semiR.winner.avatar_url %>" />
                     <%% } else { %>
 				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
                     <%% } %>
