@@ -2,6 +2,7 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Helper from "./Helper.js"
+import Router from "./Router"
 
 const Tournaments = {};
 
@@ -24,8 +25,8 @@ $(() => {
 				this.render_page({me: me});
 				this.render_list({list: list});
 			} catch (error) {
-				if (error.statusText)
-					Helper.flash_message("danger", error.statusText);
+				if (error.responseText)
+					Helper.flash_message('danger', error.responseText);
 				else
 					console.error(error);
 			}
@@ -49,16 +50,16 @@ $(() => {
 				this.render_list({ list: list });
 				$('#createTournamentModal').modal('hide')
 			} catch (error) {
-				if (error.statusText)
-					console.error(error);
+				if (error.responseText)
+					Helper.flash_message('danger', error.responseText);
 				else
-					Helper.flash_message("danger", error);
+					console.error(error);
 			}
 		},
 		go_to_tournament(e) {
 			e.stopImmediatePropagation();
 			const id = $(e.currentTarget).data().id;
-			window.location.hash = `game/tournaments/${id}`
+			return Router.router.navigate(`/game/tournaments/${id}`, { trigger: true });
 		}
 	});
 })

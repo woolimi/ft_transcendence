@@ -88,15 +88,15 @@ ActiveRecord::Schema.define(version: 2020_08_26_123118) do
     t.string "name"
     t.integer "status", default: 0
     t.jsonb "players"
-    t.uuid "semiL"
-    t.uuid "semiR"
-    t.uuid "final"
+    t.uuid "semiL_id"
+    t.uuid "semiR_id"
+    t.uuid "final_id"
     t.uuid "winner"
     t.datetime "registration_start"
     t.datetime "registration_end"
-    t.index ["final"], name: "index_tournaments_on_final"
-    t.index ["semiL"], name: "index_tournaments_on_semiL"
-    t.index ["semiR"], name: "index_tournaments_on_semiR"
+    t.index ["final_id"], name: "index_tournaments_on_final_id"
+    t.index ["semiL_id"], name: "index_tournaments_on_semiL_id"
+    t.index ["semiR_id"], name: "index_tournaments_on_semiR_id"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -10,9 +10,6 @@ class User < ApplicationRecord
   has_one :user_profile
 	has_many :chat_messages
 	
-	has_many :game_users, dependent: :destroy
-	has_many :games, through: :game_users, source: :game
-
   def self.from_omniauth(auth)
     user = User.find_by(ft_id: auth[:uid])
     if user.blank?

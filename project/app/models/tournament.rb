@@ -1,7 +1,7 @@
 class Tournament < ApplicationRecord
-	belongs_to :match, foreign_key: "semiL", optional: true
-	belongs_to :match, foreign_key: "semiR", optional: true
-	belongs_to :match, foreign_key: "final", optional: true
+	belongs_to :semiL, class_name: "Match", optional: true, foreign_key: "semiL_id", dependent: :destroy
+	belongs_to :semiR, class_name: "Match", optional: true, foreign_key: "semiR_id",  dependent: :destroy
+	belongs_to :final, class_name: "Match", optional: true, foreign_key: "final_id",  dependent: :destroy
 
 	validates :registration_start, presence: true
 	validates :registration_end, presence: true
@@ -19,63 +19,70 @@ class Tournament < ApplicationRecord
 	# 	matches.find_by(match_type: 'tournament_final').winner
 	# end
 
-	# def cancel
-	# 	self.players.each do |player|
-	# 		player.send_notification('tournament_canceled',{
-	# 			name: self.name
-	# 		})
-	# 	end
-	# 	self.destroy!
-	# end
+	def cancel
+		self.players.each do |p|
+			u = User.find_by(id: p)
+			u.send_notification('tournament_canceled', {
+				name: self.name
+			})
+		end
+		self.destroy!
+	end
 
-	# def launch
-	# 	self.started!
-	# 	match1=Match.create(
-	# 		match_type: 'tournament_semi',
-	# 		tournament: self,
-	# 		player_left: players[0],
-	# 		player_right: players[1],
-	# 		player_1: {score: 0},
-	# 		player_2: {score: 0},
-	# 		winner: 0,
-	# 		loser: 0,
-	# 		match_finished: false
-	# 	)
-	# 	match2=Match.create(
-	# 		match_type: 'tournament_semi',
-	# 		tournament: self,
-	# 		player_left: players[2],
-	# 		player_right: players[3],
-	# 		player_1: {score: 0},
-	# 		player_2: {score: 0},
-	# 		winner: 0,
-	# 		loser: 0,
-	# 		match_finished: false
-	# 	)
-	# 	players[0].send_notification('tournament_start', {
-	# 		tournament_id: self.id,
-	# 		tournament_name: self.name,
-	# 		match_id: match1.id,
-	# 		opponent_name: players[1].user_profile.name
-	# 	})
-	# 	players[1].send_notification('tournament_start', {
-	# 		tournament_id: self.id,
-	# 		tournament_name: self.name,
-	# 		match_id: match1.id,
-	# 		opponent_name: players[0].user_profile.name
-	# 	})
-	# 	players[2].send_notification('tournament_start', {
-	# 		tournament_id: self.id,
-	# 		tournament_name: self.name,
-	# 		match_id: match2.id,
-	# 		opponent_name: players[3].user_profile.name
-	# 	})
-	# 	players[3].send_notification('tournament_start', {
-	# 		tournament_id: self.id,
-	# 		tournament_name: self.name,
-	# 		match_id: match2.id,
-	# 		opponent_name: players[2].user_profile.name
-	# 	})
-	# end
+	def launch
+		# self.started!
+		semiL = Match.create(
+			match_type: 'tournament_semiL',
+			player_1: nil,
+			player_2: nil,
+			winner: nil,
+			loser: nil,
+			created_at: Time.now(),
+			match_finished: false,
+			player_left_id: self.players[0],
+			player_right_id: self.players[1],
+			tournament_id: self.id,
+		)
+		semiR = Match.create(
+			match_type: 'tournament_semiL',
+			player_1: nil,
+			player_2: nil,
+			winner: nil,
+			loser: nil,
+			created_at: Time.now(),
+			match_finished: false,
+			player_left_id: self.players[2],
+			player_right_id: self.players[3],
+			tournament_id: self.id,
+		)
+		self.semiL_id = semiL.id
+		self.semiR_id = semiR.id
+		self.save()
+
+		# players[0].send_notification('tournament_start', {
+		# 	tournament_id: self.id,
+		# 	tournament_name: self.name,
+		# 	match_id: match1.id,
+		# 	opponent_name: players[1].user_profile.name
+		# })
+		# players[1].send_notification('tournament_start', {
+		# 	tournament_id: self.id,
+		# 	tournament_name: self.name,
+		# 	match_id: match1.id,
+		# 	opponent_name: players[0].user_profile.name
+		# })
+		# players[2].send_notification('tournament_start', {
+		# 	tournament_id: self.id,
+		# 	tournament_name: self.name,
+		# 	match_id: match2.id,
+		# 	opponent_name: players[3].user_profile.name
+		# })
+		# players[3].send_notification('tournament_start', {
+		# 	tournament_id: self.id,
+		# 	tournament_name: self.name,
+		# 	match_id: match2.id,
+		# 	opponent_name: players[2].user_profile.name
+		# })
+	end
 
 end

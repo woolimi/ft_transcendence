@@ -23,8 +23,6 @@ const Router = {};
 if ($('html').data().isLogin) {
     $(() => {
         const remove_channel = function() {
-            if (Tournament.content)
-                Tournament.content.loop = false
             if (ChatChannel.channel)
                 ChatChannel.unsubscribe();
             if (ChannelChannel.channel)
@@ -41,12 +39,16 @@ if ($('html').data().isLogin) {
                 clearInterval(War.content.intervalId);
             if (GameChannel.channel)
                 GameChannel.unsubscribe();
+            if (Game.content)
+                Game.content.undelegateEvents();
             if (Tournaments.content)
                 Tournaments.content.undelegateEvents();
             if (Tournament.content) {
+                Tournament.content.undelegateEvents();
                 clearInterval(Tournament.intervalId);
                 Tournament.intervalId = null;
             }
+            
             $(window).off("resize");
         };
 
@@ -57,7 +59,8 @@ if ($('html').data().isLogin) {
                 "game": "game",
                 "game/duel": "duel",
                 "game/ladder": "ladder",
-                "game/tournaments/:id": "tournament",
+                "game/tournaments": "tournaments",
+                "game/tournaments/:tournament_id": "tournament",
                 "game/:match_type/:match_id": "match",
                 "profile": "profile",
                 "guild": "guild",
@@ -65,8 +68,6 @@ if ($('html').data().isLogin) {
                 "chats/:room": "chat",
                 "channels/:channel_id": "channel",
                 "war": "war",
-                "game/tournaments/:tournament_id/:match_id": "game_tournament",
-                "game/tournaments": "tournaments",
             },
             game() {
                 remove_channel();
@@ -116,18 +117,14 @@ if ($('html').data().isLogin) {
                 remove_channel();
                 Tournaments.content = new Tournaments.Content();
             },
-            tournament(id){
+            tournament(tournament_id){
                 remove_channel();
-                Tournament.content = new Tournament.Content(id);
+                Tournament.content = new Tournament.Content({ tournament_id: tournament_id});
             },
             ladder() {
                 remove_channel();
                 Ladder.content = new Ladder.Content(); 
             },
-            game_tournament: function(id){
-                remove_channel();
-                // todo
-            }
         });
         const router = new RouterClass();
         Router.router = router;

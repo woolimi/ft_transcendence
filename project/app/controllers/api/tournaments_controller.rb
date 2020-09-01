@@ -18,23 +18,26 @@ class Api::TournamentsController < ApplicationController
 			status: 0,
 			players: [],
 			registration_start: DateTime.now,
-			registration_end: DateTime.now + 10.minute
+			registration_end: DateTime.now + 1.minute
 		)
-		# User.send_to_all('tournament_created', {
-		# 	tournament_id: tournament.id,
-		# 	tournament_name: tournament.name
-		# })
-		# TournamentRegistrationLimitJob.set(wait_until: @tournament.registration_end).perform_later(@tournament)
+		User.send_to_all('tournament_created', {
+			tournament_id: tournament.id,
+			tournament_name: tournament.name
+		})
+		TournamentRegistrationLimitJob.set(wait_until: tournament.registration_end).perform_later(tournament)
 	end
 
 	def show
-		return render json: jbuild(Tournament.find_by(id: params[:id])), status: :ok
+		tournament = Tournament.find_by(id: params[:id])
+		return render plain: 'forbidden', status: :forbidden if tournament.nil?
+		return render json: jbuild(tournament), status: :ok
 	end
 
 	# PUT /api/tournaments/:tournament_id/players
 	def join
 		tournament = Tournament.find_by(id: params[:tournament_id])
-		return render plain: 'forbidden', status: :forbidden if tournament.blank?
+		return render plain: 'This tournament does not exist', status: :forbidden if tournament.blank?
+		return render plain: 'Registration is already finished', status: :forbidden if tournament.registration_end < Time.now()
 		return render plain: 'too many participants', status: :forbidden if tournament.players.length >= 4
 		return render plain: 'You are already in list', status: :forbidden if !tournament.players.find_index(current_user[:id]).nil?
 		tournament.players.push(current_user[:id])
@@ -44,7 +47,8 @@ class Api::TournamentsController < ApplicationController
 	# DELETE /api/tournaments/:tournament_id/players
 	def quit
 		tournament = Tournament.find(params[:tournament_id])
-		return render plain: 'forbidden', status: :forbidden if tournament.blank?
+		return render plain: 'This tournament does not exist', status: :forbidden if tournament.blank?
+		return render plain: 'registration time is ended', status: :forbidden if tournament.registration_end < Time.now()
 		return render plain: "You aren't in list", status: :forbidden if tournament.players.find_index(current_user[:id]).nil?
 		# return render plain: "the tournament already started, you cannot quit anymore", status: :forbidden if ( ! tournament.pending! )
 		tournament.players.delete(current_user[:id])
@@ -62,12 +66,23 @@ class Api::TournamentsController < ApplicationController
 	end
 
 	def jbuild(tournament)
+		return [] if tournament.nil?
+		nplayers = []
 		tournament.players.each{ |p|
 			u = UserProfile.find_by(user_id: p).as_json(only: [:user_id, :avatar_url, :nickname]);
-			tournament.players.delete(p)
-			tournament.players.push(u)
+			nplayers.push(u)
 		}
-		return tournament
+		tournament.players = nplayers
+		res = tournament.as_json
+		res.delete("semiL_id")
+		res.delete("semiR_id")
+		res.delete("final_id")
+		res["semiL"] = tournament.semiL.as_json
+		res["semiR"] = tournament.semiR.as_json
+		res["final"] = tournament.final.as_json
+		res["final"]["player_left"] = tournament.final.player_left.as_json if tournament.final.present?
+		res["final"]["player_right"] = tournament.final.player_right.as_json if tournament.final.present?
+		return res
 	end
 
 end
