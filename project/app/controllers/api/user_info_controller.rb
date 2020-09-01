@@ -25,6 +25,7 @@ class Api::UserInfoController < ApplicationController
 		match_list = []
 		matches.each{|m|
 			match = m.as_json
+			match["match_type"] = "tournament" if m.match_type.include?("tournament")
 			match["player_left"] = m.player_left.user_profile.nickname
 			match["player_right"] = m.player_right.user_profile.nickname
 			match_list.push(match);

@@ -189,9 +189,9 @@
       <ul class="tournament-bracket__list p-0">
         <li class="tournament-bracket__item">
           <div class="tournament-bracket__match align-items-center flex-column">
-          <%% if (final) { %>
-          <abbr class="tournament-bracket__code"><%%= final.winner.nickname %></abbr>
-          <img class="rounded-circle tournament-avatar" src="<%%= final.winner.avatar_url %>" />
+          <%% if (winner) { %>
+          <abbr class="tournament-bracket__code"><%%= winner.nickname %></abbr>
+          <img class="rounded-circle tournament-avatar" src="<%%= winner.avatar_url %>" />
           <%% } else { %>
           <%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
           <%% } %>

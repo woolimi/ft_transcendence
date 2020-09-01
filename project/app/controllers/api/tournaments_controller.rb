@@ -30,7 +30,7 @@ class Api::TournamentsController < ApplicationController
 	def show
 		tournament = Tournament.find_by(id: params[:id])
 		return render plain: 'forbidden', status: :forbidden if tournament.nil?
-		return render json: jbuild(tournament), status: :ok
+		return render json: tournament.jbuild(), status: :ok
 	end
 
 	# PUT /api/tournaments/:tournament_id/players
@@ -41,7 +41,10 @@ class Api::TournamentsController < ApplicationController
 		return render plain: 'too many participants', status: :forbidden if tournament.players.length >= 4
 		return render plain: 'You are already in list', status: :forbidden if !tournament.players.find_index(current_user[:id]).nil?
 		tournament.players.push(current_user[:id])
-		return render json: jbuild(tournament) if tournament.save()
+		if tournament.save()
+			ActionCable.server.broadcast "tournament_#{tournament.id}_channel", {type: "participant", data: tournament.jbuild()}
+			return render plain: "ok", status: :ok
+		end
 	end
 
 	# DELETE /api/tournaments/:tournament_id/players
@@ -52,7 +55,10 @@ class Api::TournamentsController < ApplicationController
 		return render plain: "You aren't in list", status: :forbidden if tournament.players.find_index(current_user[:id]).nil?
 		# return render plain: "the tournament already started, you cannot quit anymore", status: :forbidden if ( ! tournament.pending! )
 		tournament.players.delete(current_user[:id])
-		return render json: jbuild(tournament) if tournament.save()
+		if tournament.save()
+			ActionCable.server.broadcast "tournament_#{tournament.id}_channel", {type: "participant", data: tournament.jbuild()}
+			return render plain: "ok", status: :ok
+		end
 	end
 
 	private
@@ -64,26 +70,5 @@ class Api::TournamentsController < ApplicationController
 			:registration_end
 		)
 	end
-
-	def jbuild(tournament)
-		return [] if tournament.nil?
-		nplayers = []
-		tournament.players.each{ |p|
-			u = UserProfile.find_by(user_id: p).as_json(only: [:user_id, :avatar_url, :nickname]);
-			nplayers.push(u)
-		}
-		tournament.players = nplayers
-		res = tournament.as_json
-		res.delete("semiL_id")
-		res.delete("semiR_id")
-		res.delete("final_id")
-		res["semiL"] = tournament.semiL.as_json
-		res["semiR"] = tournament.semiR.as_json
-		res["final"] = tournament.final.as_json
-		res["final"]["player_left"] = tournament.final.player_left.as_json if tournament.final.present?
-		res["final"]["player_right"] = tournament.final.player_right.as_json if tournament.final.present?
-		return res
-	end
-
 end
 

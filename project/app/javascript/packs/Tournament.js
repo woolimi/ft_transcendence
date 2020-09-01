@@ -56,7 +56,6 @@ $(() => {
 		render_tree(data) {
 			this.$el.find('#tournament-tree').html(this.tree_template(data))
 		},
-
 		render_timer: function() {
 			let now = new Date();
 			let distance = ((this.end - now)/1000) >> 0
@@ -75,12 +74,7 @@ $(() => {
 		async join_tournament(e) {
 			e.stopPropagation();
 			try {
-				const info = await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '','PUT');
-				this.render_participants(info);
-				TournamentChannel.channel.perform("update_player_list", { 
-					tournament_id: this.tournament_id,
-					info: info 
-				} );
+				await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '','PUT');
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
@@ -91,15 +85,8 @@ $(() => {
 		},
 		async quit_tournament(e) {
 			e.stopPropagation();
-			const id = $(e.currentTarget).data().tournamentId;
-			console.log("quit event", id)
 			try {
-				const info = await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '', 'DELETE');
-				this.render_participants(info);
-				TournamentChannel.channel.perform("update_player_list", { 
-					tournament_id: this.tournament_id,
-					info: info 
-				} );
+				await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '', 'DELETE');
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
@@ -115,12 +102,13 @@ $(() => {
 				return;
 			return Router.router.navigate(`/game/tournament/${match_id}`, { trigger: true });
 		},
-		recv_callback(data) {
+		async recv_callback(data) {
 			console.log(data);
-			// this.render_participants(data)
-			
-
-
+			if (data.type === "tree") {
+				this.render_tree(data.data);
+			} else if (data.type === "participant") {
+				this.render_participants(data.data)
+			}
 		},
 
 	});

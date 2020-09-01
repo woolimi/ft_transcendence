@@ -14,5 +14,6 @@ class CreateTournaments < ActiveRecord::Migration[6.0]
     add_index :tournaments, :semiL_id
     add_index :tournaments, :semiR_id
     add_index :tournaments, :final_id
+    add_index :tournaments, :winner
   end
 end

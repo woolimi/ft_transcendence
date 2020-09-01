@@ -78,10 +78,12 @@ ActiveRecord::Schema.define(version: 2020_08_26_123118) do
     t.integer "score_right"
     t.uuid "war_id"
     t.uuid "tournament_id"
+    t.index ["loser"], name: "index_matches_on_loser"
     t.index ["player_left_id"], name: "index_matches_on_player_left_id"
     t.index ["player_right_id"], name: "index_matches_on_player_right_id"
     t.index ["tournament_id"], name: "index_matches_on_tournament_id"
     t.index ["war_id"], name: "index_matches_on_war_id"
+    t.index ["winner"], name: "index_matches_on_winner"
   end
 
   create_table "tournaments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -97,6 +99,7 @@ ActiveRecord::Schema.define(version: 2020_08_26_123118) do
     t.index ["final_id"], name: "index_tournaments_on_final_id"
     t.index ["semiL_id"], name: "index_tournaments_on_semiL_id"
     t.index ["semiR_id"], name: "index_tournaments_on_semiR_id"
+    t.index ["winner"], name: "index_tournaments_on_winner"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
