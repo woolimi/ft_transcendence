@@ -9,6 +9,18 @@ class Api::MatchesController < ApplicationController
 	def show 
 		room = Match.find_by(id: params[:id])
 		return render plain: "forbidden", status: :forbidden if room.blank?
+		if room.match_type.include?("tournament")
+			if (room.player_left_id == current_user[:id] || room.player_right_id == current_user[:id])
+				me = UserProfile.find_by(user_id: current_user[:id])
+				if room.player_left_id == current_user[:id]
+					room.player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
+				end
+				if room.player_right_id == current_user[:id]
+					room.player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
+				end
+			end
+			room.save()
+		end
 		return render json: room, status: :ok
 	end
 

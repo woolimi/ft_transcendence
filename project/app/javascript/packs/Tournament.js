@@ -3,6 +3,7 @@ import _ from "underscore"
 import Backbone from "backbone"
 import Helper from "./Helper.js"
 import Router from "../packs/Router";
+import TournamentChannel from "../channels/tournament_channel"
 
 const Tournament = {};
 
@@ -33,6 +34,8 @@ $(() => {
 				this.render_tree(info);
 				this.render_timer();
 				console.log(info);
+				TournamentChannel.subscribe(this.tournament_id, this.recv_callback, this);
+
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
@@ -101,7 +104,11 @@ $(() => {
 			if (!match_id)
 				return;
 			return Router.router.navigate(`/game/tournament/${match_id}`, { trigger: true });
-		}
+		},
+		recv_callback(data) {
+			console.log(data);
+		},
+
 	});
 	
 })
