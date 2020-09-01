@@ -8,6 +8,8 @@ class CreateUserProfiles < ActiveRecord::Migration[6.0]
       t.string  :two_factor, default: 'off'
       t.string  :block_list, array: true, default: []
       t.integer :status, default: 0
+      t.integer :rp, default: 1000
+      t.boolean :admin, default: false
       t.uuid :guild_id
       t.references :user, type: :uuid, foreign_key: true
     end

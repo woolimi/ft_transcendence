@@ -1,0 +1,48 @@
+<script type="text/template" name="tmpl-ladder-index">
+	<div class="container-fluid">
+		<div class="row box p-3 m-2">
+			<div class="col-sm-12">
+				*RP: Ranking Point
+			</div>
+			<div class="col-sm-12">
+				<div class="card">
+					<div class="card-header bg-dark text-white d-flex justify-content-center">
+						Ranking Top 10
+					</div>
+					<div class="card-body bg-secondary text-white">
+						<ul class="list-group" id="ladder-rank-list">
+							<!-- list -->
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				bronze(<%%= rank_image(1000)%>) < 1200RP
+			</div>
+			<div class="col-sm-6">
+				silver(<%%= rank_image(1200)%>) >= 1200RP
+			</div>
+			<div class="col-sm-6">
+				gold(<%%= rank_image(1400)%>) >= 1400RP
+			</div>
+			<div class="col-sm-6">
+				diamond(<%%= rank_image(1600)%>) >= 1600RP
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 mt-3 mb-3 text-center">
+				<button class="btn btn-primary" id="start-ladder-game">Start Ladder Game</button>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script type="text/template" name="tmpl-ladder-list">
+<%% _.forEach(list, (item, index) => { %>
+<li class="pl-3 list-group-item side-list-item d-flex justify-content-between">
+	<span><%%= index + 1 %></span>
+	<span><%%= rank_image(item.rp) %><%%= item.nickname %></span>
+	<span><%%= item.rp %>RP</span>
+</li>
+<%% }) %>
+</script>

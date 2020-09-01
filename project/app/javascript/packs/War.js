@@ -4,6 +4,8 @@ import Backbone from "backbone"
 
 const War = {};
 
+if ($('html').data().isLogin) {
+
 $(() => {
 
 
@@ -93,5 +95,6 @@ $(() => {
     })
 })
 
+}
 
 export default War;

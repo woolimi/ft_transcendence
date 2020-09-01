@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   #Devise
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks", sessions: "users/sessions" }
   devise_scope :user do
@@ -49,12 +50,11 @@ Rails.application.routes.draw do
 
       put "/last_visited", to: 'channels#update_last_visited'
     end
-    resources :tournaments, param: :id, only: [:create, :index, :show], format: "json" do
-        member do
-            put :join
-            delete :quit
-        end
+    resources :tournaments, param: :id, only: [:create, :index, :show] do
+      put "/players/", to: 'tournaments#join'
+      delete "/players/", to: 'tournaments#quit'
     end
-    resources :matches, param: :id, only: [:create, :show]
-  end # namespace api      
+    resources :matches, param: :id, only: [:index, :create, :show]
+    resources :rank, param: :id, only: [:index]
+  end # namespace api
 end

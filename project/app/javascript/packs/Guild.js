@@ -7,6 +7,8 @@ import Helper from "./Helper.js"
 
 const Guild = {};
 
+if ($('html').data().isLogin) {
+
 $(() => {
 
     const AllGuilds = Backbone.Model.extend({
@@ -219,5 +221,7 @@ $(() => {
 
     WarModalView.content = new WarModalView();
 })
+
+}
 
 export default Guild;

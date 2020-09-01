@@ -79,24 +79,25 @@ ActiveRecord::Schema.define(version: 2020_08_31_212956) do
     t.integer "score_right"
     t.uuid "war_id"
     t.uuid "tournament_id"
+    t.index ["player_left_id"], name: "index_matches_on_player_left_id"
+    t.index ["player_right_id"], name: "index_matches_on_player_right_id"
     t.index ["tournament_id"], name: "index_matches_on_tournament_id"
     t.index ["war_id"], name: "index_matches_on_war_id"
-  end
-
-  create_table "tournament_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "tournament_id"
-    t.uuid "user_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "tournaments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.integer "status", default: 0
+    t.jsonb "players"
+    t.uuid "semiL_id"
+    t.uuid "semiR_id"
+    t.uuid "final_id"
+    t.uuid "winner"
     t.datetime "registration_start"
     t.datetime "registration_end"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.index ["final_id"], name: "index_tournaments_on_final_id"
+    t.index ["semiL_id"], name: "index_tournaments_on_semiL_id"
+    t.index ["semiR_id"], name: "index_tournaments_on_semiR_id"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -107,6 +108,8 @@ ActiveRecord::Schema.define(version: 2020_08_31_212956) do
     t.string "two_factor", default: "off"
     t.string "block_list", default: [], array: true
     t.integer "status", default: 0
+    t.integer "rp", default: 1000
+    t.boolean "admin", default: false
     t.uuid "guild_id"
     t.uuid "user_id"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"

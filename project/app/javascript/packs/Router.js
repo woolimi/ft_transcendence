@@ -15,6 +15,11 @@ import Match from "./Match.js"
 import MatchChannel from "../channels/match_channel.js"
 import War from "./War.js"
 import WarHistory from "./WarHistory.js"
+import UserStatusChannel from "../channels/user_status_channel"
+import GameChannel from "../channels/game_channel"
+import Ladder from "./Ladder"
+import TournamentChannel from "../channels/tournament_channel.js"
+
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -34,6 +39,20 @@ if ($('html').data().isLogin) {
                 Match.content.undelegateEvents();
             if (War.content)
                 clearInterval(War.content.intervalId);
+            if (GameChannel.channel)
+                GameChannel.unsubscribe();
+            if (Game.content)
+                Game.content.undelegateEvents();
+            if (Tournaments.content)
+                Tournaments.content.undelegateEvents();
+            if (Tournament.content) {
+                Tournament.content.undelegateEvents();
+                clearInterval(Tournament.intervalId);
+                Tournament.intervalId = null;
+            }
+            if (TournamentChannel.channel)
+                TournamentChannel.unsubscribe();
+
             $(window).off("resize");
         };
 
@@ -42,65 +61,77 @@ if ($('html').data().isLogin) {
             routes: {
                 "": "game",
                 "game": "game",
-                "game/duel": "game_duel",
-                "game/duel/:match_id": "game_duel",
+                "game/duel": "duel",
+                "game/ladder": "ladder",
+                "game/tournaments": "tournaments",
+                "game/tournaments/:tournament_id": "tournament",
+                "game/:match_type/:match_id": "match",
                 "profile": "profile",
                 "guild": "guild",
                 "guild/war_history/:guild_name/:guild_id": "guildHistory",
                 "chats/:room": "chat",
                 "channels/:channel_id": "channel",
                 "game/war": "war",
-                "game/tournaments/:id": "tournament",
-                "game/tournaments": "tournaments"
+                "war": "war",
             },
-            game: function() {
+            game() {
                 remove_channel();
-                Game.content.render();
+                Game.content = new Game.Content();
             },
-            game_duel: async function(match_id) {
+            async duel() {
                 remove_channel();
-                if (urlHistory[0] && urlHistory[0].indexOf("#game/duel/") > -1)
-                    return Router.router.navigate(`/`, { trigger: true });
-                if (performance.getEntriesByType("navigation")[0].type === "reload")
-                    return Router.router.navigate(`/`, { trigger: true });
-                if (!match_id) {
+                try {
                     const new_match = await Helper.ajax('/api/matches/', `match_type=duel`, 'POST');
                     return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
+                } catch (error) {
+                    console.error(error);
                 }
-                Match.content = new Match.Content({ match_type: "duel", id: match_id });
             },
-            profile: function() {
+            async match(match_type, match_id) {
+                remove_channel();
+                if (urlHistory[0] && urlHistory[0].indexOf(`#game/${match_type}/`) > -1) {
+                    console.log('here')
+                    return Router.router.navigate(`/`, { trigger: true });
+                }
+                if (performance.getEntriesByType("navigation")[0].type === "reload")
+                    return Router.router.navigate(`/`, { trigger: true });
+                Match.content = new Match.Content({ match_type: match_type, id: match_id });
+            },
+            profile() {
                 remove_channel();
                 Profile.content = new Profile.Content();
                 Profile.content.render();
             },
-            guild: function() {
+            guild() {
                 remove_channel();
                 Guild.content.render();
             },
             guildHistory: function(guild_name, guild_id) {
                 WarHistory.histView = new WarHistory.HistContent({ guild_id: guild_id, guild_name: guild_name });
             },
-            chat: function(room) {
+            chat(room) {
                 remove_channel();
                 Chat.content = new Chat.Content({ room: room });
             },
-            channel: function(channel_id) {
+            channel(channel_id) {
                 remove_channel();
                 Channel.content = new Channel.Content({ channel_id: channel_id });
             },
-            war: function() {
-                remove_channel();
+            war() {
                 War.content = new War.Content();
             },
-            tournaments: function() {
+            tournaments(){
                 remove_channel();
-                Tournaments.content.render();
+                Tournaments.content = new Tournaments.Content();
             },
-            tournament: function(id) {
+            tournament(tournament_id){
                 remove_channel();
-                Tournament.content = new Tournament.Content(id);
-            }
+                Tournament.content = new Tournament.Content({ tournament_id: tournament_id});
+            },
+            ladder() {
+                remove_channel();
+                Ladder.content = new Ladder.Content(); 
+            },
         });
         const router = new RouterClass();
         Router.router = router;
@@ -115,6 +146,8 @@ if ($('html').data().isLogin) {
         Router.router.on("route", function(curRoute, params) {
             Navbar.currentRoute.set({ route: curRoute });
         });
+
+        UserStatusChannel.subscribe();
     });
 }
 
