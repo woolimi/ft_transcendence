@@ -3,9 +3,12 @@ import $ from "jquery"
 import Backbone from "backbone"
 import Friends from "../packs/Friends.js"
 
-if ($('html').data().isLogin)
-{
+const UserStatusChannel = {};
+UserStatusChannel.channel = null;
+
+if ($('html').data().isLogin) {
   $(() => {
+
     const UserStatus =  Backbone.Model.extend({
       defaults: {
         user_id: $('html').data().userId,
@@ -20,36 +23,41 @@ if ($('html').data().isLogin)
 
     const user_status = new UserStatus();
 
-    consumer.subscriptions.create("UserStatusChannel", {
-      connected() {
-        // Called when the subscription is ready for use on the server
-      },
+    UserStatusChannel.subscribe = function() {
+      if (this.channel)
+        return;
 
-      disconnected() {
-        // Called when the subscription has been terminated by the server
-        this.unsubscribe();
-      },
+      this.channel = consumer.subscriptions.create("UserStatusChannel", {
+        connected() {
+          // Called when the subscription is ready for use on the server
+        },
 
-      received(data) {
-        // Called when there's incoming data on the websocket for this channel
-        if (user_status.get("user_id") === data.user_id && data.status == 0) {
+        disconnected() {
+          // Called when the subscription has been terminated by the server
+          this.unsubscribe();
+        },
+
+        received(data) {
+          // Called when there's incoming data on the websocket for this channel
+          if (user_status.get("user_id") === data.user_id && data.status == 0) {
             user_status.save();
-          return;
-        }
-        // check if signout user is freind
-        const f = Friends.friends.findWhere({ "user_id": data.user_id});
-        if (f) {
-          f.set({ status: data.status });
-          Friends.list.render();
-        }
-      },
+            return;
+          }
+          // check if signout user is freind
+          const f = Friends.friends.findWhere({ "user_id": data.user_id });
+          if (f) {
+            f.set({ status: data.status });
+            Friends.list.render();
+          }
+        },
 
-      rejected() {
-        // Called when the subscription is rejected by the server.
-        console.log("rejected by server")
-        this.unsubscribe();
-      },
-    });
-
+        rejected() {
+          // Called when the subscription is rejected by the server.
+          this.unsubscribe();
+        },
+      });
+    }
   });
 }
+
+export default UserStatusChannel;

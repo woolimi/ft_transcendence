@@ -1,4 +1,5 @@
 import consumer from "./consumer"
+import UserStatusChannel from "./user_status_channel"
 
 const MatchChannel = {};
 MatchChannel.channel = null;
@@ -8,12 +9,15 @@ if ($('html').data().isLogin) {
 
     MatchChannel.unsubscribe = function() {
       if (this.channel) {
+        UserStatusChannel.channel.perform("set_status", { user_id: $('html').data().userId, status: 1 });
         this.channel.unsubscribe(this.match_id);
         this.channel = null;
       }
     }
 
+    let self = null;
     MatchChannel.subscribe = function (match_data, recv_callback, me) {
+      self = me;
       if (this.channel)
         return;
 
@@ -35,7 +39,7 @@ if ($('html').data().isLogin) {
 
         received(data) {
           // Called when there's incoming data on the websocket for this channel
-          recv_callback.bind(me)(data);
+          recv_callback.bind(self)(data);
         }
       });
     }

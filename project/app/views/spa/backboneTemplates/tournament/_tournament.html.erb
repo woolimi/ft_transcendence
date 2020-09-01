@@ -1,0 +1,244 @@
+<script type="text/template" name="tmpl-tournament-page">
+	<div class="container-fluid">
+		<div id="tournament-info"></div>
+		<div id="tournament-participants"></div>
+		<div id="tournament-tree"></div>	
+	</div>
+</script>
+
+<script type="text/template" name="tmpl-tournament-participants">
+	<div class="container box bg-white p-3">
+		<h5 class="text-center">Participants</h5>
+		<div class="d-flex justify-content-around">
+      <%% for(let i = 0; i < 4; i++) { %>
+        <div class="d-flex flex-column">
+        <%% if (players[i]) { %>
+          <img class="rounded-circle tournament-avatar" src="<%%= players[i].avatar_url %>">
+          <%%= players[i].nickname %>
+        <%% } else { %>
+          <%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+        <%% } %>
+        </div>
+      <%% } %>
+		</div>
+		<div class="mt-4 text-center">
+      <%% if(status === 0) { %>
+        <%% if (_.find(players, (p) => { return p.user_id === $('html').data().userId })) { %>
+        <button class="btn btn-danger" id="tournament-quit">Quit</button>
+        <%% } else { %>
+        <button class="btn btn-primary" id="tournament-join">Join</button>
+        <%% } %>
+      <%% } %>
+		</div>
+	</div>
+	<hr>
+</script>
+
+
+<script type="text/template" name="tmpl-tournament-info">
+	<%% let str_status; %>
+	<%% if (status === 0) str_status = "Waiting participants" %>
+	<%% if (status === 1) str_status = "Started" %>
+	<%% if (status === 2) str_status = "Finished" %>
+	<div class="container box bg-white p-3">
+		<h3><%%= name %> (<%%= str_status%>)</h3>
+		Time left until registration <span class="oi oi-timer"></span> <span id="tournament-timer" data-sec="<%%= (new Date(registration_end) - new Date()) / 1000 >> 0%>"></span>
+	</div>
+</script>
+
+
+
+<script type="text/template" name="tmpl-tournament-tree">
+  <div class="tournament-bracket tournament-bracket--rounded">                                                     
+    <div class="tournament-bracket__round tournament-bracket__round--semifinals">
+      <h3 class="tournament-bracket__round-title">Semifinal</h3>
+      <ul class="tournament-bracket__list p-0">
+        <li class="tournament-bracket__item">
+          <div class="tournament-bracket__match" data-match-id="<%%= semiL ? semiL.id : '' %>">
+            <table class="tournament-bracket__table">
+              <thead class="sr-only">
+                <tr>
+                  <th>User</th>
+                  <th>Score</th>
+                </tr>
+              </thead>  
+              <tbody class="tournament-bracket__content">
+                <tr class="tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <%% if (semiL) { %>
+                    <abbr class="tournament-bracket__code"><%%= players[0].nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= players[0].avatar_url %>" />
+                    <%% } else { %>
+				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                    <%% } %>
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number"><%%= semiL && semiL.score_left ? semiL.score_left : 0 %></span>
+                  </td>
+                </tr>
+
+                <tr class="tournament-bracket__team tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <%% if (semiL) { %>
+                    <abbr class="tournament-bracket__code"><%%= players[1].nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= players[1].avatar_url %>" />
+                    <%% } else { %>
+				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                    <%% } %>
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number"><%%= semiL && semiL.score_right ? semiL.score_right : 0 %></span>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </li>
+
+        <li class="tournament-bracket__item">
+          <div class="tournament-bracket__match" data-match-id="<%%= semiR ? semiR.id : '' %>">
+            <table class="tournament-bracket__table">
+              <thead class="sr-only">
+                <tr>
+                  <th>User</th>
+                  <th>Score</th>
+                </tr>
+              </thead>  
+              <tbody class="tournament-bracket__content">
+                <tr class="tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <%% if (semiR) { %>
+                    <abbr class="tournament-bracket__code"><%%= players[2].nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= players[2].avatar_url %>" />
+                    <%% } else { %>
+				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                    <%% } %>
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number"><%%= semiR && semiR.score_left ? semiR.score_left : 0 %></span>
+                  </td>
+                </tr>
+                <tr class="tournament-bracket__team tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <%% if (semiR) { %>
+                    <abbr class="tournament-bracket__code"><%%= players[3].nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= players[3].avatar_url %>" />
+                    <%% } else { %>
+				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                    <%% } %>
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number"><%%= semiR && semiR.score_right ? semiR.score_right : 0 %></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="tournament-bracket__round tournament-bracket__round--bronze">
+      <h3 class="tournament-bracket__round-title">Final</h3>
+      <ul class="tournament-bracket__list p-0">
+        <li class="tournament-bracket__item">
+          <div class="tournament-bracket__match" data-match-id="<%%= final ? final.id : '' %>">
+            <table class="tournament-bracket__table">
+              <thead class="sr-only">
+                <tr>
+                  <th>User</th>
+                  <th>Score</th>
+                </tr>
+              </thead>  
+              <tbody class="tournament-bracket__content">
+                <tr class="tournament-bracket__team tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <%% if (final) { %>
+                    <abbr class="tournament-bracket__code"><%%= final.player_left.nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= final.player_left.avatar_url %>" />
+                    <%% } else { %>
+				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                    <%% } %>
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number"><%%= final && final.score_left ? final.score_left : 0 %></span>
+                    <span class="tournament-bracket__medal tournament-bracket__medal--bronze fa fa-trophy" aria-label="Bronze medal"></span>
+                  </td>
+                </tr>
+                <tr class="tournament-bracket__team">
+                  <td class="tournament-bracket__user flex-column">
+                    <%% if (final) { %>
+                    <abbr class="tournament-bracket__code"><%%= final.player_right.nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= final.player_right.avatar_url %>" />
+                    <%% } else { %>
+				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+                    <%% } %>
+                  </td>
+                  <td class="tournament-bracket__score">
+                    <span class="tournament-bracket__number"><%%= final && final.score_right ? final.score_right : 0 %></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="tournament-bracket__round tournament-bracket__round">
+      <h3 class="tournament-bracket__round-title">Winner</h3>
+      <ul class="tournament-bracket__list p-0">
+        <li class="tournament-bracket__item">
+          <div class="tournament-bracket__match align-items-center flex-column">
+          <%% if (final) { %>
+          <abbr class="tournament-bracket__code"><%%= final.winner.nickname %></abbr>
+          <img class="rounded-circle tournament-avatar" src="<%%= final.winner.avatar_url %>" />
+          <%% } else { %>
+          <%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
+          <%% } %>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</script>
+
+
+<script type="text/template" name="tmpl-tournament-match">
+	<%% if(match) { %>
+		<li class="gameTour game-top 
+			<%%= (match.winner == match.player_one.id ? 'winner' : '') %>">
+			<%%= playerNames[match.player_one.id] %>
+			<span><%%= match.player_one.points %></span>
+		</li>
+		<li class="gameTour game-spacer">
+			<!-- &nbsp; -->
+			<%% if(!match.winner) { %>
+				<%% if(user_id == match.player_one.id || user_id == match.player_two.id) { %>
+					<button id=start-match class="btn btn-success my-2" 
+						data-match_id=<%%= match.id %>>Start</button>
+				<%% } else { %>
+					<button id=spectate-match class="btn btn-primary my-2" 
+						data-match_id=<%%= match.id %>>Spectate</button>
+				<%% } %>
+			<%% } else { %>
+				<li class="gameTour game-spacer">&nbsp;</li>
+			<%% } %>
+		</li>
+		
+		<li class="gameTour game-bottom 
+			<%%= (match.winner == match.player_two.id ? 'winner' : '') %>">
+			<%%= playerNames[match.player_two.id] %>
+			<span><%%= match.player_two.points %></span>
+		</li>
+	<%% } else { %>
+		<li class="gameTour game-top">
+			<span></span>
+		</li>
+		<li class="gameTour game-spacer">&nbsp;</li>
+		<li class="gameTour game-spacer">&nbsp;</li>
+		<li class="gameTour game-bottom">
+			<span></span>
+		</li>
+	<%% } %>
+</script>
+

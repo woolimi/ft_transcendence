@@ -3,8 +3,11 @@ import _ from "underscore"
 import Backbone from "backbone"
 import { Pong } from "./Pong.js"
 import MatchChannel from '../channels/match_channel'
+import UserStatusChannel from "../channels/user_status_channel.js"
 
 const Match = {};
+
+if ($('html').data().isLogin) {
 
 $(() => {
 	Match.Content = Backbone.View.extend({
@@ -18,8 +21,8 @@ $(() => {
 		render_players: function(data) {
 			this.$el.find('#game-players').html(this.players_template(data));
 		},
-		render_game: function() {
-			this.$el.find('#game-game').html(this.game_template());
+		render_game: function (data) {
+			this.$el.find('#game-game').html(this.game_template(data));
 		},
 		events: {
 			"click .ready-status": "check_ready", 
@@ -28,18 +31,25 @@ $(() => {
 			try {
 				this.user_id = $('html').data().userId;
 				this.options = options; // { match_type: "duel", id: match_id }
-				// match_data = {id: "", match_type: "", player1: {}, plyaer2: {} }
+				// match_data = {id: "", match_type: "", player_1: {}, plyaer_2: {} }
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
+				console.log("match_data", match_data);
 				this.render_page();
 				this.render_players(match_data);
-				this.render_game();
+				this.render_game(match_data);
 				MatchChannel.subscribe(match_data, this.recv_callback, this);
+				const wrapper = document.getElementById("game-screen-wrapper");
+				const canvas = document.getElementById("game-screen");
+				this.pong = new Pong(wrapper, canvas, options.id);
+				if (match_data.started_at	&& !match_data.match_finished
+					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
+					this.pong.keyListener_off();
+					this.pong.on();
+				}
+				UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
 			} catch (error) {
 				console.error(error);
 			}
-			const wrapper = document.getElementById("game-screen-wrapper");
-			const canvas = document.getElementById("game-screen");
-			this.pong = new Pong(wrapper, canvas, options.id);
 		},
 		check_ready(e) {
 			e.stopImmediatePropagation();
@@ -91,6 +101,8 @@ $(() => {
 
 				if (data.end) {
 					this.pong.off();
+					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
+					this.render_players(match_data);
 					return;
 				}
 
@@ -111,5 +123,7 @@ $(() => {
 		}
 	});
 })
+
+}
 
 export default Match;

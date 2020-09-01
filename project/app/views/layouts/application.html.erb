@@ -9,8 +9,7 @@
     <%= render "spa/backboneTemplates/searchedUsersModal"%>
     <%= render "spa/backboneTemplates/profile/profileContent"%>
     
-		<%= render "spa/backboneTemplates/tournamentsList"%>
-    <%= render "spa/backboneTemplates/guildContent"%>
+    <%= render "spa/backboneTemplates/guild/guildContent"%>
     <%= render "spa/backboneTemplates/login"%>
     <%= render "spa/backboneTemplates/navbarItems"%>
     <%= render "spa/backboneTemplates/navbarUser"%>
@@ -34,8 +33,17 @@
     
     <%= render "spa/backboneTemplates/warContent" %>
     <%= render "spa/backboneTemplates/warHistory" %>
+
+    <%= render "spa/backboneTemplates/tournament/tournaments" %>
+		<%= render "spa/backboneTemplates/tournament/tournament" %>
+
+		<%= render "spa/backboneTemplates/ladder/index" %>
+
+		<%= stylesheet_link_tag "simpleNotification.min.css" %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= javascript_pack_tag 'application' %>
+    <%= javascript_include_tag 'simpleNotification.min.js' %>
+		<%= javascript_pack_tag 'application' %>
+
   </head>
   <body>
     <%= yield %>
@@ -47,6 +55,19 @@
     <% elsif flash[:notice] %>
       Helper.flash_message("success", "<%=flash[:notice]%>");
     <% end %>
+      function rank_image(rp) {
+        const diamond = `<%= image_tag("rank-diamond.png", class: "rank-img") %>`;
+        const gold = `<%= image_tag("rank-gold.png", class: "rank-img") %>`;
+        const silver = `<%= image_tag("rank-silver.png", class: "rank-img") %>`;
+        const bronze = `<%= image_tag("rank-bronze.png", class: "rank-img") %>`;    
+        if (rp >= 1600)
+          return diamond;
+        if (rp >= 1500)
+          return gold;
+        if (rp >= 1400)
+          return silver;
+        return bronze;
+      }
     </script>
 
   </body>
