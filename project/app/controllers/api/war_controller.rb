@@ -36,6 +36,7 @@ class Api::WarController < ApplicationController
             war["wins"] = war[guild_info[0] + "_matches_won"]
             war["losses"] = war[guild_info[0] + "_matches_lost"]
             war["unanswered"] = war[guild_info[0] + "_matches_unanswered"]
+            puts(war);
             return render json: war, status: :ok
         else
 			return render plain: "Forbidden", status: :forbidden 

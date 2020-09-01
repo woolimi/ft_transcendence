@@ -1,0 +1,48 @@
+<script type="text/template" name="tmpl-declare-war-modal">
+<div class="container">
+	<div class="w-100">
+		<div><h5>Declare War against <%%= war_data.accepter %><h5></div>
+		<form class="form-inline" id="declare-war-form" data-challenger="<%%= war_data.challenger %>" data-accepter="<%%= war_data.accepter %>">
+			<table>
+			<tr>
+				<td>Wager Points:</td>
+				<td><input class="form-control mr-sm-2" type="text" placeholder="Enter your bet" id="wagerPoints" pattern="[0-9]{1,10}" required></input></td>
+			</tr>
+			<tr>
+				<td>Max Unanswered Calls:</td>
+				<td><input class="form-control mr-sm-2" type="text" placeholder="Enter max unanswered calls" id="maxUnanswered" pattern="[0-9]" required></input></td>
+			</tr>
+			<tr>
+			<td>&nbsp
+			</td>
+			</tr>
+			<tr>
+			<td>Select Start Datetime
+			</td>
+			</tr>
+			<tr>
+			<td colspan=2>
+				<input type="datetime-local" id="war-start-time" required>
+			</td>
+			</tr>
+			<tr>
+			<td>&nbsp
+			</td>
+			</tr>
+			<tr>
+			<td>Select End Datetime
+			</td>
+			</tr>
+			
+			<tr>
+			<td colspan=2>
+				<input type="datetime-local" id="war-end-time" min="2018-06-07T00:00" required>
+			</td>
+			</tr>
+			</table>
+			
+			<span><button class="btn btn-outline-success my-2 my-sm-0 challengeWar" type="submit">Challenge</button></span>
+		</form>
+	</div>
+</div>
+</script>
