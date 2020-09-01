@@ -42,11 +42,12 @@ class Api::ProfileController < ApplicationController
 				guild.save()
 			else
 				guild = Guild.find_by(:id => me.guild_id)
-				puts "HERE==========================="
 				puts guild[:id]
 				puts me.guild_id
 				if(guild[:guild_members].as_json.length == 1)
-					guild.destroy()
+					guild[:guild_members] = "{}"
+					guild[:guild_officers] = "{}"
+					guild[:owner] = ""
 				elsif (guild[:owner] == me.user_id && guild[:guild_officers].as_json.length == 1)
 					guild[:owner] = guild[:guild_members][1].values[3]
 					guild[:guild_officers] = guild[:guild_officers].push(guild[:guild_members][1])

@@ -6,7 +6,7 @@
     <div id="guild-content">
         <ul>
         <%% _.each(guilds, function(guild, i) { %>
-
+        <%% if(guilds[i].owner != null) { %>
 		<li class="list-group-item d-flex justify-content-between align-items-center <%% if(user.guild_id == guilds[i].id){ %>bg-dark <%% } %>"  <%% if(user.guild_id == guilds[i].id){ %>style="color:white" <%% } %>>
         <span><%%= guilds[i].name %> <%%= guilds[i].anagram %>
         <br>
@@ -20,10 +20,11 @@
         <button type="button" class="btn btn-danger btn-sm leaveGuild">Leave Guild</button>
 		<%% } %>
         <%% if(user.guild_id != guilds[i].id && current_guild != null && (_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == user.user_id }) != -1)){ %>
-        <button type="button" class="btn btn-warning btn-sm challengeGuild">Declare War</button>
+        <button type="button" class="btn btn-warning btn-sm declareWar" data-toggle="modal" data-target="#declareWarModal" data-challenger="<%%= current_guild.name %>" data-accepter="<%%= guilds[i].name %>"">Declare War</button>
 		<%% } %>
         <button type="button" class="btn btn-info btn-sm warHistory" data-guild_id="<%%= guilds[i].id%>" data-guild_name="<%%= guilds[i].name%>">War History</button>
         </span></li>
+        <%% } %>
 	<%% }) %>
         </ul>
     </div>
@@ -41,6 +42,8 @@
     <%% } %>
     
     <%% if(user.guild_id != null){ %>
+    <div class="row">
+    <div class="col-md-6">
     <h1>My Guild Members</h1>
     <div id="guild-content">
     <ul>
@@ -68,5 +71,62 @@
         </li>
 	<%% }) %>
     </ul>
+    </div>
+    </div>
+    <div class="col-md-6">
+    <h1>Guild Requests</h1>
+    <div  id="guild-content">
+    <ul>
+    <%% _.each(war_request, function(war_request, i) { %>
+
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+        <table>
+        <tr>
+            <td>Challenger </td>
+            <td>:<%%= war_request.guild_1 %></td>
+        </tr>
+        <tr>
+            <td>Accepter </td>
+            <td>:<%%= war_request.guild_2 %></td>
+        </tr>
+        <tr>
+            <td>Wager</td>
+            <td>:<%%= war_request.wager %></td>
+        </tr>
+        <tr>
+            <td>Man Unanswered</td>
+            <td>:<%%= war_request.max_unanswered %></td>
+        </tr>
+        <tr>
+            <td>Start Datetime </td>
+            <td>:<%%= war_request.start_date %></td>
+        </tr>
+        <tr>
+            <td>End Datetime </td>
+            <td>:<%%= war_request.end_date %></td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>
+                <%% if(war_request.status == 1) { %>
+                :Accepted
+                <%% } else { %>
+                :Waiting
+                <%% } %>
+            </td>
+        </tr>
+        <%% if(current_guild.owner == user.user_id && current_guild.name != war_request.guild_1 && war_request.status == 0) { %>
+        <tr>
+            <td><button type="button" class="btn btn-success btn-sm acceptWar" data-war_id="<%%= war_request.id %>">Accept War</button></td>
+            <td><button type="button" class="btn btn-danger btn-sm rejectWar" data-war_id="<%%= war_request.id %>">Reject War</button></td>
+        </tr>
+        <%% } %>
+        </table>
+        </li>
+	<%% }) %>
+    </ul>
+    </div>
+    </div>
+    </div>
     <%% } %>
 </script>
