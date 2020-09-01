@@ -1,13 +1,25 @@
 <script type="text/template" name="tmpl-tournaments-page">
-	<div id=tournament-add-button></div>
-	<div id="tournaments-list"></div>
+	<%% if (me.admin) { %>
+	<div class="text-center mt-3">
+		<button class="btn btn-primary" id=tournament-create data-toggle="modal" data-target="#createTournamentModal">create tournament</button>
+	</div>
+	<%% } %>
+	<div class="box p-3 m-3">
+		<h5>Tournament list</h5>
+		<ul class="list-group" id="tournaments-list">
+		</ul>
+	</div>
 </script>
 
 <script type="text/template" name="tmpl-tournaments-list">
 	<%% _.forEach(list, (item)=> { %>
-		<div data-id="<%%= item.id %>" class="tournamentItem tournament-<%%= item.status %>"><%%= item.name %></div>
+		<li class="cursor list-group-item tournament-item <%%=item.status === 'started' ? 'list-group-item-primary' : ''%>" data-id="<%%= item.id %>">
+			<%%= item.name %>
+		</li>
 	<%% }) %>
 </script>
+
+<!-- <class="tournamentItem tournament-<%%= item.status %>" -->
 
 <script type="text/template" name="tmpl-tournaments-button">
 	<button id=create-tournament-button class="btn btn-primary align-items-center btn-lg btn-block btn-huge mt-3 mb-4">Create tournament</button>

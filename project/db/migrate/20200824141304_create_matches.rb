@@ -18,6 +18,8 @@ class CreateMatches < ActiveRecord::Migration[6.0]
     end
     add_index :matches, :war_id
     add_index :matches, :tournament_id
+    add_index :matches, :player_left_id
+		add_index :matches, :player_right_id
   end
 end
 

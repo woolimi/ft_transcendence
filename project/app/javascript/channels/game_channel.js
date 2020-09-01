@@ -19,11 +19,9 @@ if ($('html').data().isLogin) {
 
       this.channel = consumer.subscriptions.create("GameChannel", {
         connected() {
-          console.log("connected to game channel");
         },
 
         disconnected() {
-          console.log("disconnected to match");
         },
 
         received(data) {

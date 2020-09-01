@@ -18,13 +18,13 @@ import WarHistory from "./WarHistory.js"
 import UserStatusChannel from "../channels/user_status_channel"
 import GameChannel from "../channels/game_channel"
 import Ladder from "./Ladder"
+import TournamentChannel from "../channels/tournament_channel.js"
+
 
 const Router = {};
 if ($('html').data().isLogin) {
     $(() => {
         const remove_channel = function() {
-            if (Tournament.content)
-                Tournament.content.loop = false
             if (ChatChannel.channel)
                 ChatChannel.unsubscribe();
             if (ChannelChannel.channel)
@@ -41,6 +41,18 @@ if ($('html').data().isLogin) {
                 clearInterval(War.content.intervalId);
             if (GameChannel.channel)
                 GameChannel.unsubscribe();
+            if (Game.content)
+                Game.content.undelegateEvents();
+            if (Tournaments.content)
+                Tournaments.content.undelegateEvents();
+            if (Tournament.content) {
+                Tournament.content.undelegateEvents();
+                clearInterval(Tournament.intervalId);
+                Tournament.intervalId = null;
+            }
+            if (TournamentChannel.channel)
+                TournamentChannel.unsubscribe();
+
             $(window).off("resize");
         };
 
@@ -51,6 +63,8 @@ if ($('html').data().isLogin) {
                 "game": "game",
                 "game/duel": "duel",
                 "game/ladder": "ladder",
+                "game/tournaments": "tournaments",
+                "game/tournaments/:tournament_id": "tournament",
                 "game/:match_type/:match_id": "match",
                 "profile": "profile",
                 "guild": "guild",
@@ -58,9 +72,6 @@ if ($('html').data().isLogin) {
                 "chats/:room": "chat",
                 "channels/:channel_id": "channel",
                 "war": "war",
-                "game/tournaments/:tournament_id/:match_id": "game_tournament",
-                "game/tournaments/:id": "tournament",
-                "game/tournaments": "tournaments",
             },
             game() {
                 remove_channel();
@@ -77,8 +88,10 @@ if ($('html').data().isLogin) {
             },
             async match(match_type, match_id) {
                 remove_channel();
-                if (urlHistory[0] && urlHistory[0].indexOf(`#game/${match_type}/`) > -1)
+                if (urlHistory[0] && urlHistory[0].indexOf(`#game/${match_type}/`) > -1) {
+                    console.log('here')
                     return Router.router.navigate(`/`, { trigger: true });
+                }
                 if (performance.getEntriesByType("navigation")[0].type === "reload")
                     return Router.router.navigate(`/`, { trigger: true });
                 Match.content = new Match.Content({ match_type: match_type, id: match_id });
@@ -110,17 +123,14 @@ if ($('html').data().isLogin) {
                 remove_channel();
                 Tournaments.content = new Tournaments.Content();
             },
-            tournament(id){
+            tournament(tournament_id){
                 remove_channel();
-                Tournament.content = new Tournament.Content(id);
+                Tournament.content = new Tournament.Content({ tournament_id: tournament_id});
             },
             ladder() {
+                remove_channel();
                 Ladder.content = new Ladder.Content(); 
             },
-            game_tournament: function(id){
-                remove_channel();
-                // todo
-            }
         });
         const router = new RouterClass();
         Router.router = router;

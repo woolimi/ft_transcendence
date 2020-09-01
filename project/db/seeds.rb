@@ -59,7 +59,6 @@ if User.find_by({ email: "noich@asdf.com"}).blank?
 		ft_id: 4, 
 		email: "noich@asdf.com",
 		password: "asdfas",
-		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
 	)
 	UserProfile.create!(
 		name: "Vincent Rey",
@@ -74,7 +73,6 @@ if User.find_by({ email: "benny@asdf.com"}).blank?
 		ft_id: 5, 
 		email: "benny@asdf.com",
 		password: "asdfas",
-		# encrypted_password: Digest::SHA1.hexdigest("asdfas")
 	)
 
 	UserProfile.create!(
@@ -151,67 +149,81 @@ if User.find_by({ email: "charly@asdf.com"}).blank?
 	UserProfile.create!(
 		name: "Charles Maublanc",
 		nickname: "charly",
-		avatar_url: "https://cdn.intra.42.fr/users/small_charly.gif",
+		avatar_url: "https://cdn.intra.42.fr/users/small_charly.jpg",
 		rp: 1630,
 		user_id: u[:id])
 end
 
+if User.find_by({ email: "admin@asdf.com"}).blank?
+	u = User.create!(
+		ft_id: 11, 
+		email: "admin@asdf.com",
+		password: "asdfas",
+	)
+	UserProfile.create!(
+		name: "Admin",
+		nickname: "admin",
+		avatar_url: "https://cdn.intra.42.fr/users/small_wpark.jpg",
+		rp: 0,
+		admin: true,
+		user_id: u[:id])
+end
 
-user1= User.find_by({ email: "doby@asdf.com" });
-user2= User.find_by({ email: "jai@asdf.com" });
-user3= User.find_by({ email: "sophie@asdf.com" });
-user4= User.find_by({ email: "benny@asdf.com" });
+# user1= User.find_by({ email: "doby@asdf.com" });
+# user2= User.find_by({ email: "jai@asdf.com" });
+# user3= User.find_by({ email: "sophie@asdf.com" });
+# user4= User.find_by({ email: "benny@asdf.com" });
 
-Tournament.delete_all
-tournament = Tournament.create(name: 'tournament1', 
-	status: :finished, 
-	registration_start: DateTime.now - 3.day, 
-	registration_end: DateTime.now - 2.day)
+# Tournament.delete_all
+# tournament = Tournament.create(name: 'tournament1', 
+# 	status: :finished, 
+# 	registration_start: DateTime.now - 3.day, 
+# 	registration_end: DateTime.now - 2.day)
 
-users=[user1,user2,user3,user4]
-tournament.players.clear
-tournament.players.push users
+# users=[user1,user2,user3,user4]
+# tournament.players.clear
+# tournament.players.push users
 
-match1=Match.create(
-	match_type: 'tournament_semi',
-	tournament: tournament,
-	player_left: user1,
-	player_right: user2,
-	player_1: {score: 10},
-	player_2: {score: 8},
-	winner: user1.id,
-	loser: user2.id,
-	match_finished: true
-	# created_at: Time.now()
-)
-match2=Match.create(
-	match_type: 'tournament_semi',
-	tournament: tournament,
-	player_left: user3,
-	player_right: user4,
-	player_1: {score: 10},
-	player_2: {score: 8},
-	winner: user3.id,
-	loser: user4.id,
-	match_finished: true
-)
-match3=Match.create(
-	match_type: 'tournament_final',
-	tournament: tournament,
-	player_left: user1,
-	player_right: user3,
-	player_1: {score: 10},
-	player_2: {score: 8},
-	winner: user1.id,
-	loser: user3.id,
-	match_finished: true
-)
+# match1=Match.create(
+# 	match_type: 'tournament_semi',
+# 	tournament: tournament,
+# 	player_left: user1,
+# 	player_right: user2,
+# 	player_1: {score: 10},
+# 	player_2: {score: 8},
+# 	winner: user1.id,
+# 	loser: user2.id,
+# 	match_finished: true
+# 	# created_at: Time.now()
+# )
+# match2=Match.create(
+# 	match_type: 'tournament_semi',
+# 	tournament: tournament,
+# 	player_left: user3,
+# 	player_right: user4,
+# 	player_1: {score: 10},
+# 	player_2: {score: 8},
+# 	winner: user3.id,
+# 	loser: user4.id,
+# 	match_finished: true
+# )
+# match3=Match.create(
+# 	match_type: 'tournament_final',
+# 	tournament: tournament,
+# 	player_left: user1,
+# 	player_right: user3,
+# 	player_1: {score: 10},
+# 	player_2: {score: 8},
+# 	winner: user1.id,
+# 	loser: user3.id,
+# 	match_finished: true
+# )
 
-tournament2 = Tournament.create(name: 'tournament 2', 
-	status: :pending, 
-	registration_start: DateTime.now, 
-	registration_end: DateTime.now + 100.day)
-users=[user3,user2,user1]
-tournament2.players.clear
-tournament2.players.push users
+# tournament2 = Tournament.create(name: 'tournament 2', 
+# 	status: :pending, 
+# 	registration_start: DateTime.now, 
+# 	registration_end: DateTime.now + 100.day)
+# users=[user3,user2,user1]
+# tournament2.players.clear
+# tournament2.players.push users
 	
