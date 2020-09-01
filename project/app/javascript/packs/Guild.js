@@ -4,6 +4,7 @@ import Backbone from "backbone"
 import Profile from "./Profile.js"
 import Router from "./Router.js"
 import Helper from "./Helper.js"
+import GuildChannel from "../channels/guild_channel"
 
 const Guild = {};
 
@@ -43,9 +44,13 @@ $(() => {
                     return;
                 await Helper.fetch(this.model);
                 await Helper.fetch(Profile.userProfile);
+                GuildChannel.subscribe(this.recv_callback, this);
             } catch (error) {
                 Helper.flash_message("danger", "Error while loading guild ranks!");
             }
+        },
+        recv_callback(data) {
+            this.render();
         },
         joinGuild: async function(e) {
             const guild_data = $(e.target).data();
@@ -88,7 +93,8 @@ $(() => {
         kickMember: async function(e) {
             const delete_data = $(e.target).data();
 			await Helper.ajax(`/api/guilds/${this.user_id}`, "delete_id="+ delete_data.user_id + "&guild_id=" + delete_data.guild_id, "DELETE");
-            this.render();
+            // this.render();
+            GuildChannel.channel.send({ type: "kickMember" });
         },
         acceptWar: async function(e)
         {
@@ -99,14 +105,16 @@ $(() => {
                 // console.log(JSON.stringify(error));
                 Helper.flash_message("danger", error.responseText);
             }
-            this.render();
+            // this.render();
+            GuildChannel.channel.send({type: "acceptWar"});
         },
         rejectWar: async function(e)
         {
             const reject = $(e.target).data();
             console.log(reject.war_id);
             await Helper.ajax(`/api/war_request/${reject.war_id}`, "", "DELETE");
-            this.render();
+            // this.render();
+            GuildChannel.channel.send({ type: "rejectWar" });
         },
         render: async function() {
             await Helper.fetch(Profile.userProfile);
@@ -211,8 +219,8 @@ $(() => {
             data.push($("#war-end-time").val())
             await Helper.ajax(`/api/war_request`, "data=" + data, "POST"); 
             $('#declareWarModal').modal('toggle');
-            Guild.content.render();
-
+            GuildChannel.channel.send({ type: "rejectWar" });
+            // Guild.content.render();
         },
         render: async function(){
             $('#view-declare-war-modal').html(this.template({war_data: this.war_data,}));
