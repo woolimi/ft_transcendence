@@ -2,8 +2,7 @@ class TournamentRegistrationLimitJob < ApplicationJob
   queue_as :default
 
   def perform(tournament)
-    if tournament.players.count < 4
-      tournament.cancel()
-    end
+    return tournament.cancel() if tournament.players.count < 4
+    tournament.launch()
   end
 end

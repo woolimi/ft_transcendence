@@ -188,14 +188,10 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def calculate_RP(winner, loser)
-    puts "\n\n\n\n\n"
-    puts winner["user_id"]
-    puts loser["user_id"]
-    puts "\n\n\n\n\n"
     winner_profile = UserProfile.find_by(user_id: winner["user_id"])
     loser_profile = UserProfile.find_by(user_id: loser["user_id"])
-    if (winner["rp"] - loser["rp"]).abs >= 200
-      bonus = (winner["rp"] - loser["rp"]).abs * 0.1
+    if (loser["rp"] - winner["rp"] >= 200)
+      bonus = (loser["rp"] - winner["rp"]) * 0.1
       winner["rp"] = winner["rp"] + 20 +  bonus
       loser["rp"] = (loser["rp"] - 20 - bonus < 0 ? 0 : loser["rp"] - 20 - bonus)
     else

@@ -29,7 +29,8 @@ if ($('html').data().isLogin)
               handle_tournament_start(data.content);
               break;
             case 'tournament_created':
-              handle_tournament_created(data.content)
+              handle_tournament_created(data.content);
+              break;
             case "duel-request":
               handle_duel_request(data);
               break;
@@ -114,7 +115,7 @@ if ($('html').data().isLogin)
         buttons: [{
           value: 'Join match',
           type: 'success',
-          async onClick(notification) {
+          onClick(notification) {
             notification.close();
             return Router.router.navigate(`/game/tournaments/${data.tournament_id}/${data.match_id}`, { trigger: true });
           }
@@ -124,11 +125,11 @@ if ($('html').data().isLogin)
 
     function handle_tournament_created(data) {
       SimpleNotification.message({
-        text: `The tournament "${data.tournament_name}" has been created.`,
+        text: `New tournament "${data.tournament_name}" has been created.`,
         buttons: [{
           value: 'See details',
           type: 'message',
-          async onClick(notification) {
+          onClick(notification) {
             notification.close();
             return Router.router.navigate(`/game/tournaments/${data.tournament_id}`, { trigger: true });
           }

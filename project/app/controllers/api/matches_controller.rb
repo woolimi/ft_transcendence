@@ -9,6 +9,18 @@ class Api::MatchesController < ApplicationController
 	def show 
 		room = Match.find_by(id: params[:id])
 		return render plain: "forbidden", status: :forbidden if room.blank?
+		if room.match_type.include?("tournament")
+			if (room.player_left_id == current_user[:id] || room.player_right_id == current_user[:id])
+				me = UserProfile.find_by(user_id: current_user[:id])
+				if room.player_left_id == current_user[:id]
+					room.player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
+				end
+				if room.player_right_id == current_user[:id]
+					room.player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
+				end
+			end
+			room.save()
+		end
 		return render json: room, status: :ok
 	end
 
@@ -22,8 +34,8 @@ class Api::MatchesController < ApplicationController
 			return render plain: "forbidden", status: :forbidden if (player_2.present? && player_2.status != 1)
 			room = Match.create(
 				match_type: params[:match_type],
-				player_1: {user_id: player_1.user_id, avatar_url: player_1.avatar_url, nickname: player_1.nickname, ready: false, score: 0},
-				player_2: {user_id: player_2.user_id, avatar_url: player_2.avatar_url, nickname: player_2.nickname, ready: false, score: 0},
+				player_1: {user_id: player_1.user_id, avatar_url: player_1.avatar_url, nickname: player_1.nickname, ready: false, score: 0, guild_id: player_1.guild_id },
+				player_2: {user_id: player_2.user_id, avatar_url: player_2.avatar_url, nickname: player_2.nickname, ready: false, score: 0, guild_id: player_2.guild_id },
 				match_finished: false,
 				created_at: Time.now())
 			return render json: room if (room.present?)
@@ -36,15 +48,15 @@ class Api::MatchesController < ApplicationController
 		if single_rooms.empty? # if single_room is empty, create new room
 			single_room = Match.create(
 				match_type: params[:match_type],
-				player_1: {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp},
+				player_1: {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id },
 				match_finished: false,
 				created_at: Time.now())
 			return render json: single_room if (single_room.present? && me.present?)
 		else # if single_room is exist, enter into it
 			if (single_rooms[0].player_1.blank?)
-				single_rooms[0].player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp}
+				single_rooms[0].player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
 			elsif (single_rooms[0].player_2.blank?)
-				single_rooms[0].player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp}
+				single_rooms[0].player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
 			end
 			return render json: single_rooms[0] if single_rooms[0].save()
 		end
