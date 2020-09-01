@@ -28,6 +28,7 @@ $(() => {
 				this.tournament_id = options.tournament_id;
 				this.user_id = $('html').data().userId;
 				const info = await Helper.ajax(`/api/tournaments/${this.tournament_id}`, '', 'GET');
+				this.end = new Date(info.registration_end)
 				this.render_page();
 				this.render_info(info);
 				this.render_participants(info);
@@ -35,7 +36,6 @@ $(() => {
 				this.render_timer();
 				console.log(info);
 				TournamentChannel.subscribe(this.tournament_id, this.recv_callback, this);
-
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
@@ -56,20 +56,39 @@ $(() => {
 		render_tree(data) {
 			this.$el.find('#tournament-tree').html(this.tree_template(data))
 		},
-		render_timer() {
-			clearInterval(Tournament.intervalId);
-			Tournament.intervalId = setInterval(() => {
-				const sec = $('#tournament-timer').data().sec;
-				const str = Helper.getTimeString(sec);
-				if (str === null) {
-					$('#tournament-timer').html("registration finished");
-					clearInterval(Tournament.intervalId);
-					return;
-				}
-				$('#tournament-timer').html(str);
-				$('#tournament-timer').data().sec -= 1;
-			}, 1000);
+
+		render_timer: function() {
+			var self = this
+			let now = new Date();
+			let distance = ((this.end - now)/1000) >> 0
+			console.log('render_timer')
+			if (distance < 0)
+				$('#tournament-timer').html('registration finished')
+			else{
+				$('#tournament-timer').html(Helper.getTimeString(distance))
+				setTimeout(() => {
+					if ($('#tournament-timer').length) {
+						this.render_timer(self.end);
+					}
+				}, 1000);
+			}	
 		},
+
+		// render_timer() {
+		// 	clearInterval(Tournament.intervalId);
+		// 	Tournament.intervalId = setInterval(() => {
+		// 		const sec = $('#tournament-timer').data().sec;
+		// 		const str = Helper.getTimeString(sec);
+		// 		if (str === null) {
+		// 			$('#tournament-timer').html("registration finished");
+		// 			clearInterval(Tournament.intervalId);
+		// 			return;
+		// 		}
+		// 		$('#tournament-timer').html(str);
+		// 		$('#tournament-timer').data().sec -= 1;
+		// 	}, 1000);
+		// },
+
 		async join_tournament(e) {
 			e.stopPropagation();
 			try {

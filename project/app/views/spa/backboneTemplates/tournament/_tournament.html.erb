@@ -22,7 +22,7 @@
       <%% } %>
 		</div>
 		<div class="mt-4 text-center">
-      <%% if(players.length < 4) { %>
+      <%% if(status === 0) { %>
         <%% if (_.find(players, (p) => { return p.user_id === $('html').data().userId })) { %>
         <button class="btn btn-danger" id="tournament-quit">Quit</button>
         <%% } else { %>

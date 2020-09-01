@@ -1,6 +1,7 @@
 class NotificationChannel < ApplicationCable::Channel
   def subscribed
-    stream_for current_user
+    # stream_for current_user
+    stream_from "notification_channel_#{current_user.id}"
   end
 
   def unsubscribed
@@ -8,7 +9,8 @@ class NotificationChannel < ApplicationCable::Channel
   end
 
   def send_notification(data)
-    NotificationChannel.broadcast_to(User.find_by(id: data["user_id"]),
+    # NotificationChannel.broadcast_for(User.find_by(id: data["user_id"]),
+    ActionCable.server.broadcast("notification_channel_#{data["user_id"]}",
     {
       type: data["type"],
       content: data["content"],

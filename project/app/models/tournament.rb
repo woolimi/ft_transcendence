@@ -57,32 +57,40 @@ class Tournament < ApplicationRecord
 		)
 		self.semiL_id = semiL.id
 		self.semiR_id = semiR.id
+		self.status = 1
 		self.save()
-
-		# players[0].send_notification('tournament_start', {
-		# 	tournament_id: self.id,
-		# 	tournament_name: self.name,
-		# 	match_id: match1.id,
-		# 	opponent_name: players[1].user_profile.name
-		# })
-		# players[1].send_notification('tournament_start', {
-		# 	tournament_id: self.id,
-		# 	tournament_name: self.name,
-		# 	match_id: match1.id,
-		# 	opponent_name: players[0].user_profile.name
-		# })
-		# players[2].send_notification('tournament_start', {
-		# 	tournament_id: self.id,
-		# 	tournament_name: self.name,
-		# 	match_id: match2.id,
-		# 	opponent_name: players[3].user_profile.name
-		# })
-		# players[3].send_notification('tournament_start', {
-		# 	tournament_id: self.id,
-		# 	tournament_name: self.name,
-		# 	match_id: match2.id,
-		# 	opponent_name: players[2].user_profile.name
-		# })
+		ActionCable.server.broadcast("notification_channel_#{players[0]}", {
+			type: 'tournament_start',
+			content: {
+				tournament_id: self.id,
+				tournament_name: self.name,
+				match_id: semiL.id
+			}
+		})
+		ActionCable.server.broadcast("notification_channel_#{players[1]}", {
+			type: 'tournament_start',
+			content: {
+				tournament_id: self.id,
+				tournament_name: self.name,
+				match_id: semiL.id
+			}
+		})
+		ActionCable.server.broadcast("notification_channel_#{players[2]}", {
+			type: 'tournament_start',
+			content: {
+				tournament_id: self.id,
+				tournament_name: self.name,
+				match_id: semiR.id
+			}
+		})
+		ActionCable.server.broadcast("notification_channel_#{players[3]}", {
+			type: 'tournament_start',
+			content: {
+				tournament_id: self.id,
+				tournament_name: self.name,
+				match_id: semiR.id
+			}
+		})
 	end
 
 end
