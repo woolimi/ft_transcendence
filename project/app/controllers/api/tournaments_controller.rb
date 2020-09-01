@@ -18,7 +18,7 @@ class Api::TournamentsController < ApplicationController
 			status: 0,
 			players: [],
 			registration_start: DateTime.now,
-			registration_end: DateTime.now + 1.minute
+			registration_end: DateTime.now + 1.day
 		)
 		User.send_to_all('tournament_created', {
 			tournament_id: tournament.id,

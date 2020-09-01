@@ -75,6 +75,10 @@ $(() => {
 			try {
 				const info = await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '','PUT');
 				this.render_participants(info);
+				TournamentChannel.channel.perform("update_player_list", { 
+					tournament_id: this.tournament_id,
+					info: info 
+				} );
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
@@ -90,6 +94,10 @@ $(() => {
 			try {
 				const info = await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '', 'DELETE');
 				this.render_participants(info);
+				TournamentChannel.channel.perform("update_player_list", { 
+					tournament_id: this.tournament_id,
+					info: info 
+				} );
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
@@ -107,6 +115,7 @@ $(() => {
 		},
 		recv_callback(data) {
 			console.log(data);
+			this.render_participants(data)
 		},
 
 	});
