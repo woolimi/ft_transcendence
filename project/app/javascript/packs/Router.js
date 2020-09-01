@@ -19,7 +19,7 @@ import UserStatusChannel from "../channels/user_status_channel"
 import GameChannel from "../channels/game_channel"
 import Ladder from "./Ladder"
 import TournamentChannel from "../channels/tournament_channel.js"
-
+import GuildChannel from "../channels/guild_channel"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -52,6 +52,8 @@ if ($('html').data().isLogin) {
             }
             if (TournamentChannel.channel)
                 TournamentChannel.unsubscribe();
+            if (GuildChannel.channel)
+                GuildChannel.unsubscribe();
 
             $(window).off("resize");
         };
