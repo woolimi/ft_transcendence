@@ -19,7 +19,7 @@ import UserStatusChannel from "../channels/user_status_channel"
 import GameChannel from "../channels/game_channel"
 import Ladder from "./Ladder"
 import TournamentChannel from "../channels/tournament_channel.js"
-
+import Duel from "./Duel.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -49,7 +49,6 @@ if ($('html').data().isLogin) {
                 Tournament.content.undelegateEvents();
             if (TournamentChannel.channel)
                 TournamentChannel.unsubscribe();
-
             $(window).off("resize");
         };
 
@@ -74,23 +73,14 @@ if ($('html').data().isLogin) {
                 remove_channel();
                 Game.content = new Game.Content();
             },
-            async duel() {
+            duel() {
                 remove_channel();
-                try {
-                    const new_match = await Helper.ajax('/api/matches/', `match_type=duel`, 'POST');
-                    return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
-                } catch (error) {
-                    console.error(error);
-                }
+                Duel.content = new Duel.Content();
             },
-            async match(match_type, match_id) {
+            match(match_type, match_id) {
                 remove_channel();
-                if (urlHistory[0] && urlHistory[0].indexOf(`#game/${match_type}/`) > -1) {
-                    console.log('here')
-                    return Router.router.navigate(`/`, { trigger: true });
-                }
-                if (performance.getEntriesByType("navigation")[0].type === "reload")
-                    return Router.router.navigate(`/`, { trigger: true });
+                // if (performance.getEntriesByType("navigation")[0].type === "reload")
+                //     return Router.router.navigate(`/`, { trigger: true });
                 Match.content = new Match.Content({ match_type: match_type, id: match_id });
             },
             profile() {

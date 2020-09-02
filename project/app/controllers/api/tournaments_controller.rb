@@ -61,6 +61,20 @@ class Api::TournamentsController < ApplicationController
 		end
 	end
 
+	# PUT /api/tournaments/:tournament_id/dummy
+	def dummy
+		tournament = Tournament.find_by(id: params[:tournament_id])
+		return render plain: "fail to create dummy", status: :forbidden if tournament.blank?
+		tournament.players = []
+		for i in 1..3 do
+			tournament.players.push(User.find_by(ft_id: i).id)
+		end
+		tournament.save!()
+		ActionCable.server.broadcast "tournament_#{tournament.id}_channel", {type: "participant", data: tournament.jbuild()}
+		return render plain: "dummy created", status: :ok
+	end
+
+
 	private
 
 	def tournament_params

@@ -4,6 +4,7 @@ import Backbone from "backbone"
 import { Pong } from "./Pong.js"
 import MatchChannel from '../channels/match_channel'
 import UserStatusChannel from "../channels/user_status_channel.js"
+import Helper from "./Helper.js"
 
 const Match = {};
 
@@ -34,6 +35,8 @@ $(() => {
 				// match_data = {id: "", match_type: "", player_1: {}, plyaer_2: {} }
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
 				console.log("match_data", match_data);
+				if (match_data.match_finished)
+					throw "match finished";
 				this.render_page();
 				this.render_players(match_data);
 				this.render_game(match_data);
@@ -48,7 +51,12 @@ $(() => {
 				}
 				UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
 			} catch (error) {
-				console.error(error);
+				if (error.responseText)
+					Helper.flash_message("danger", responseText);
+				else {
+					Helper.flash_message("danger", error);
+					window.history.back();
+				}
 			}
 		},
 		check_ready(e) {
@@ -102,12 +110,14 @@ $(() => {
 				if (data.end) {
 					this.pong.off();
 					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
+					console.log("match_data", match_data);
 					this.render_players(match_data);
 					return;
 				}
 
 				if (data.players) {
 					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
+					console.log("match_data", match_data);
 					this.render_players(match_data);
 					return;
 				}

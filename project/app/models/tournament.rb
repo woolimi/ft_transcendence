@@ -6,14 +6,10 @@ class Tournament < ApplicationRecord
 	validates :registration_start, presence: true
 	validates :registration_end, presence: true
 	validates :name, presence: true
-	
+
+	@@limit = 1.minutes
+
 	def cancel
-		self.players.each do |p|
-			u = User.find_by(id: p)
-			u.send_notification('tournament_canceled', {
-				name: self.name
-			})
-		end
 		self.destroy!
 	end
 
@@ -45,19 +41,25 @@ class Tournament < ApplicationRecord
 		self.semiL_id = semiL.id
 		self.semiR_id = semiR.id
 		self.status = 1
+		self.limit = Time.now() + @@limit
 		self.save()
-		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "participant", data: self.jbuild() }
-		TournamentManagerJob.set(wait_until: Time.now() + 10.second).perform_later(self)
+		data = self.jbuild()
+		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "participant", data: data}
+		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "info", data: data }
+		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "tree", data: data }
+		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "timer", data: data }
 		for i in 0...4 do
-			ActionCable.server.broadcast("notification_channel_#{players[i]}", {
+			ActionCable.server.broadcast("notification_channel_#{self.players[i]["user_id"]}", {
 				type: 'tournament_start',
-				content: { tournament_id: self.id, tournament_name: self.name }
+				content: { tournament_id: self.id, tournament_name: self.name, tournament_type: "semifinal" }
 			})
 		end
+		TournamentManagerJob.set(wait_until: self.limit).perform_later(self)
 	end
 	def manage
-		return if self.status == 2
+		return if self.status == 3
 		return manage_final() if (self.final.present?)
+		return if (self.limit > Time.now() && (!self.semiL.match_finished || !self.semiR.match_finished))
 		manage_semiL() if (!self.semiL.match_finished)
 		manage_semiR() if (!self.semiR.match_finished)
 		final = Match.create(
@@ -73,9 +75,22 @@ class Tournament < ApplicationRecord
 			tournament_id: self.id,
 		)
 		self.final_id = final.id
+		self.status = 2 # final
+		self.limit = Time.now() + @@limit
 		self.save()
-		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "tree", data: self.jbuild() }
-		TournamentManagerJob.set(wait_until: Time.now() + 10.second).perform_later(self)
+		data = self.jbuild()
+		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "tree", data: data }
+		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "info", data: data }
+		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "timer", data: data }
+		ActionCable.server.broadcast("notification_channel_#{self.final.player_left[:id]}", {
+			type: 'tournament_start',
+			content: { tournament_id: self.id, tournament_name: self.name, tournament_type: "final" }
+		})
+		ActionCable.server.broadcast("notification_channel_#{self.final.player_right[:id]}", {
+			type: 'tournament_start',
+			content: { tournament_id: self.id, tournament_name: self.name, tournament_type: "final" }
+		})
+		TournamentManagerJob.set(wait_until: self.limit).perform_later(self)
 	end
 	def jbuild()
 		return [] if self.nil?
@@ -123,9 +138,12 @@ class Tournament < ApplicationRecord
 			self.final.score_left = (win == 0 ? 42 : 0)
 			self.final.score_right = (win == 1 ? 42 : 0)
 			self.winner = self.final.winner
-			self.status = 2
+			self.status = 3
 			self.final.save!()
-			ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "tree", data: self.jbuild() }
+			self.save!()
+			data = self.jbuild()
+			ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "info", data: data }
+			ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "tree", data: data }
 			# add score to winner's guild	belongs_to :winner, class_name: "User", optional: true, foreign_key: "winner_id"
 
 		end

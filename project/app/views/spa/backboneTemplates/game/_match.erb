@@ -49,10 +49,12 @@
 <script type="text/template" name="tmpl-game-game">
 	<div id="game-timer" class="d-none"></div>
 	<%% let color = "#353535"; %>
-	<%% if (match_type == "duel") {
+	<%% if (match_type === "duel") {
 			color = "#982400";
-		} else if (match_type == "ladder") {
+		} else if (match_type === "ladder") {
 			color = "#353535";
+		} else if (match_type && match_type.indexOf("tournament") > -1) {
+			color = "#124579";
 		}
 	%>
 	<div id="game-screen-wrapper">

@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 2020_08_26_123118) do
     t.uuid "winner"
     t.datetime "registration_start"
     t.datetime "registration_end"
+    t.datetime "limit"
     t.index ["final_id"], name: "index_tournaments_on_final_id"
     t.index ["semiL_id"], name: "index_tournaments_on_semiL_id"
     t.index ["semiR_id"], name: "index_tournaments_on_semiR_id"

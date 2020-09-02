@@ -9,21 +9,21 @@ class MatchChannel < ApplicationCable::Channel
   @@matches = {}
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
   @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 3 }
+  @@session = {}
   def subscribed
     # stream_from "some_channel"
+    @@session[current_user[:id]] = params[:match_id]
     stream_from "match_#{params[:match_id]}_channel"
   end
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
-    quit_matches = Match.where('started_at IS NULL AND (player_1 @>? OR player_2 @>?)', 
-      {"user_id": current_user[:id]}.to_json, {"user_id": current_user[:id]}.to_json)
-    
-    quit_matches.each {|m| 
-      m.player_1 = nil if (m.player_1 && m.player_1["user_id"] == current_user[:id])
-      m.player_2 = nil if (m.player_2 && m.player_2["user_id"] == current_user[:id])
-      m.save()
-    }
+    quit_match = Match.find_by(id: @@session[current_user[:id]])
+    return if quit_match.started_at.present?
+    quit_match.player_1 = nil if (quit_match.player_1.present? && quit_match.player_1["user_id"] == current_user[:id])
+    quit_match.player_2 = nil if (quit_match.player_2.present? && quit_match.player_2["user_id"] == current_user[:id])
+    quit_match.save!()
+    @@session.delete(current_user[:id])
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, from: current_user[:id]})
   end
 
@@ -137,6 +137,7 @@ class MatchChannel < ApplicationCable::Channel
           match.score_right = game["score"][1]
           match.match_finished = true
           calculate_RP(winner, loser) if match.match_type == "ladder"
+          match.tournament.manage() if match.match_type.include?("tournament")
           match.save()
           break
         else

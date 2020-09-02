@@ -111,13 +111,13 @@ if ($('html').data().isLogin)
 
     function handle_tournament_start(data){
       SimpleNotification.message({
-        text: `The tournament "${data.tournament_name}" started.`,
+        text: `The tournament "${data.tournament_name} ${data.tournament_type}" started.`,
         buttons: [{
-          value: 'Join into your match',
+          value: 'Go to tournament',
           type: 'success',
           onClick(notification) {
             notification.close();
-            return Router.router.navigate(`/game/tournament/${data.match_id}`, { trigger: true });
+            return Router.router.navigate(`/game/tournaments/${data.tournament_id}`, { trigger: true });
           }
         }]
       })
