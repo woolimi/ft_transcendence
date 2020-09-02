@@ -21,3 +21,9 @@ class CreateWars < ActiveRecord::Migration[6.0]
     end
   end
 end
+
+#War Statuses
+# 0 - Request Arrived
+# 1 - Request accepted
+# 2 - War Started
+# 3 - War Ended

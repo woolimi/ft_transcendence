@@ -49,12 +49,12 @@ class Api::ProfileController < ApplicationController
 					guild[:guild_officers] = "{}"
 					guild[:owner] = ""
 				elsif (guild[:owner] == me.user_id && guild[:guild_officers].as_json.length == 1)
-					guild[:owner] = guild[:guild_members][1].values[3]
+					guild[:owner] = guild[:guild_members][1]["user_id"]
 					guild[:guild_officers] = guild[:guild_officers].push(guild[:guild_members][1])
 					#//remove from members list
 					mem_list = []
 					for i in guild[:guild_members]
-						if i.values[3] != me.user_id
+						if i["user_id"] != me.user_id
 							mem_list.push(i)
 						end
 					end
@@ -62,17 +62,17 @@ class Api::ProfileController < ApplicationController
 					#remove from officer's list
 					off_list = []
 					for i in guild[:guild_officers]
-						if i.values[3] != me.user_id
+						if i["user_id"] != me.user_id
 							off_list.push(i)
 						end
 					end
 					guild[:guild_officers] = off_list
 				elsif (guild[:owner] == me.user_id && guild[:guild_officers].as_json.length > 1)
-					guild[:owner] = guild[:guild_members][1].values[3]
+					guild[:owner] = guild[:guild_members][1]["user_id"]
 					#//remove from members list
 					mem_list = []
 					for i in guild[:guild_members]
-						if i.values[3] != me.user_id
+						if i["user_id"] != me.user_id
 							mem_list.push(i)
 						end
 					end
@@ -80,7 +80,7 @@ class Api::ProfileController < ApplicationController
 					#remove from officer's list
 					off_list = []
 					for i in guild[:guild_officers]
-						if i.values[3] != me.user_id
+						if i["user_id"] != me.user_id
 							off_list.push(i)
 						end
 					end
@@ -89,7 +89,7 @@ class Api::ProfileController < ApplicationController
 					#//remove from members list
 					mem_list = []
 					for i in guild[:guild_members]
-						if i.values[3] != me.user_id
+						if i["user_id"] != me.user_id
 							mem_list.push(i)
 						end
 					end
@@ -98,7 +98,7 @@ class Api::ProfileController < ApplicationController
 					#remove from officer's list
 					off_list = []
 					for i in guild[:guild_officers]
-						if i.values[3] != me.user_id
+						if i["user_id"] != me.user_id
 							off_list.push(i)
 						end
 					end

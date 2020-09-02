@@ -22,7 +22,7 @@ $(() => {
 
     Guild.allGuilds = new AllGuilds();
 
-    const GuildContent = Backbone.View.extend({
+    Guild.Content = Backbone.View.extend({
         el: $("#view-content"),
         template: _.template($("script[name='tmpl-content-guild']").html()),
         war_requests: [],
@@ -42,8 +42,8 @@ $(() => {
                 this.user_id = $('html').data().userId;
                 if (this.user_id == null)
                     return;
-                await Helper.fetch(this.model);
-                await Helper.fetch(Profile.userProfile);
+                // await Helper.fetch(this.model);
+                // await Helper.fetch(Profile.userProfile);
                 GuildChannel.subscribe(this.recv_callback, this);
             } catch (error) {
                 Helper.flash_message("danger", "Error while loading guild ranks!");
@@ -56,12 +56,15 @@ $(() => {
             const guild_data = $(e.target).data();
             Profile.userProfile.set('guild_id', guild_data.guild_id);
             await Helper.save(Profile.userProfile);
-            this.render();
+            // this.render();
+            GuildChannel.channel.send({ type: "joinGuild" });
+
         },
         leaveGuild: async function(e) {
             Profile.userProfile.set('guild_id', null);
             await Helper.save(Profile.userProfile);
-            this.render();
+            // this.render();
+            GuildChannel.channel.send({ type: "leaveGuild" });
         },
         createGuild: async function(e) {
             e.preventDefault();
@@ -71,15 +74,14 @@ $(() => {
             var new_model = new AllGuilds();
             await Helper.fetch(new_model);
             var guildArr = new_model.toJSON();
-            console.log(guildArr);
             const data = form.serialize();
             for (i = 0; i < Object.keys(guildArr).length; i++) {
                 if (guildArr[i].name == guildName)
                     return Helper.flash_message("danger", "Guild already exists");
             }
             await Helper.ajax(`/api/guilds`, "guildName=" + guildName, "POST");
-            this.render();
-            console.log($(".newGuildName").val());
+            // this.render();
+            GuildChannel.channel.send({ type: "createGuild" });
         },
         warHistory: async function(e) {
             const guild_data = $(e.target).data();
@@ -88,7 +90,8 @@ $(() => {
         toggleOfficer: async function(e) {
             const toggle_data = $(e.target).data();
 			await Helper.ajax(`/api/guilds/${this.user_id}`, "toggle_id="+ toggle_data.user_id + "&toggle_guild=" + toggle_data.guild_id, "PUT");
-            this.render();
+            // this.render();
+            GuildChannel.channel.send({ type: "toggleOfficer" });
         },
         kickMember: async function(e) {
             const delete_data = $(e.target).data();
@@ -102,7 +105,6 @@ $(() => {
             try {
                 await Helper.ajax(`/api/war_request/${accept.war_id}`, "", "PUT");
             } catch (error) {
-                // console.log(JSON.stringify(error));
                 Helper.flash_message("danger", error.responseText);
             }
             // this.render();
@@ -111,7 +113,6 @@ $(() => {
         rejectWar: async function(e)
         {
             const reject = $(e.target).data();
-            console.log(reject.war_id);
             await Helper.ajax(`/api/war_request/${reject.war_id}`, "", "DELETE");
             // this.render();
             GuildChannel.channel.send({ type: "rejectWar" });
@@ -120,16 +121,23 @@ $(() => {
             await Helper.fetch(Profile.userProfile);
             var new_model = new AllGuilds();
             await Helper.fetch(new_model);
-            var guild = new_model.toJSON();
+            var guild_model = new_model.toJSON();
+            var guild = []
+            var i = 0
+            for(i = 0; i < Object.keys(guild_model).length; i++)
+            {
+                if(_.size(JSON.stringify(guild_model[i].guild_members)) != 4)
+                    guild.push(guild_model[i]);
+            }
             var mem_list = []
             var current_guild
-            var i = 0
             for(i = 0; i < Object.keys(guild).length; i++)
             {
                 if(guild[i].id == Profile.userProfile.toJSON().guild_id)
                 {
                     mem_list = guild[i].guild_members;
                     current_guild = guild[i]
+                    break;
                 }
             }
             this.war_request = await Helper.ajax(`/api/war_request/null`, "", "GET");
@@ -138,8 +146,6 @@ $(() => {
             {
                 for(j = 0; j < Object.keys(guild).length; j++)
                 {
-                    // console.log(this.war_request[i].guild_1);
-                    // console.log(guild[j].id);
                     if(this.war_request[i].guild_1 == guild[j].id)
                     {
                         this.war_request[i].guild_1 = guild[j].name
@@ -153,7 +159,6 @@ $(() => {
 
                 this.war_request[i].end_date = (this.war_request[i].end_date.substring(11,16)+ "hrs on " + this.war_request[i].end_date.substring(8,10) + "/" + this.war_request[i].end_date.substring(5,7) + "/" + this.war_request[i].end_date.substring(0,4));
             }
-            console.log(this.war_request);
             const content = this.template({
                 guilds: guild,
                 user: Profile.userProfile.toJSON(),
@@ -166,7 +171,7 @@ $(() => {
         }
     });
 
-    Guild.content = new GuildContent();
+    // Guild.content = new GuildContent();
     
     const WarModalView = Backbone.View.extend({
         template: _.template($("script[name='tmpl-declare-war-modal']").html()),
@@ -184,22 +189,17 @@ $(() => {
         },
         onSubmit: async function(e){
             const challenge_data = $(e.target).data();
-            console.log(challenge_data.challenger);
-            console.log(challenge_data.accepter);
-            console.log($("#wagerPoints").val());
-            console.log($("#maxUnanswered").val());
             if(new Date($("#war-start-time").val()).getTime() > (new Date($("#war-end-time").val()).getTime()) || (Date.now() - new Date($("#war-start-time").val()).getTime() > 120000))
             {
                 Helper.flash_message("danger", "End date should always be greater than Start Date and Start Date cannot be in the Past");
                 return;
             }
-            Guild.allGuilds.fetch();
+            await Helper.fetch(Guild.allGuilds);
             var allGuilds = Guild.allGuilds.toJSON();
-            console.log(allGuilds);
             var i = 0 
             for(i = 0; i < Object.keys(allGuilds).length; i++)
             {
-                if(challenge_data.challenger == allGuilds[i].name && allGuilds[i].total_score < parseInt($("#wagerPoints").val()))
+                if(challenge_data.challenger == allGuilds[i].name &&    allGuilds[i].total_score < parseInt($("#wagerPoints").val()))
                 {
                     Helper.flash_message("danger", "Challenger guild does not have enough points for wager");
                     return;

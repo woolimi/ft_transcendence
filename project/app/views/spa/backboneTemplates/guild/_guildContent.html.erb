@@ -1,9 +1,13 @@
 <!-- gulid content -->
+
 <script type="text/template" name="tmpl-content-guild">
+    <div>
+        <h1>All Guilds</h1>
+	</div>
+    <%% if(_.size(guilds) != 0) {%>
     <div id="guild-content">
         <ul>
         <%% _.each(guilds, function(guild, i) { %>
-        <%% if(guilds[i].owner != null) { %>
 		<li class="list-group-item d-flex justify-content-between align-items-center <%% if(user.guild_id == guilds[i].id){ %>bg-dark <%% } %>"  <%% if(user.guild_id == guilds[i].id){ %>style="color:white" <%% } %>>
         <span><%%= guilds[i].name %> <%%= guilds[i].anagram %>
         <br>
@@ -21,19 +25,27 @@
 		<%% } %>
         <button type="button" class="btn btn-info btn-sm warHistory" data-guild_id="<%%= guilds[i].id%>" data-guild_name="<%%= guilds[i].name%>">War History</button>
         </span></li>
-        <%% } %>
-	<%% }) %>
+	    <%% }) %>
         </ul>
+        <div class="row align-items-center justify-content-center">
+        <%% if(user.guild_id == null){ %>
+        <h4>OR</h4>
+        <%% } %>
+        </div>
+        <%% } %>
     </div>
 	<br>
     <%% if(user.guild_id == null){ %>
-    <div class="row align-items-center justify-content-center">
-        <h4>OR</h4>
-    </div>
     <form id="create-guild">
-      <input type="text" class="form-control newGuildName" placeholder="Enter New Guild Name" pattern="[A-Za-z]{5,20}" required="required" title="Guild Name can only have 5-20 letters">
+    <div class="row">
+        <div class="column-md-4" style="float: left;width: 33.33%;padding: 10px;"></div>
+        <div class="column-md-4" style="float: left;width: 33.33%;padding: 10px;">
+            <input type="text" class="form-control newGuildName" placeholder="Enter New Guild Name" pattern="[A-Za-z]{5,20}" required="required" title="Guild Name can only have 5-20 letters"><br>
+            <button type="submit" id="createGuild" class="btn btn-success align-items-center btn-lg btn-block btn-huge ">Create Guild</button>
+        <div class="column-md-4" style="float: left;width: 33.33%;padding: 10px;"></div>
+        </div>
+    </div>
     <div>
-    <button type="submit" id="createGuild" class="btn btn-success align-items-center btn-lg btn-block btn-huge ">Create Guild</button>
     </form>
     </div>
     <%% } %>
@@ -42,7 +54,7 @@
     <div class="row">
     <div class="col-md-6">
     <h1>My Guild Members</h1>
-    <div id="guild-content">
+    <div id="member-content">
     <ul>
     <%% _.each(guild_members, function(guild_members, i) { %>
 
@@ -73,7 +85,7 @@
 
     <div class="col-md-6">
     <h1>Guild Requests</h1>
-    <div  id="guild-content">
+    <div  id="war-list-content">
     <ul>
     <%% _.each(war_request, function(war_request, i) { %>
 

@@ -80,7 +80,6 @@ $(() => {
 		el: $("#view-content"),
 		model: userProfile,
 		initialize: async function() {
-			console.log("profile initialized");
 			try {
 				this.user_id = $('html').data().userId;
 				await Helper.fetch(this.model);
@@ -134,13 +133,11 @@ $(() => {
 		},
 		onSubmit: async function(e) {
 			e.preventDefault();
-			const two_factor = document.getElementById("twofactor").checked ? "on" : "off";
 			const file = document.getElementById("avatar"); //file
 			if (file.files[0])
 				this.upload_image();
 			this.model.set({
 				nickname: _.escape($('.nickname-update').val()),
-				two_factor: two_factor,
 			});
 			try {
 				await Helper.save(this.model);
