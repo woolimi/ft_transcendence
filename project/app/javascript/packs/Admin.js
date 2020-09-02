@@ -19,8 +19,8 @@ if ($('html').data().isLogin) {
 			async initialize() {
 				try {
 					this.render_page();
-					const list = await Helper.ajax(`/api/channels`, '', 'GET');
-					this.render_channel_list({ list: list.channels });
+					const list = await Helper.ajax(`/api/channels/show_all`, '', 'GET');
+					this.render_channel_list({ list: list });
 				} catch (error) {
 					console.error(error);
 				}

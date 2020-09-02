@@ -52,7 +52,7 @@ class Api::ChannelsController < ApplicationController
 		}
 	end
 
-	# GET /api/channels/:channel_id
+	# PUT /api/channels/:channel_id
 	def show
 		channel = Channel.find_by(id: params[:id]);
 		if channel.present?
@@ -101,6 +101,13 @@ class Api::ChannelsController < ApplicationController
 		else
 			return render json: nil, status: :forbidden
 		end
+	end
+
+	# GET /api/channels/show_all
+	def show_all
+		return render 'you are not admin', status: :forbidden if !current_user.user_profile.admin
+		channels = Channel.all
+		return render json: channels, status: :ok
 	end
 
 	# PUT /api/channels/:channel_id/last_visited
