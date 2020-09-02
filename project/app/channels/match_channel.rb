@@ -50,7 +50,7 @@ class MatchChannel < ApplicationCable::Channel
     match.player_2["ready"] = data["ready_status"] if data["nb_player"] == 2
     match.save();
     ActionCable.server.broadcast("match_#{data["match_id"]}_channel", data)
-    if (match.player_1["ready"] && match.player_2["ready"])
+    if (match.player_1 && match.player_2 && match.player_1["ready"] && match.player_2["ready"])
       # set match started_at ...
       match.started_at = Time.now()
       match.player_left_id = match.player_1["user_id"]
@@ -216,3 +216,4 @@ class MatchChannel < ApplicationCable::Channel
     l.save();
   end
 end
+
