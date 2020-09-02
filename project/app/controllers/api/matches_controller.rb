@@ -24,7 +24,7 @@ class Api::MatchesController < ApplicationController
 				created_at: Time.now())
 			return render json: m.jbuild(), status: :ok if m.present?
 		end
-		if (params[:match_type] == "duel")
+		if (params[:match_type] == "duel" || params[:match_type] == "ladder")
 			# find single or empty room
 			single_rooms = Match.where(match_type: params[:match_type]).where(started_at: nil)
 				.where("player_1 IS NULL OR player_2 IS NULL").order("created_at ASC");

@@ -13,9 +13,22 @@
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
 			<div><%%= player_1 ? (match_type === "ladder" ? rank_image(player_1.rp) + player_1.nickname : player_1.nickname): 'Waiting' %></div>
-			<div id="player1-ready-status"><%%= player_1 ? (match_finished ? "Finished" : (player_1.ready ? "Ready" : "Not Ready")) : "" %></div>
+			<%% let p1_status;
+				if (match_finished) {
+					p1_status = "Finished";
+				} else if (!started_at && player_1) {
+					if (player_1.ready) {
+						p1_status = 'Ready';
+					} else {
+						p1_status = 'Not Ready'
+					}
+				}
+			%>
+			<div id="player1-ready-status" class="ready-status">
+				<%%= p1_status %>
+			</div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
-				<%% if (!match_finished && player_1 && player_1.user_id === $('html').data().userId) { %>
+				<%% if (!match_finished && !started_at && player_1 && player_1.user_id === $('html').data().userId) { %>
 				<input class="custom-switch-input ready-status" id="p1-ready-status" data-nb-player="1"
 					data-user-id="<%%= player_1.user_id%>" type="checkbox" <%%= player_1 && player_1.ready ? 'checked' : ''%> <%%= started_at ? "disabled" : ""%>>
 				<label class="custom-switch-btn" for="p1-ready-status"></label>
@@ -23,9 +36,9 @@
 			</div>
 		</div>
 		<div class="col-sm-4 p-1 text-center d-flex align-items-center justify-content-center">
-			<h1 class="m-1" id="player1-score"><%%= player_1 ? player_1.score : 0 %></h1>
+			<h1 class="m-1" id="player1-score"><%%= score_left %></h1>
 			<h1 class="m-1">:</h1>
-			<h1 class="m-1"	id="player2-score"><%%= player_2 ? player_2.score : 0 %></h1>
+			<h1 class="m-1"	id="player2-score"><%%= score_right %></h1>
 		</div>
 		<div class="col-sm-4 text-center p-1 mt-4" id="match-player2">
 			<%% if (player_2) { %>
@@ -34,9 +47,22 @@
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
 			<div><%%= player_2 ? (match_type === "ladder" ? rank_image(player_2.rp) + player_2.nickname : player_2.nickname) : 'Waiting'%></div>
-			<div id="player2-ready-status"><%%= player_2 ? (match_finished ? "Finished" : (player_2.ready ? "Ready" : "Not Ready")) : "" %></div>
+			<%% let p2_status = '';
+				if (match_finished) {
+					p2_status = "Finished";
+				} else if (!started_at && player_2) {
+					if (player_2.ready) {
+						p2_status = 'Ready';
+					} else {
+						p2_status = 'Not Ready'
+					}
+				}
+			%>
+			<div id="player2-ready-status" class="ready-status">
+				<%%= p2_status %>
+			</div>
 			<div class="custom-switch custom-switch-label-ox" style="line-height:initial;padding:0">
-				<%% if (!match_finished && player_2 && player_2.user_id === $('html').data().userId) { %>
+				<%% if (!match_finished && !started_at && player_2 && player_2.user_id === $('html').data().userId) { %>
 				<input class="custom-switch-input ready-status" id="p2-ready-status" data-nb-player="2"
 					data-user-id="<%%= player_2.user_id%>" type="checkbox" <%%= player_2 && player_2.ready ? 'checked' : ''%>  <%%= started_at ? "disabled" : ""%>>
 				<label class="custom-switch-btn" for="p2-ready-status"></label>

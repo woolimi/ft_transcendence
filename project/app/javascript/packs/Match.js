@@ -50,7 +50,7 @@ $(() => {
 				UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
 			} catch (error) {
 				if (error.responseText)
-					Helper.flash_message("danger", responseText);
+					Helper.flash_message("danger", error.responseText);
 				else {
 					Helper.flash_message("danger", error);
 					window.history.back();
@@ -70,55 +70,50 @@ $(() => {
 				});
 			}
 		},
-		async recv_callback(data) {
-			try {
-				if (data.ready) {
-					$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
-					return;
-				}
+		recv_callback(data) {
+			if (data.ready) {
+				$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
+				return;
+			}
 
-				if (data.all_ready) {
-					$('.ready-status')[0].disabled = true;
-					this.pong.on();
-					return;
-				}
+			if (data.all_ready) {
+				$('.ready-status').addClass('d-none');
+				this.pong.on();
+				return;
+			}
 
-				if (data.count_down) {
-					$("#game-timer").removeClass("d-none")
-					$("#game-timer").html(data.count);
-					if (data.count === "GO!") {
-						setTimeout(()=> {
-							$("#game-timer").addClass("d-none")
-						}, 800)
-					}
-					return;
+			if (data.count_down) {
+				$("#game-timer").removeClass("d-none")
+				$("#game-timer").html(data.count);
+				if (data.count === "GO!") {
+					setTimeout(()=> {
+						$("#game-timer").addClass("d-none")
+					}, 800)
 				}
+				return;
+			}
 
-				if (data.ball) {
-					this.pong.update(data);
-					this.pong.draw();
-					return;
-				}
+			if (data.ball) {
+				this.pong.update(data);
+				this.pong.draw();
+				return;
+			}
 
-				if (data.end) {
-					this.pong.off();
-					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
-					this.render_players(match_data);
-					return;
-				}
+			if (data.end) {
+				this.pong.off();
+				this.render_players(data.data);
+				return;
+			}
 
-				if (data.players) {
-					this.render_players(data.data);
-					return;
-				}
+			if (data.players) {
+				this.render_players(data.data);
+				return;
+			}
 
-				if (data.score) {
-					$("#player1-score").html(data.score[0]);
-					$("#player2-score").html(data.score[1]);
-					return;
-				}
-			} catch (error) {
-				console.error(error);
+			if (data.score) {
+				$("#player1-score").html(data.score[0]);
+				$("#player2-score").html(data.score[1]);
+				return;
 			}
 		}
 	});

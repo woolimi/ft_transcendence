@@ -35,7 +35,7 @@ if ($('html').data().isLogin) {
 				try {
 					e.stopImmediatePropagation();
 					const new_match = await Helper.ajax('/api/matches/', `match_type=ladder`, 'POST');
-					return Router.router.navigate(`/game/ladder/${new_match.id}`, { trigger: true });					
+					return Router.router.navigate(`/game/ladder/${new_match.id}`, { trigger: true });
 				} catch (error) {
 					console.error(error);
 				}
