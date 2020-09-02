@@ -55,7 +55,6 @@ if ($('html').data().isLogin) {
 			},
 			async ban_user(e){
 				try {
-					console.log('ban')
 					const id = $(e.currentTarget).data().id;
 					await Helper.ajax(`/api/user_info/${id}/ban`, '', 'PUT');
 					const listUsers = await Helper.ajax(`/api/user_info/show_all`, '', 'GET');
@@ -66,7 +65,6 @@ if ($('html').data().isLogin) {
 			},
 			async unban_user(e){
 				try {
-					console.log('unban')
 					const id = $(e.currentTarget).data().id;
 					await Helper.ajax(`/api/user_info/${id}/unban`, '', 'PUT');
 					const listUsers = await Helper.ajax(`/api/user_info/show_all`, '', 'GET');
