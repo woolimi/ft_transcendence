@@ -10,10 +10,24 @@ class MatchChannel < ApplicationCable::Channel
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
   @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 3 }
   @@session = {}
+
   def subscribed
-    # stream_from "some_channel"
-    @@session[current_user[:id]] = params[:match_id]
     stream_from "match_#{params[:match_id]}_channel"
+    @@session[current_user[:id]] = params[:match_id]
+    m = Match.find_by(id: params[:match_id])
+    info = current_user.user_profile
+    if (params[:match_type] == "duel_friend" || params[:match_type].include?("tournament"))
+      m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, score: 0, guild_id: info.guild_id } if (current_user[:id] == m.player_left_id)
+      m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, score: 0, guild_id: info.guild_id } if (current_user[:id] == m.player_right_id)
+    elsif (params[:match_type] == "duel")
+      if (m.player_1.nil?)
+        m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, score: 0, guild_id: info.guild_id }
+      elsif (m.player_2.nil?)
+        m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, score: 0, guild_id: info.guild_id }
+      end
+    end
+    # sleep(1);
+    ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
   end
 
   def unsubscribed
@@ -24,11 +38,7 @@ class MatchChannel < ApplicationCable::Channel
     quit_match.player_2 = nil if (quit_match.player_2.present? && quit_match.player_2["user_id"] == current_user[:id])
     quit_match.save!()
     @@session.delete(current_user[:id])
-    ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, from: current_user[:id]})
-  end
-
-  def receive(data)
-    ActionCable.server.broadcast("match_#{params[:match_id]}_channel", data)
+    ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: quit_match.jbuild()})
   end
 
   def ready(data)

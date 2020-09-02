@@ -32,23 +32,22 @@ $(() => {
 			try {
 				this.user_id = $('html').data().userId;
 				this.options = options; // { match_type: "duel", id: match_id }
-				// match_data = {id: "", match_type: "", player_1: {}, plyaer_2: {} }
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
-				console.log("match_data", match_data);
 				if (match_data.match_finished)
 					throw "match finished";
 				this.render_page();
+				// empty players
 				this.render_players(match_data);
 				this.render_game(match_data);
-				MatchChannel.subscribe(match_data, this.recv_callback, this);
 				const wrapper = document.getElementById("game-screen-wrapper");
 				const canvas = document.getElementById("game-screen");
 				this.pong = new Pong(wrapper, canvas, options.id);
 				if (match_data.started_at	&& !match_data.match_finished
 					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
-					this.pong.keyListener_off();
-					this.pong.on();
+						this.pong.keyListener_off();
+						this.pong.on();
 				}
+				MatchChannel.subscribe(match_data, this.recv_callback, this);
 				UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
 			} catch (error) {
 				if (error.responseText)
@@ -75,9 +74,10 @@ $(() => {
 		async recv_callback(data) {
 			try {
 				// if data is come from me, ignore
-				if (data.from === this.user_id)
-					return;
-				// new user enter into room
+				// if (data.from === this.user_id)
+				// 	return;
+				console.log("callback", data)
+				
 				if (data.ready) {
 					$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
 					return;
@@ -115,10 +115,10 @@ $(() => {
 					return;
 				}
 
+				// new user enter into room
 				if (data.players) {
-					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
-					console.log("match_data", match_data);
-					this.render_players(match_data);
+					console.log("data players")
+					this.render_players(data.data);
 					return;
 				}
 

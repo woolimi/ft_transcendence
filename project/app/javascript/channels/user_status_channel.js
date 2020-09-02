@@ -43,7 +43,7 @@ if ($('html').data().isLogin) {
             user_status.save();
             return;
           }
-          // check if signout user is freind
+          // check if signout user is friend
           const f = Friends.friends.findWhere({ "user_id": data.user_id });
           if (f) {
             f.set({ status: data.status });
