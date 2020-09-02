@@ -7,7 +7,7 @@ class Api::UserInfoController < ApplicationController
 		if params[:search]
 			res = UserProfile
 				.where.not(user_id: current_user[:id])
-				.where("lower(name) LIKE ? OR lower(nickname) LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+				.where("lower(name) LIKE ? OR lower(nickname) LIKE ?", "%#{sanitize_sql_like(params[:search])}%", "%#{sanitize_sql_like(params[:search])}%")
 				.as_json(only: [:user_id, :name, :nickname, :avatar_url])
 			render json: res
 		end
