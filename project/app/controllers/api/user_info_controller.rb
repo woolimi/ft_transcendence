@@ -40,6 +40,7 @@ class Api::UserInfoController < ApplicationController
 	def show_all
 		return render 'you are not admin', status: :forbidden if !current_user.user_profile.admin
 		users = UserProfile
+			.order(:name)
 			.where.not(user_id: current_user[:id])
 			.where(admin: false)
 			.as_json(only: [:user_id, :name, :nickname, :avatar_url, :banned])
