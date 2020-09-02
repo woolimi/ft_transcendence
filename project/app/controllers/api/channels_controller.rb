@@ -92,6 +92,17 @@ class Api::ChannelsController < ApplicationController
 		render plain: nil, status: :ok
 	end
 
+	# DELETE /api/channels/:id
+	def destroy
+		channel = Channel.find_by(id: params[:id])
+		if channel.present? && current_user.user_profile.admin
+			channel.destroy
+			return render json: nil, status: :ok
+		else
+			return render json: nil, status: :forbidden
+		end
+	end
+
 	# PUT /api/channels/:channel_id/last_visited
 	def update_last_visited
 		channel = Channel.find_by(id: params[:channel_id])

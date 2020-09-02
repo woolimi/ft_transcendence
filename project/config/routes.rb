@@ -30,7 +30,7 @@ Rails.application.routes.draw do
       put "/last_visited", to: 'chats#update_last_visited'
       put "/display", to: "chats#update_display", param: :display
     end
-    resources :channels, param: :id, only: [:index, :create, :show] do
+    resources :channels, param: :id, only: [:index, :create, :show, :destroy] do
       resources :channel_messages, only: [:index, :create]
       get "/members/", to: 'channel_members#index'
       put "/members/:user_id", to: 'channel_members#update'

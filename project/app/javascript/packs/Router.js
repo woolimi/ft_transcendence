@@ -19,6 +19,7 @@ import UserStatusChannel from "../channels/user_status_channel"
 import GameChannel from "../channels/game_channel"
 import Ladder from "./Ladder"
 import TournamentChannel from "../channels/tournament_channel.js"
+import Admin from "./Admin"
 
 
 const Router = {};
@@ -50,6 +51,8 @@ if ($('html').data().isLogin) {
                 clearInterval(Tournament.intervalId);
                 Tournament.intervalId = null;
             }
+            if (Admin.content)
+                Admin.content.undelegateEvents()
             if (TournamentChannel.channel)
                 TournamentChannel.unsubscribe();
 
@@ -72,6 +75,7 @@ if ($('html').data().isLogin) {
                 "chats/:room": "chat",
                 "channels/:channel_id": "channel",
                 "war": "war",
+                "admin": "admin",
             },
             game() {
                 remove_channel();
@@ -130,6 +134,10 @@ if ($('html').data().isLogin) {
             ladder() {
                 remove_channel();
                 Ladder.content = new Ladder.Content(); 
+            },
+            admin() {
+                remove_channel();
+                Admin.content = new Admin.Content(); 
             },
         });
         const router = new RouterClass();

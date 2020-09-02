@@ -1,0 +1,29 @@
+
+<script type="text/template" name="tmpl-admin-page">
+	<div class="container-fluid">
+		<div id="admin-channel-list"></div>
+	</div>
+</script>
+
+
+<script type="text/template" name="tmpl-admin-channel-list">
+	<table class="table">
+		<thead>
+			<tr>
+				<th style="width: 75%">Channel name</th>
+				<th style="width: 25%">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<%% _.forEach(list, (item)=> { %>
+			<tr>
+				<%% console.log(item) %>
+				<td><%%= item.room %></td>
+				<td>
+					<button type="button" class="btn btn-danger btn-sm delete-channel" data-id="<%%= item.id %>">Delete</button>
+				</td>
+			</tr>
+			<%% }) %>
+		</tbody>
+	</table>
+</script>
