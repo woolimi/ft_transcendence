@@ -35,4 +35,28 @@ class Api::UserInfoController < ApplicationController
 			status: info.status, matches: match_list, rp: info.rp
 		}
 	end
+
+	# GET /api/user_info/show_all
+	def show_all
+		return render 'you are not admin', status: :forbidden if !current_user.user_profile.admin
+		users = UserProfile
+			.where.not(user_id: current_user[:id])
+			.where(admin: false)
+			.as_json(only: [:user_id, :name, :nickname, :avatar_url, :banned])
+		return render json: users, status: :ok
+	end
+
+	# PUT /api/user_info/:id/ban
+	def ban
+		info = UserProfile.find_by(user_id: params[:user_id])
+		info.banned = true
+		info.save
+	end
+
+	# PUT /api/user_info/:id/unban
+	def unban
+		info = UserProfile.find_by(user_id: params[:user_id])
+		info.banned = false
+		info.save
+	end
 end

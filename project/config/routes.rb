@@ -17,7 +17,15 @@ Rails.application.routes.draw do
   # end
   namespace :api do
     resources :two_factors, only: [:show, :update, :create], param: :user_id
-    resources :user_info, only: [:index, :show], param: :user_id
+    resources :user_info, only: [:index, :show], param: :user_id do
+      collection do
+        get :show_all
+      end
+      member do
+        put :ban
+        put :unban
+      end
+    end
     resources :profile, only: [:show, :update], param: :user_id
     resources :guild, only: [:show, :update], param: :user_id
     resources :war, only: [:show], param: :user_id

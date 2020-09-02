@@ -2,6 +2,7 @@
 <script type="text/template" name="tmpl-admin-page">
 	<div class="container-fluid">
 		<div id="admin-channel-list"></div>
+		<div id="admin-ban-users"></div>
 	</div>
 </script>
 
@@ -17,10 +18,36 @@
 		<tbody>
 			<%% _.forEach(list, (item)=> { %>
 			<tr>
-				<%% console.log(item) %>
 				<td><%%= item.room %></td>
 				<td>
 					<button type="button" class="btn btn-danger btn-sm delete-channel" data-id="<%%= item.id %>">Delete</button>
+				</td>
+			</tr>
+			<%% }) %>
+		</tbody>
+	</table>
+</script>
+
+
+<script type="text/template" name="tmpl-admin-ban-users">
+	<table class="table">
+		<thead>
+			<tr>
+				<th style="width: 75%">User name</th>
+				<th style="width: 25%">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<%%= console.log(list) %>
+			<%% _.forEach(list, (item)=> { %>
+			<tr>
+				<td><%%= item.name %></td>
+				<td>
+					<%% if(!item.banned) { %>
+					<button type="button" class="btn btn-danger btn-sm ban-user" data-id="<%%= item.user_id %>">Ban</button>
+					<%% } else { %>
+					<button type="button" class="btn btn-warning btn-sm unban-user" data-id="<%%= item.user_id %>">Unban</button>
+					<%% }%>
 				</td>
 			</tr>
 			<%% }) %>
