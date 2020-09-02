@@ -49,6 +49,8 @@ class Api::WarRequestController < ApplicationController
         guild_1.save()
         guild_2.save()
         current_war.save()
+        ChangeWarStatusJob.set(wait_until: current_war.start_date).perform_later(current_war)
+        ChangeWarStatusJob.set(wait_until: current_war.end_date).perform_later(current_war)
     end
 
     def destroy

@@ -16,7 +16,7 @@ $(() => {
             position: "undefined",
             start_date: "undefined",
             end_date: "undefined",
-            status: "",
+            status: "undefined",
             position: "undefined",
             wins: 0,
             losses: 0,
@@ -42,24 +42,27 @@ $(() => {
         initialize: async function() {
             try {
                 await Helper.fetch(this.model);
-                console.log("Model: " + JSON.stringify(this.model));
                 this.render();
             } catch (error) {
                 Helper.flash_message("danger", "Error while loading war!");
             }
         },
-        render: function() {
+        render: async function() {
+            await Helper.fetch(this.model);
+            console.log(this.model.toJSON().start_date);
             const content = this.template(this.model.toJSON());
             this.$el.html(content);
-            this.renderTimer(this.model.toJSON().end_date);
+            if(this.model.toJSON().status == 2)
+                this.renderTimer(this.model.toJSON().end_date);
+            else
+                this.renderTimer(this.model.toJSON().start_date);
         },
         events: {
             "click #attack": "attack",
         },
-        renderTimer: function(end_date) {
+        renderTimer: function(date) {
             this.intervalId = setInterval(function() {
-                var dds = new Date(end_date);
-                console.log("ed:", end_date);
+                var dds = new Date(date);
                 var countDownDate = dds.getTime();
                 var now = Date.now();
 
@@ -79,17 +82,14 @@ $(() => {
             }, 1000);
         },
         attack: async function() {
-            console.log("Attacking");
             this.model.set({
                 match_ongoing: true
             });
             try {
                 await this.model.save();
                 Helper.flash_message("War", "success!");
-                console.log("Success");
             } catch (error) {
                 Helper.flash_message("War", "failure!");
-                console.log("Failure");
             }
         }
     })

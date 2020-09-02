@@ -21,7 +21,7 @@ class Api::GuildsController < ApplicationController
     off_list = []
     flag = 0
 		for i in guild[:guild_officers]
-			if i.values[3] != params[:toggle_id]
+			if i["user_id"] != params[:toggle_id]
         off_list.push(i)
       else
         flag = 1
@@ -39,14 +39,14 @@ class Api::GuildsController < ApplicationController
     guild = Guild.find_by(id: params[:guild_id])
     off_list = []
 		for i in guild[:guild_officers]
-			if i.values[3] != params[:delete_id]
+			if i["user_id"] != params[:delete_id]
         off_list.push(i)
 			end
     end
 
     mem_list = []
-		for i in guild[:guild_members]
-			if i.values[3] != params[:delete_id]
+    for i in guild[:guild_members]
+			if i["user_id"] != params[:delete_id]
         mem_list.push(i)
 			end
     end

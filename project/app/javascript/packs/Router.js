@@ -43,6 +43,8 @@ if ($('html').data().isLogin) {
                 GameChannel.unsubscribe();
             if (Game.content)
                 Game.content.undelegateEvents();
+            if (Guild.content)
+                Guild.content.undelegateEvents();
             if (Tournaments.content)
                 Tournaments.content.undelegateEvents();
             if (Tournament.content) {
@@ -106,6 +108,7 @@ if ($('html').data().isLogin) {
             },
             guild() {
                 remove_channel();
+                Guild.content = new Guild.Content();
                 Guild.content.render();
             },
             guildHistory: function(guild_name, guild_id) {

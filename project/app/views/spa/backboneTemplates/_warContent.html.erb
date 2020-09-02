@@ -38,14 +38,24 @@
             <div id="status" class="rounded bg-gradient-2 shadow p-5 text-center mb-5">
                 <h1 align="center" class="display-4" style="color:#E3C220">Your guild is leading!</h1>
             </div>
-            <%% } else {%>
+            <%% } else if(position === "loss")  {%>
                 <div id="status" class="rounded bg-gradient-1 shadow p-5 text-center mb-5">
                     <h1 class="display-4" style="color:#C90812">Your guild is trailing!</h1>
                 </div>
-                <%% } %>
+            <%% } else {%>
+                <div id="status" class="rounded bg-gradient-1 shadow p-5 text-center mb-5">
+                    <h1 class="display-4" style="color:#FFFF00">Both guilds have the same score</h1>
+                </div>
+            <%% } %>
     </div>
     <div id="countdown" class="rounded bg-gradient-1 text-white shadow p-5 text-center mb-5">
-        <h1 align="center" class="display-4" style="color:#FFFFFF">War Time:</h1>
+        <h1 align="center" class="display-4" style="color:#FFFFFF">
+        <%% if(status == 2) { %>
+        War ends in:
+        <%% } else { %>
+        War starts in:
+        <%% } %>
+        </h1>
         <p id="clock" class="clock-class"></p>
     </div>
     <div id="stats" class="rounded bg-gradient-1 text-white shadow p-5 text-center mb-5">
