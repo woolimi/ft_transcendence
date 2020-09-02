@@ -40,13 +40,17 @@ if ($('html').data().isLogin) {
 				this.$el.find("#admin-ban-users").html(this.user_list_template(data));
 			},
 			async delete_channel(e){
-				try {
-					const id = $(e.currentTarget).data().id;
-					await Helper.ajax(`/api/channels/${id}`, '', 'DELETE');
-					const list = await Helper.ajax(`/api/channels`, '', 'GET');
-					this.render_channel_list({ list: list.channels });
-				} catch (error) {
-					console.error(error);
+				if (confirm("Are you sure?")) {
+					try {
+						const id = $(e.currentTarget).data().id;
+						await Helper.ajax(`/api/channels/${id}`, '', 'DELETE');
+						const list = await Helper.ajax(`/api/channels/show_all`, '', 'GET');
+						this.render_channel_list({ list: list });
+					} catch (error) {
+						console.error(error);
+					}
+				} else {
+					console.log('operation canceled')
 				}
 			},
 			async ban_user(e){
