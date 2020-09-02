@@ -8,7 +8,7 @@ class MatchChannel < ApplicationCable::Channel
   # }
   @@matches = {}
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
-  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 3 }
+  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 4 }
   @@session = {}
 
   def subscribed
@@ -26,7 +26,6 @@ class MatchChannel < ApplicationCable::Channel
         m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, score: 0, guild_id: info.guild_id }
       end
     end
-    # sleep(1);
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
   end
 

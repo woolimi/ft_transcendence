@@ -52,7 +52,6 @@ if ($('html').data().isLogin) {
             $(window).off("resize");
         };
 
-        const urlHistory = [];
         const RouterClass = Backbone.Router.extend({
             routes: {
                 "": "game",
@@ -79,8 +78,11 @@ if ($('html').data().isLogin) {
             },
             match(match_type, match_id) {
                 remove_channel();
-                // if (performance.getEntriesByType("navigation")[0].type === "reload")
-                //     return Router.router.navigate(`/`, { trigger: true });
+                if (performance.getEntriesByType("navigation")[0].type === "reload") {
+                    const prev = window.location.hash.slice(1);
+                    window.location.hash = '/';
+                    return window.location.hash = prev;
+                }
                 Match.content = new Match.Content({ match_type: match_type, id: match_id });
             },
             profile() {
@@ -119,16 +121,7 @@ if ($('html').data().isLogin) {
                 Ladder.content = new Ladder.Content(); 
             },
         });
-        const router = new RouterClass();
-        Router.router = router;
-
-        $(window).on('hashchange', function(e) {
-            urlHistory.push(location.hash);
-            if (urlHistory.length > 2) {
-                urlHistory.splice(0, urlHistory.length - 2)
-            };
-        });
-
+        Router.router = new RouterClass();
         Router.router.on("route", function(curRoute, params) {
             Navbar.currentRoute.set({ route: curRoute });
         });

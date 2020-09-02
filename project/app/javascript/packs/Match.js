@@ -11,6 +11,7 @@ const Match = {};
 if ($('html').data().isLogin) {
 
 $(() => {
+
 	Match.Content = Backbone.View.extend({
 		el: $("#view-content"),
 		page_template: _.template($("script[name='tmpl-game-page']").html()),
@@ -36,7 +37,6 @@ $(() => {
 				if (match_data.match_finished)
 					throw "match finished";
 				this.render_page();
-				// empty players
 				this.render_players(match_data);
 				this.render_game(match_data);
 				const wrapper = document.getElementById("game-screen-wrapper");
@@ -44,7 +44,6 @@ $(() => {
 				this.pong = new Pong(wrapper, canvas, options.id);
 				if (match_data.started_at	&& !match_data.match_finished
 					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
-						this.pong.keyListener_off();
 						this.pong.on();
 				}
 				MatchChannel.subscribe(match_data, this.recv_callback, this);
@@ -73,18 +72,12 @@ $(() => {
 		},
 		async recv_callback(data) {
 			try {
-				// if data is come from me, ignore
-				// if (data.from === this.user_id)
-				// 	return;
-				console.log("callback", data)
-				
 				if (data.ready) {
 					$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
 					return;
 				}
 
 				if (data.all_ready) {
-					// disable ready button
 					$('.ready-status')[0].disabled = true;
 					this.pong.on();
 					return;
@@ -110,14 +103,11 @@ $(() => {
 				if (data.end) {
 					this.pong.off();
 					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
-					console.log("match_data", match_data);
 					this.render_players(match_data);
 					return;
 				}
 
-				// new user enter into room
 				if (data.players) {
-					console.log("data players")
 					this.render_players(data.data);
 					return;
 				}
