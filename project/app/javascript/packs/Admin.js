@@ -14,6 +14,7 @@ if ($('html').data().isLogin) {
 			page_template: _.template($("script[name='tmpl-admin-page']").html()),
 			channel_list_template: _.template($("script[name='tmpl-admin-channel-list']").html()),
 			user_list_template: _.template($("script[name='tmpl-admin-ban-users']").html()),
+			guild_list_template: _.template($("script[name='tmpl-admin-guild-list']").html()),
 			events: {
 				"click .delete-channel": "delete_channel",
 				"click .ban-user": "ban_user",
@@ -26,6 +27,8 @@ if ($('html').data().isLogin) {
 					this.render_channel_list({ list: list });
 					const listUsers = await Helper.ajax(`/api/user_info/show_all`, '', 'GET');
 					this.render_user_list({ list: listUsers });
+					const listGuilds = await Helper.ajax('/api/guild/user_id', '', 'GET');
+					this.render_guild_list({ list: listGuilds });
 				} catch (error) {
 					console.error(error);
 				}
@@ -38,6 +41,9 @@ if ($('html').data().isLogin) {
 			},
 			render_user_list(data) {
 				this.$el.find("#admin-ban-users").html(this.user_list_template(data));
+			},
+			render_guild_list(data){
+				this.$el.find("#admin-guild-list").html(this.guild_list_template(data));
 			},
 			async delete_channel(e){
 				if (confirm("Are you sure?")) {

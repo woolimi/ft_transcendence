@@ -20,6 +20,7 @@ import GameChannel from "../channels/game_channel"
 import Ladder from "./Ladder"
 import TournamentChannel from "../channels/tournament_channel.js"
 import Admin from "./Admin"
+import AdminGuildRights from "./AdminGuildRights"
 
 
 const Router = {};
@@ -53,6 +54,8 @@ if ($('html').data().isLogin) {
             }
             if (Admin.content)
                 Admin.content.undelegateEvents()
+            if (AdminGuildRights.content)
+                Admin.content.undelegateEvents()
             if (TournamentChannel.channel)
                 TournamentChannel.unsubscribe();
 
@@ -76,6 +79,7 @@ if ($('html').data().isLogin) {
                 "channels/:channel_id": "channel",
                 "war": "war",
                 "admin": "admin",
+                "admin/guildRights/:guild_id": "adminGuildRights",
             },
             game() {
                 remove_channel();
@@ -138,6 +142,10 @@ if ($('html').data().isLogin) {
             admin() {
                 remove_channel();
                 Admin.content = new Admin.Content(); 
+            },
+            adminGuildRights(guild_id){
+                remove_channel();
+                AdminGuildRights.content = new AdminGuildRights.Content({guild_id: guild_id}); 
             },
         });
         const router = new RouterClass();

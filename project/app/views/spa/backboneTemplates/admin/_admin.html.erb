@@ -5,7 +5,28 @@
 		<div id="admin-channel-list"></div>
 		<h2 style="margin-top: 40px; margin-bottom: 24px;">Ban users</h2>
 		<div id="admin-ban-users"></div>
+		<h2 style="margin-top: 40px; margin-bottom: 24px;">User rights in guilds</h2>
+		<div id="admin-guild-list"></div>
 	</div>
+</script>
+
+<script type="text/template" name="tmpl-admin-guild-list">
+	<table class="table">
+		<thead>
+			<tr>
+				<th style="width: 100%">Guilds</th>
+			</tr>
+		</thead>
+		<tbody>
+			<%% _.forEach(list, (item)=> { %>
+			<tr>
+				<td>
+				<a href=<%%= '/#admin/guildRights/' + item.id %>><%%= item.name %></a>
+				</td>
+			</tr>
+			<%% }) %>
+		</tbody>
+	</table>
 </script>
 
 
@@ -20,7 +41,7 @@
 		<tbody>
 			<%% _.forEach(list, (item)=> { %>
 			<tr>
-				<td><%%= item.room %></td>
+				<td><a href=<%%= '/#channels/' + item.id %>><%%= item.room %></a></td>
 				<td>
 					<button type="button" class="btn btn-danger btn-sm delete-channel" data-id="<%%= item.id %>">Delete</button>
 				</td>
