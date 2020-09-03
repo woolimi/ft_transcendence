@@ -131,6 +131,30 @@ html, body, #app{
   height: 70vh;
 }
 
+#guild-content {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 40vh;
+}
+
+#member-content {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 40vh;
+}
+
+#war-list-content {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 40vh;
+}
+
+#war-hist-list {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 80vh;
+}
+
 .chat-submit {
   height: 60px;
   align-items: center;
