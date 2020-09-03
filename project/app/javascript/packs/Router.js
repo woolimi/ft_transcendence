@@ -45,6 +45,8 @@ if ($('html').data().isLogin) {
                 Game.content.undelegateEvents();
             if (Guild.content)
                 Guild.content.undelegateEvents();
+            if (War.content)
+                War.content.undelegateEvents();
             if (Tournaments.content)
                 Tournaments.content.undelegateEvents();
             if (Tournament.content) {

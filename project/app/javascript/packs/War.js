@@ -1,6 +1,8 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
+import Guild from "./Guild.js"
+import Router from "./Router.js"
 
 const War = {};
 
@@ -44,12 +46,11 @@ $(() => {
                 await Helper.fetch(this.model);
                 this.render();
             } catch (error) {
-                Helper.flash_message("danger", "Error while loading war!");
+                Helper.flash_message("danger", error.responseText);
             }
         },
         render: async function() {
-            await Helper.fetch(this.model);
-            console.log(this.model.toJSON().start_date);
+            // await Helper.fetch(this.model);
             const content = this.template(this.model.toJSON());
             this.$el.html(content);
             if(this.model.toJSON().status == 2)
@@ -60,7 +61,27 @@ $(() => {
         events: {
             "click #attack": "attack",
         },
+        send_to_game: function(){
+            Router.router.navigate("/game", {trigger: true});
+        },
+        send_to_history: async function(){
+            await Helper.fetch(Guild.allGuilds);
+            var guilds = Guild.allGuilds.toJSON();
+            var i = 0;
+            var gid;
+            var gname;
+            for (i = 0; i < Object.keys(guilds).length; i++)
+            {
+                if(guilds[i].anagram == this.model.toJSON().player_guild_anag)
+                {
+                    gid = guilds[i].id
+                    gname = guilds[i].name
+                }
+            }
+            Router.router.navigate("/guild/war_history/" + gname + "/" + gid, {trigger: true});
+        },
         renderTimer: function(date) {
+            const self = this;
             this.intervalId = setInterval(function() {
                 var dds = new Date(date);
                 var countDownDate = dds.getTime();
@@ -77,7 +98,12 @@ $(() => {
 
                 if (distance < 0) {
                     clearInterval(this.intervalId);
-                    document.getElementById("clock").innerHTML = "WAR EXPIRED";
+                    if(self.model.toJSON().status == 1)
+                        self.send_to_game();
+                    else if(self.model.toJSON().status == 2)
+                        self.send_to_history();
+                    else
+                        document.getElementById("clock").innerHTML = "WAR EXPIRED";
                 }
             }, 1000);
         },

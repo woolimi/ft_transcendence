@@ -1,7 +1,7 @@
 <script type="text/template" name="tmpl-declare-war-modal">
 <div class="container">
 	<div class="w-100">
-		<div><h5>Declare War against <%%= war_data.accepter %><h5></div>
+		<div><h5>Declare War against <b><%%= war_data.accepter %></b><h5></div>
 		<form class="form-inline" id="declare-war-form" data-challenger="<%%= war_data.challenger %>" data-accepter="<%%= war_data.accepter %>">
 			<table>
 			<tr>
@@ -17,7 +17,7 @@
 			</td>
 			</tr>
 			<tr>
-			<td>Select Start Datetime
+			<td colspan=2>Select Start Datetime
 			</td>
 			</tr>
 			<tr>
@@ -30,7 +30,7 @@
 			</td>
 			</tr>
 			<tr>
-			<td>Select End Datetime
+			<td colspan=2>Select End Datetime
 			</td>
 			</tr>
 			
@@ -38,6 +38,24 @@
 			<td colspan=2>
 				<input type="datetime-local" id="war-end-time" min="2018-06-07T00:00" required>
 			</td>
+			</tr>
+			</tr>
+			<tr>
+			<td>&nbsp
+			</td>
+			</tr>
+			<tr>
+			<td colspan=2>Addon matches to war effort
+			</td>
+			</tr>
+			<tr>
+			<td><input type="checkbox" id="include-tournament"> Tournament</td>
+			</tr>
+			<tr>
+			<td><input type="checkbox" id="include-duel"> Duel</td>
+			</tr>
+			<tr>
+			<td><input type="checkbox" id="include-ladder"> Ladder</td>
 			</tr>
 			</table>
 			

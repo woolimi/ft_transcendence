@@ -18,7 +18,9 @@
         <button type="button" class="btn btn-success btn-sm joinGuild" data-guild_id="<%%= guilds[i].id%>">Join Guild</button>
 		<%% } %>
         <%% if(user.guild_id == guilds[i].id){ %>
-        <button type="button" class="btn btn-danger btn-sm leaveGuild">Leave Guild</button>
+        <button type="button" class="btn btn-danger btn-sm leaveGuild"
+        <%% if(war_active == 1){ %>disabled<%% } %>
+        >Leave Guild</button>
 		<%% } %>
         <%% if(user.guild_id != guilds[i].id && current_guild != null && (_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == user.user_id }) != -1)){ %>
         <button type="button" class="btn btn-warning btn-sm declareWar" data-toggle="modal" data-target="#declareWarModal" data-challenger="<%%= current_guild.name %>" data-accepter="<%%= guilds[i].name %>"">Declare War</button>
@@ -104,7 +106,7 @@
             <td>:<%%= war_request.wager %></td>
         </tr>
         <tr>
-            <td>Man Unanswered</td>
+            <td>Max Unanswered</td>
             <td>:<%%= war_request.max_unanswered %></td>
         </tr>
         <tr>
