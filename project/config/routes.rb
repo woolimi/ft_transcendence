@@ -17,10 +17,19 @@ Rails.application.routes.draw do
   # end
   namespace :api do
     resources :two_factors, only: [:show, :update, :create], param: :user_id
-    resources :user_info, only: [:index, :show], param: :user_id
+    resources :user_info, only: [:index, :show], param: :user_id do
+      collection do
+        get :show_all
+      end
+      member do
+        put :ban
+        put :unban
+      end
+    end
     resources :profile, only: [:show, :update], param: :user_id
-    resources :guild, only: [:show, :update], param: :user_id
-    resources :war, only: [:show], param: :user_id
+    resources :guilds, only: [:show, :create, :update, :destroy], param: :user_id
+    resources :war, only: [:show, :update], param: :user_id
+    resources :war_request, only: [:show, :create, :update, :destroy], param: :war_id
     resources :war_history, only: [:show], param: :guild_id
     resources :my_friends, only: [:index, :show, :update, :destroy], param: :user_id
     resources :user_status, only: [:show, :update], param: :user_id
@@ -30,7 +39,7 @@ Rails.application.routes.draw do
       put "/last_visited", to: 'chats#update_last_visited'
       put "/display", to: "chats#update_display", param: :display
     end
-    resources :channels, param: :id, only: [:index, :create, :show] do
+    resources :channels, param: :id, only: [:index, :create, :show, :destroy] do
       resources :channel_messages, only: [:index, :create]
       get "/members/", to: 'channel_members#index'
       put "/members/:user_id", to: 'channel_members#update'
@@ -48,6 +57,9 @@ Rails.application.routes.draw do
       post "/password/", to: 'channel_password#login'
 
       put "/last_visited", to: 'channels#update_last_visited'
+      collection do
+        get :show_all
+      end
     end
     resources :tournaments, param: :id, only: [:create, :index, :show] do
       put "/players/", to: 'tournaments#join'

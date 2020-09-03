@@ -1,0 +1,144 @@
+<!-- gulid content -->
+
+<script type="text/template" name="tmpl-content-guild">
+    <div>
+        <h1>All Guilds</h1>
+	</div>
+    <%% if(_.size(guilds) != 0) {%>
+    <div id="guild-content">
+        <ul>
+        <%% _.each(guilds, function(guild, i) { %>
+		<li class="list-group-item d-flex justify-content-between align-items-center <%% if(user.guild_id == guilds[i].id){ %>bg-dark <%% } %>"  <%% if(user.guild_id == guilds[i].id){ %>style="color:white" <%% } %>>
+        <span><%%= guilds[i].name %> <%%= guilds[i].anagram %>
+        <br>
+        Score: <%%= guilds[i].total_score %>
+        </span>
+        <span>
+        <%% if(user.guild_id == null){ %>
+        <button type="button" class="btn btn-success btn-sm joinGuild" data-guild_id="<%%= guilds[i].id%>">Join Guild</button>
+		<%% } %>
+        <%% if(user.guild_id == guilds[i].id){ %>
+        <button type="button" class="btn btn-danger btn-sm leaveGuild"
+        <%% if(war_active == 1){ %>disabled<%% } %>
+        >Leave Guild</button>
+		<%% } %>
+        <%% if(user.guild_id != guilds[i].id && current_guild != null && (_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == user.user_id }) != -1)){ %>
+        <button type="button" class="btn btn-warning btn-sm declareWar" data-toggle="modal" data-target="#declareWarModal" data-challenger="<%%= current_guild.name %>" data-accepter="<%%= guilds[i].name %>"">Declare War</button>
+		<%% } %>
+        <button type="button" class="btn btn-info btn-sm warHistory" data-guild_id="<%%= guilds[i].id%>" data-guild_name="<%%= guilds[i].name%>">War History</button>
+        </span></li>
+	    <%% }) %>
+        </ul>
+        <div class="row align-items-center justify-content-center">
+        <%% if(user.guild_id == null){ %>
+        <h4>OR</h4>
+        <%% } %>
+        </div>
+        <%% } %>
+    </div>
+	<br>
+    <%% if(user.guild_id == null){ %>
+    <form id="create-guild">
+    <div class="row">
+        <div class="column-md-4" style="float: left;width: 33.33%;padding: 10px;"></div>
+        <div class="column-md-4" style="float: left;width: 33.33%;padding: 10px;">
+            <input type="text" class="form-control newGuildName" placeholder="Enter New Guild Name" pattern="[A-Za-z]{5,20}" required="required" title="Guild Name can only have 5-20 letters"><br>
+            <button type="submit" id="createGuild" class="btn btn-success align-items-center btn-lg btn-block btn-huge ">Create Guild</button>
+        <div class="column-md-4" style="float: left;width: 33.33%;padding: 10px;"></div>
+        </div>
+    </div>
+    <div>
+    </form>
+    </div>
+    <%% } %>
+    
+    <%% if(user.guild_id != null){ %>
+    <div class="row">
+    <div class="col-md-6">
+    <h1>My Guild Members</h1>
+    <div id="member-content">
+    <ul>
+    <%% _.each(guild_members, function(guild_members, i) { %>
+
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+        <%%= guild_members.name %>
+         <span>
+        <%% if(current_guild.owner == user.user_id && guild_members.user_id != user.user_id) { %> 
+        <%% if(_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == guild_members.user_id }) == -1) {%>  
+        <button type="button" class="btn btn-success btn-sm toggleOfficer" data-user_id="<%%= guild_members.user_id %>" data-guild_id="<%%= current_guild.id %>">Make Officer</button>
+        <%% } %>
+        <%% if(_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == guild_members.user_id }) != -1) {%>  
+		<button type="button" class="btn btn-warning btn-sm toggleOfficer" data-user_id="<%%= guild_members.user_id %>" data-guild_id="<%%= current_guild.id %>">Remove Officer</button>
+        <%% } %>
+        <button type="button" class="btn btn-danger btn-sm kickMember" data-user_id="<%%= guild_members.user_id %>" data-guild_id="<%%= current_guild.id %>">Kick</button>
+        <%% } else if(guild_members.user_id == current_guild.owner) { %>
+        (Owner)
+        <%% } else if(_.findIndex(current_guild.guild_officers, function(member) { return member.user_id == guild_members.user_id }) != -1) {%>
+        (Officer)
+        <%% } %>
+
+
+        </span>
+        </li>
+	<%% }) %>
+    </ul>
+    </div>
+    </div>
+
+    <div class="col-md-6">
+    <h1>Guild Requests</h1>
+    <div  id="war-list-content">
+    <ul>
+    <%% _.each(war_request, function(war_request, i) { %>
+
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+        <table>
+        <tr>
+            <td>Challenger </td>
+            <td>:<%%= war_request.guild_1 %></td>
+        </tr>
+        <tr>
+            <td>Accepter </td>
+            <td>:<%%= war_request.guild_2 %></td>
+        </tr>
+        <tr>
+            <td>Wager</td>
+            <td>:<%%= war_request.wager %></td>
+        </tr>
+        <tr>
+            <td>Max Unanswered</td>
+            <td>:<%%= war_request.max_unanswered %></td>
+        </tr>
+        <tr>
+            <td>Start Datetime </td>
+            <td>:<%%= war_request.start_date %></td>
+        </tr>
+        <tr>
+            <td>End Datetime </td>
+            <td>:<%%= war_request.end_date %></td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>
+                <%% if(war_request.status == 1) { %>
+                :Accepted
+                <%% } else { %>
+                :Waiting
+                <%% } %>
+            </td>
+        </tr>
+        <%% if(current_guild.owner == user.user_id && current_guild.name != war_request.guild_1 && war_request.status == 0) { %>
+        <tr>
+            <td><button type="button" class="btn btn-success btn-sm acceptWar" data-war_id="<%%= war_request.id %>">Accept War</button></td>
+            <td><button type="button" class="btn btn-danger btn-sm rejectWar" data-war_id="<%%= war_request.id %>">Reject War</button></td>
+        </tr>
+        <%% } %>
+        </table>
+        </li>
+	<%% }) %>
+    </ul>
+    </div>
+    </div>
+    </div>
+    <%% } %>
+</script>

@@ -1,12 +1,17 @@
 <!-- navbar items -->
 <script type="text/template" name="tmpl-nav-item">
-	<li class="nav-item <%%= (route === "game") ? "active" : "" %>">
+	<%% if (admin) { %>
+		<li class="nav-item <%%= (model.route === "admin") ? "active" : "" %>">
+		<a class="nav-link" href="/#admin">admin</a>
+		</li>
+	<%% } %>
+	<li class="nav-item <%%= (model.route === "game") ? "active" : "" %>">
 	<a class="nav-link" href="/#game">game</a>
 	</li>
-	<li class="nav-item <%%= (route === "profile") ? "active" : "" %>">
+	<li class="nav-item <%%= (model.route === "profile") ? "active" : "" %>">
 	<a class="nav-link" href="/#profile">profile</a>
 	</li>
-	<li class="nav-item <%%= (route === "guild") ? "active" : "" %>">
+	<li class="nav-item <%%= (model.route === "guild") ? "active" : "" %>">
 	<a class="nav-link" href="/#guild">guild</a>
 	</li>
 	<li class="nav-item">

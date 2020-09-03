@@ -9,11 +9,12 @@
     <%= render "spa/backboneTemplates/searchedUsersModal"%>
     <%= render "spa/backboneTemplates/profile/profileContent"%>
     
-    <%= render "spa/backboneTemplates/guildContent"%>
+    <%= render "spa/backboneTemplates/guild/guildContent"%>
     <%= render "spa/backboneTemplates/login"%>
     <%= render "spa/backboneTemplates/navbarItems"%>
     <%= render "spa/backboneTemplates/navbarUser"%>
     <%= render "spa/backboneTemplates/userInfoModal"%>
+    <%= render "spa/backboneTemplates/declareWarModal"%>
     <%= render "spa/backboneTemplates/chat/chat" %>
     <%= render "spa/backboneTemplates/chat/messages" %>
     <%= render "spa/backboneTemplates/chat/members" %>
@@ -39,6 +40,8 @@
 		<%= render "spa/backboneTemplates/tournament/tournament" %>
 
 		<%= render "spa/backboneTemplates/ladder/index" %>
+    <%= render "spa/backboneTemplates/admin/admin" %>
+    <%= render "spa/backboneTemplates/admin/adminGuildRights" %>
 
 		<%= stylesheet_link_tag "simpleNotification.min.css" %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
