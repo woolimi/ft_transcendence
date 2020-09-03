@@ -3,6 +3,7 @@ import _ from "underscore"
 import Backbone from "backbone"
 import Guild from "./Guild.js"
 import Router from "./Router.js"
+import Helper from "./Helper.js"
 
 const War = {};
 
@@ -97,14 +98,19 @@ $(() => {
                     minutes + "m " + seconds + "s ";
 
                 if (distance < 0) {
-                    clearInterval(this.intervalId);
-                    if(self.model.toJSON().status == 1)
+                    try{
+                        self.model.fetch();
+                        clearInterval(this.intervalId);
+                        if(self.model.toJSON().status == 1)
                         self.send_to_game();
-                    else if(self.model.toJSON().status == 2)
+                        else if(self.model.toJSON().status == 2)
                         self.send_to_history();
-                    else
+                    }catch(error)
+                    {
+
                         document.getElementById("clock").innerHTML = "WAR EXPIRED";
-                }
+                    }
+                    }
             }, 1000);
         },
         attack: async function() {
