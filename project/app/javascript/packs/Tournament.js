@@ -38,7 +38,6 @@ $(() => {
 				this.render_participants(info);
 				this.render_tree(info);
 				this.render_timer();
-				console.log(info);
 				TournamentChannel.subscribe(this.tournament_id, this.recv_callback, this);
 			} catch (error) {
 				if (error.responseText)
@@ -118,7 +117,6 @@ $(() => {
 			}
 		},
 		async recv_callback(data) {
-			console.log("recv_callback", data);
 			if (data.type === "info") {
 				this.render_info(data.data);
 			} else if (data.type === "tree") {

@@ -2,13 +2,16 @@ class Api::TournamentsController < ApplicationController
 	protect_from_forgery
 	before_action :authenticate_user!
 	
-	# status 0 pending, 1 started, 2 finished
+	# status 0 pending, 1 semi 2 final 3 finished
 	def index
-		return render json: Tournament.where.not(status: 2), status: :ok
+		res = []
+		res += Tournament.where(status: 3).order("registration_start DESC").limit(1).as_json
+		res += Tournament.where.not(status: 3).as_json
+		return render json: res, status: :ok
 	end
 
 	def create
-		return render plain: 'Tournament name is too short' if params[:name].length < 4
+		return render plain: 'Tournament name is too short' if params[:name].length < 3
 		return render plain: 'Tournament name is too long' if params[:name].length >= 30
 		params[:name] = CGI::escapeHTML(params[:name])
 		return render plain: 'This tournament name is already taken', status: :forbidden if Tournament.find_by(name: params[:name])
