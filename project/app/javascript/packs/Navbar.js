@@ -7,13 +7,13 @@ const Navbar = {};
 if ($('html').data().isLogin) {
 $(() => {
 	/* Model */
-	const CurrentRoute = Backbone.Model.extend({
+	Navbar.CurrentRoute = Backbone.Model.extend({
 		defaults: {
 			route: "game"
 		}
 	});
 
-	const User = Backbone.Model.extend({
+	Navbar.User = Backbone.Model.extend({
 		defaults: {
 			user_id: $('html').data().userId,
 			name: "undefined",
@@ -32,27 +32,34 @@ $(() => {
 	})
 
 	/* export currentRoute model for binding with route event */
-	Navbar.currentRoute = new CurrentRoute();
-	const user = new User();
+	Navbar.currentRoute = new Navbar.CurrentRoute();
+	const user = new Navbar.User();
 	Navbar.userModel = user;
 
 
 	/* View */
-	const NavItemsView = Backbone.View.extend({
+	Navbar.NavItemsView = Backbone.View.extend({
 		el: $("#view-nav-item"),
 		template: _.template($("script[name='tmpl-nav-item']").html()),
 		model: Navbar.currentRoute,
-		initialize: function () {
+		user_id: $('html').data().userId,
+		me: {},
+		initialize: async function () {
+			this.me = await Helper.ajax(`/api/profile/${this.user_id}`);
 			this.listenTo(this.model, "change", this.render);
+			this.render()
 		},
 		render: function () {
-			const content = this.template(this.model.toJSON());
+			const content = this.template({
+				model: this.model.toJSON(),
+				admin: this.me.admin
+			});
 			this.$el.html(content);
 			return this;
 		}
 	});
 
-	const NavUserView = Backbone.View.extend({
+	Navbar.NavUserView = Backbone.View.extend({
 		template: _.template($("script[name='tmpl-nav-user']").html()),
 		el: $("#view-nav-user"),
 		model: user,
@@ -67,8 +74,8 @@ $(() => {
 	});
 
 	/* instanciate view */
-	Navbar.items = new NavItemsView();
-	Navbar.user = new NavUserView();
+	Navbar.items = new Navbar.NavItemsView();
+	Navbar.user = new Navbar.NavUserView();
 })
 
 } // if user logged in
