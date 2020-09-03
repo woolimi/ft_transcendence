@@ -11,8 +11,8 @@ class CreateMatches < ActiveRecord::Migration[6.0]
       t.boolean :match_finished
       t.uuid :player_left_id 
       t.uuid :player_right_id
-      t.integer :score_left
-      t.integer :score_right
+      t.integer :score_left, default: 0
+      t.integer :score_right, default: 0
       t.uuid :war_id
       t.uuid :tournament_id
     end
@@ -20,6 +20,8 @@ class CreateMatches < ActiveRecord::Migration[6.0]
     add_index :matches, :tournament_id
     add_index :matches, :player_left_id
 		add_index :matches, :player_right_id
+    add_index :matches, :winner
+		add_index :matches, :loser
   end
 end
 

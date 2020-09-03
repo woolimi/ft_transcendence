@@ -8,27 +8,39 @@ class MatchChannel < ApplicationCable::Channel
   # }
   @@matches = {}
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
-  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 3 }
+  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 4 }
+  @@session = {}
+
   def subscribed
-    # stream_from "some_channel"
     stream_from "match_#{params[:match_id]}_channel"
+    @@session[current_user[:id]] = params[:match_id]
+    m = Match.find_by(id: params[:match_id])
+    info = current_user.user_profile
+    if (params[:match_type] == "duel_friend" || params[:match_type].include?("tournament"))
+      m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_left_id)
+      m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_right_id)
+    elsif (params[:match_type] == "duel" || params[:match_type] == "ladder")
+      if (m.player_1.nil?)
+        m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+      elsif (m.player_2.nil?)
+        m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+      end
+    end
+    ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
   end
 
   def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
-    quit_matches = Match.where('started_at IS NULL AND (player_1 @>? OR player_2 @>?)', 
-      {"user_id": current_user[:id]}.to_json, {"user_id": current_user[:id]}.to_json)
-    
-    quit_matches.each {|m| 
-      m.player_1 = nil if (m.player_1 && m.player_1["user_id"] == current_user[:id])
-      m.player_2 = nil if (m.player_2 && m.player_2["user_id"] == current_user[:id])
-      m.save()
-    }
-    ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, from: current_user[:id]})
-  end
-
-  def receive(data)
-    ActionCable.server.broadcast("match_#{params[:match_id]}_channel", data)
+    quit_match = Match.find_by(id: @@session[current_user[:id]])
+    return if quit_match.started_at.present?
+    # if match is not started
+    quit_match.player_1 = nil if (quit_match.player_1.present? && quit_match.player_1["user_id"] == current_user[:id])
+    quit_match.player_2 = nil if (quit_match.player_2.present? && quit_match.player_2["user_id"] == current_user[:id])
+    quit_match.save!()
+    @@session.delete(current_user[:id])
+    if (quit_match.match_type.include?("duel") || quit_match.match_type == "ladder")
+      return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil?)
+    end
+    ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: quit_match.jbuild()})
   end
 
   def ready(data)
@@ -38,13 +50,14 @@ class MatchChannel < ApplicationCable::Channel
     match.player_2["ready"] = data["ready_status"] if data["nb_player"] == 2
     match.save();
     ActionCable.server.broadcast("match_#{data["match_id"]}_channel", data)
-    if (match.player_1["ready"] && match.player_2["ready"])
+    if (match.player_1 && match.player_2 && match.player_1["ready"] && match.player_2["ready"])
       # set match started_at ...
       match.started_at = Time.now()
       match.player_left_id = match.player_1["user_id"]
       match.player_right_id = match.player_2["user_id"]
       match.save()
       ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { all_ready: true })
+      ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { players: true, data: match.jbuild() })
       ActionCable.server.broadcast("game_channel", {type: "match"});
       return game_start(match[:id], [match.player_left_id, match.player_right_id])
     end
@@ -124,8 +137,8 @@ class MatchChannel < ApplicationCable::Channel
       if (@@matches[match_id]["over"] == true)
         ActionCable.server.broadcast("match_#{match_id}_channel", {:score => game["score"]})
         match = Match.find_by(id: match_id)
-        match.player_1["score"] = game["score"][0]
-        match.player_2["score"] = game["score"][1]
+        match.score_left = game["score"][0]
+        match.score_right = game["score"][1]
         match.save()
         if (game["score"][0] == 5 || game["score"][1] == 5)
           # set winner, loser, finished
@@ -137,6 +150,7 @@ class MatchChannel < ApplicationCable::Channel
           match.score_right = game["score"][1]
           match.match_finished = true
           calculate_RP(winner, loser) if match.match_type == "ladder"
+          match.tournament.manage() if match.match_type.include?("tournament")
           match.save()
           break
         else
@@ -149,8 +163,8 @@ class MatchChannel < ApplicationCable::Channel
       end
       ActionCable.server.broadcast("match_#{match_id}_channel", game)
     end # end while
-
-    ActionCable.server.broadcast("match_#{match_id}_channel", {end: true})
+    match = Match.find_by(id: match_id)
+    ActionCable.server.broadcast("match_#{match_id}_channel", {end: true, data: match.jbuild() })
     ActionCable.server.broadcast("game_channel", {type: "match"});
     @@matches.delete(match_id)
   end
@@ -188,19 +202,18 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def calculate_RP(winner, loser)
-    winner_profile = UserProfile.find_by(user_id: winner["user_id"])
-    loser_profile = UserProfile.find_by(user_id: loser["user_id"])
-    if (loser["rp"] - winner["rp"] >= 200)
-      bonus = (loser["rp"] - winner["rp"]) * 0.1
-      winner["rp"] = winner["rp"] + 20 +  bonus
-      loser["rp"] = (loser["rp"] - 20 - bonus < 0 ? 0 : loser["rp"] - 20 - bonus)
+    w = UserProfile.find_by(user_id: winner["user_id"])
+    l = UserProfile.find_by(user_id: loser["user_id"])
+    if (l.rp - w.rp >= 200)
+      bonus = (l.rp - w.rp) * 0.1
+      w.rp = w.rp + 20 +  bonus
+      l.rp = (l.rp - 20 - bonus < 0 ? 0 : l.rp - 20 - bonus)
     else
-      winner["rp"] = winner["rp"] + 20
-      loser["rp"] = (loser["rp"] - 20  < 0 ? 0 : loser["rp"] - 20)
+      w.rp = w.rp + 20
+      l.rp = (l.rp - 20  < 0 ? 0 : l.rp - 20)
     end
-    winner_profile.rp = winner["rp"]
-    loser_profile.rp = loser["rp"]
-    winner_profile.save();
-    loser_profile.save();
+    w.save();
+    l.save();
   end
 end
+

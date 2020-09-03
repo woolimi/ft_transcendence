@@ -73,7 +73,7 @@ if ($('html').data().isLogin)
             else if (status === 2)
               return Helper.flash_message("danger", "User is in game");
             const new_match = await Helper.ajax('/api/matches/',
-              `match_type=duel&player_1=${data.from}&player_2=${$('html').data().userId}`, 'POST');
+              `match_type=duel_friend&player_1=${data.from}&player_2=${$('html').data().userId}`, 'POST');
             NotificationChannel.channel.perform("send_notification", {
               user_id: data.from,
               type: "duel-accept",
@@ -111,13 +111,13 @@ if ($('html').data().isLogin)
 
     function handle_tournament_start(data){
       SimpleNotification.message({
-        text: `The tournament "${data.tournament_name}" started.`,
+        text: `The tournament "${data.tournament_name} ${data.tournament_type}" started.`,
         buttons: [{
-          value: 'Join match',
+          value: 'Go to tournament',
           type: 'success',
           onClick(notification) {
             notification.close();
-            return Router.router.navigate(`/game/tournament/${data.match_id}`, { trigger: true });
+            return Router.router.navigate(`/game/tournaments/${data.tournament_id}`, { trigger: true });
           }
         }]
       })

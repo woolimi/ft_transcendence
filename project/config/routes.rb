@@ -63,6 +63,7 @@ Rails.application.routes.draw do
     resources :tournaments, param: :id, only: [:create, :index, :show] do
       put "/players/", to: 'tournaments#join'
       delete "/players/", to: 'tournaments#quit'
+      put "/dummy/", to: 'tournaments#dummy' # dummy user in tournament
     end
     resources :matches, param: :id, only: [:index, :create, :show]
     resources :rank, param: :id, only: [:index]
