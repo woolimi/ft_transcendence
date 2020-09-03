@@ -30,7 +30,6 @@ $(() => {
         async recv_callback(data) {
             if (data.type == "match") {
                 const list = await Helper.ajax(`/api/matches`, '', 'GET');
-                console.log(list);
                 this.render_list({ list: list });
             }
         },

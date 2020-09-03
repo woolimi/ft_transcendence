@@ -7,60 +7,54 @@ class Api::MatchesController < ApplicationController
 	end
 
 	def show 
-		room = Match.find_by(id: params[:id])
-		return render plain: "forbidden", status: :forbidden if room.blank?
-		if room.match_type.include?("tournament")
-			if (room.player_left_id == current_user[:id] || room.player_right_id == current_user[:id])
-				me = UserProfile.find_by(user_id: current_user[:id])
-				if room.player_left_id == current_user[:id]
-					room.player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
-				end
-				if room.player_right_id == current_user[:id]
-					room.player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
-				end
-			end
-			room.save()
-		end
-		return render json: room, status: :ok
+		m = Match.find_by(id: params[:id])
+		return render plain: "forbidden", status: :forbidden if m.blank?
+		return render json: m.jbuild(), status: :ok
 	end
 
 	# /api/matches/ POST
+	# match_type : duel, duel_friend, ladder, tournament_semi, tournament, war
 	def create
-		# if player_1 and player_2 already set (ex ask duel match)
-		if (params[:player_1].present? && params[:player_2].present?)
-			player_1 = UserProfile.find_by(user_id: params[:player_1])
-			player_2 = UserProfile.find_by(user_id: params[:player_2])
-			return render plain: "forbidden", status: :forbidden if (player_1.present? && player_1.status != 1)
-			return render plain: "forbidden", status: :forbidden if (player_2.present? && player_2.status != 1)
-			room = Match.create(
-				match_type: params[:match_type],
-				player_1: {user_id: player_1.user_id, avatar_url: player_1.avatar_url, nickname: player_1.nickname, ready: false, score: 0, guild_id: player_1.guild_id },
-				player_2: {user_id: player_2.user_id, avatar_url: player_2.avatar_url, nickname: player_2.nickname, ready: false, score: 0, guild_id: player_2.guild_id },
+		if (params[:match_type] == "duel_friend")
+			return render plain: "forbidden", status: :forbidden if (params[:player_1].blank? && params[:player_2].blank?)
+			m = Match.create!(match_type: params[:match_type],
+				player_left_id: params[:player_1],
+				player_right_id: params[:player_2],
 				match_finished: false,
 				created_at: Time.now())
-			return render json: room if (room.present?)
+			return render json: m.jbuild(), status: :ok if m.present?
 		end
-		# find empty or single person room
-		single_rooms = Match
-			.where("match_type = '#{params[:match_type]}' AND started_at IS NULL AND (player_1 IS NULL OR player_2 IS NULL)")
-			.order("created_at ASC");
-		me = UserProfile.find_by(user_id: current_user[:id]);
-		if single_rooms.empty? # if single_room is empty, create new room
-			single_room = Match.create(
-				match_type: params[:match_type],
-				player_1: {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id },
-				match_finished: false,
-				created_at: Time.now())
-			return render json: single_room if (single_room.present? && me.present?)
-		else # if single_room is exist, enter into it
-			if (single_rooms[0].player_1.blank?)
-				single_rooms[0].player_1 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
-			elsif (single_rooms[0].player_2.blank?)
-				single_rooms[0].player_2 = {user_id: me.user_id, avatar_url: me.avatar_url, nickname: me.nickname, ready: false, score: 0, rp: me.rp, guild_id: me.guild_id }
+		if (params[:match_type] == "duel" || params[:match_type] == "ladder")
+			# find single or empty room
+			single_rooms = Match.where(match_type: params[:match_type]).where(started_at: nil)
+				.where("player_1 IS NULL OR player_2 IS NULL").order("created_at ASC");
+			me = UserProfile.find_by(user_id: current_user[:id]);
+			if single_rooms.empty? # if single_room is empty, create new room
+				room = Match.create(
+					match_type: params[:match_type],
+					match_finished: false,
+					created_at: Time.now())
+				return render json: room.jbuild() if (single_rooms.present? && me.present?)
+			else # if single_room is exist, enter into it
+				return render json: single_rooms[0].jbuild() if single_rooms[0].save()
 			end
-			return render json: single_rooms[0] if single_rooms[0].save()
+			return render plain: "internal server error", status: :internal_server_error
 		end
-		return render plain: "internal server error", status: :internal_server_error
+
+		# if (params[:player_1].present? && params[:player_2].present?)
+		# 	player_1 = UserProfile.find_by(user_id: params[:player_1])
+		# 	player_2 = UserProfile.find_by(user_id: params[:player_2])
+		# 	return render plain: "forbidden", status: :forbidden if (player_1.present? && player_1.status != 1)
+		# 	return render plain: "forbidden", status: :forbidden if (player_2.present? && player_2.status != 1)
+		# 	room = Match.create(
+		# 		match_type: params[:match_type],
+		# 		player_1: {user_id: player_1.user_id, avatar_url: player_1.avatar_url, nickname: player_1.nickname, ready: false, score: 0, guild_id: player_1.guild_id },
+		# 		player_2: {user_id: player_2.user_id, avatar_url: player_2.avatar_url, nickname: player_2.nickname, ready: false, score: 0, guild_id: player_2.guild_id },
+		# 		match_finished: false,
+		# 		created_at: Time.now())
+		# 	return render json: room if (room.present?)
+		# end
+
 	end
 
 end

@@ -17,6 +17,7 @@ $(() => {
 			"click #tournament-join": "join_tournament",
 			"click #tournament-quit": "quit_tournament",
 			"click .tournament-bracket__match": "go_to_match",
+			"click #tournament-dummy": "add_dummy",
 		},
 		page_template: _.template($("script[name='tmpl-tournament-page']").html()),
 		info_template: _.template($("script[name='tmpl-tournament-info']").html()),
@@ -28,20 +29,22 @@ $(() => {
 				this.tournament_id = options.tournament_id;
 				this.user_id = $('html').data().userId;
 				const info = await Helper.ajax(`/api/tournaments/${this.tournament_id}`, '', 'GET');
-				this.end = new Date(info.registration_end)
+				if (info.status === 0)
+					this.end = new Date(info.registration_end);
+				else if (info.status === 1 || info.status === 2)
+					this.end = new Date(info.limit);
 				this.render_page();
 				this.render_info(info);
 				this.render_participants(info);
 				this.render_tree(info);
 				this.render_timer();
-				console.log(info);
 				TournamentChannel.subscribe(this.tournament_id, this.recv_callback, this);
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
 				else
 					console.error(error);
-				// window.location.hash = '';				
+				window.location.hash = '';				
 			}
 		},
 		render_page() {
@@ -56,33 +59,25 @@ $(() => {
 		render_tree(data) {
 			this.$el.find('#tournament-tree').html(this.tree_template(data))
 		},
-
 		render_timer: function() {
-			var self = this
 			let now = new Date();
 			let distance = ((this.end - now)/1000) >> 0
-			console.log('render_timer')
+			// console.log('render_timer')
 			if (distance < 0)
-				$('#tournament-timer').html('registration finished')
-			else{
+				$('#tournament-timer').html('in 0d 0h 0m 0s')
+			else {
 				$('#tournament-timer').html(Helper.getTimeString(distance))
 				setTimeout(() => {
 					if ($('#tournament-timer').length) {
-						this.render_timer(self.end);
+						this.render_timer();
 					}
 				}, 1000);
 			}	
 		},
-
 		async join_tournament(e) {
 			e.stopPropagation();
 			try {
-				const info = await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '','PUT');
-				this.render_participants(info);
-				TournamentChannel.channel.perform("update_player_list", { 
-					tournament_id: this.tournament_id,
-					info: info 
-				} );
+				await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '','PUT');
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
@@ -93,15 +88,8 @@ $(() => {
 		},
 		async quit_tournament(e) {
 			e.stopPropagation();
-			const id = $(e.currentTarget).data().tournamentId;
-			console.log("quit event", id)
 			try {
-				const info = await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '', 'DELETE');
-				this.render_participants(info);
-				TournamentChannel.channel.perform("update_player_list", { 
-					tournament_id: this.tournament_id,
-					info: info 
-				} );
+				await Helper.ajax(`/api/tournaments/${this.tournament_id}/players`, '', 'DELETE');
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
@@ -117,16 +105,35 @@ $(() => {
 				return;
 			return Router.router.navigate(`/game/tournament/${match_id}`, { trigger: true });
 		},
-		recv_callback(data) {
-			console.log('hey man')
-			console.log(data);
-			this.render_participants(data)
+		async add_dummy(e) {
+			e.stopPropagation();
+			try {
+				await Helper.ajax(`/api/tournaments/${this.tournament_id}/dummy`, '', 'PUT');
+			} catch (error) {
+				if (error.responseText)
+					Helper.flash_message('danger', error.responseText);
+				else
+					Helper.flash_message('danger', error);
+			}
+		},
+		async recv_callback(data) {
+			if (data.type === "info") {
+				this.render_info(data.data);
+			} else if (data.type === "tree") {
+				this.render_tree(data.data);
+			} else if (data.type === "participant") {
+				this.render_participants(data.data)
+			} else if (data.type === "canceled") {
+				Helper.flash_message('danger', "Tournament is canceled");
+				window.location.hash = '';
+			} else if (data.type === "timer") {
+				this.end = new Date(data.data.limit);
+				this.render_timer();
+			}
 		},
 
 	});
-	
 })
-
 }
 
 export default Tournament;

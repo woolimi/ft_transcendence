@@ -11,7 +11,7 @@
 		<h5 class="text-center">Participants</h5>
 		<div class="d-flex justify-content-around">
       <%% for(let i = 0; i < 4; i++) { %>
-        <div class="d-flex flex-column">
+        <div class="d-flex flex-column align-items-center tournament-bracket__code">
         <%% if (players[i]) { %>
           <img class="rounded-circle tournament-avatar" src="<%%= players[i].avatar_url %>">
           <%%= players[i].nickname %>
@@ -25,7 +25,7 @@
       <%% if(status === 0) { %>
         <%% if (_.find(players, (p) => { return p.user_id === $('html').data().userId })) { %>
         <button class="btn btn-danger" id="tournament-quit">Quit</button>
-        <%% } else { %>
+        <%% } else if (players.length < 4) { %>
         <button class="btn btn-primary" id="tournament-join">Join</button>
         <%% } %>
       <%% } %>
@@ -36,13 +36,18 @@
 
 
 <script type="text/template" name="tmpl-tournament-info">
-	<%% let str_status; %>
-	<%% if (status === 0) str_status = "Waiting participants" %>
-	<%% if (status === 1) str_status = "Started" %>
-	<%% if (status === 2) str_status = "Finished" %>
+	<%% let str_status; let str_msg; %>
+	<%% if (status === 0) { str_status = "Waiting"; str_msg = "Time left until registration"; } %>
+	<%% if (status === 1) { str_status = "Semifinal"; str_msg = "Time left until Semifinal"; } %>
+	<%% if (status === 2) { str_status = "Final"; str_msg = "Time left until Final"; } %>
+	<%% if (status === 3) { str_status = "Finished"; str_msg = ""; }%>
 	<div class="container box bg-white p-3">
-		<h3><%%= name %> (<%%= str_status%>)</h3>
-		Time left until registration <span class="oi oi-timer"></span> <span id="tournament-timer" data-sec="<%%= (new Date(registration_end) - new Date()) / 1000 >> 0%>"></span>
+		<h3><%%= name %> (<%%= str_status %>)</h3>
+		<%%= str_msg %> <span class="oi oi-timer"></span> <span id="tournament-timer"></span>
+    <!-- dummy test -->
+    <%% if (status === 0) { %>
+    <button id="tournament-dummy">create dummy</button>
+    <%% } %>
 	</div>
 </script>
 
@@ -64,7 +69,7 @@
               </thead>  
               <tbody class="tournament-bracket__content">
                 <tr class="tournament-bracket__team">
-                  <td class="tournament-bracket__user flex-column">
+                  <td class="tournament-bracket__user flex-column align-items-center">
                     <%% if (semiL) { %>
                     <abbr class="tournament-bracket__code"><%%= players[0].nickname %></abbr>
                 		<img class="rounded-circle tournament-avatar" src="<%%= players[0].avatar_url %>" />
@@ -78,7 +83,7 @@
                 </tr>
 
                 <tr class="tournament-bracket__team tournament-bracket__team">
-                  <td class="tournament-bracket__user flex-column">
+                  <td class="tournament-bracket__user flex-column align-items-center">
                     <%% if (semiL) { %>
                     <abbr class="tournament-bracket__code"><%%= players[1].nickname %></abbr>
                 		<img class="rounded-circle tournament-avatar" src="<%%= players[1].avatar_url %>" />
@@ -107,7 +112,7 @@
               </thead>  
               <tbody class="tournament-bracket__content">
                 <tr class="tournament-bracket__team">
-                  <td class="tournament-bracket__user flex-column">
+                  <td class="tournament-bracket__user flex-column align-items-center">
                     <%% if (semiR) { %>
                     <abbr class="tournament-bracket__code"><%%= players[2].nickname %></abbr>
                 		<img class="rounded-circle tournament-avatar" src="<%%= players[2].avatar_url %>" />
@@ -120,7 +125,7 @@
                   </td>
                 </tr>
                 <tr class="tournament-bracket__team tournament-bracket__team">
-                  <td class="tournament-bracket__user flex-column">
+                  <td class="tournament-bracket__user flex-column align-items-center">
                     <%% if (semiR) { %>
                     <abbr class="tournament-bracket__code"><%%= players[3].nickname %></abbr>
                 		<img class="rounded-circle tournament-avatar" src="<%%= players[3].avatar_url %>" />
@@ -152,10 +157,10 @@
               </thead>  
               <tbody class="tournament-bracket__content">
                 <tr class="tournament-bracket__team tournament-bracket__team">
-                  <td class="tournament-bracket__user flex-column">
-                    <%% if (final) { %>
-                    <abbr class="tournament-bracket__code"><%%= final.player_left.nickname %></abbr>
-                		<img class="rounded-circle tournament-avatar" src="<%%= final.player_left.avatar_url %>" />
+                  <td class="tournament-bracket__user flex-column align-items-center">
+                    <%% if (semiL && semiL.winner) { %>
+                    <abbr class="tournament-bracket__code"><%%= semiL.winner.nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= semiL.winner.avatar_url %>" />
                     <%% } else { %>
 				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
                     <%% } %>
@@ -166,10 +171,10 @@
                   </td>
                 </tr>
                 <tr class="tournament-bracket__team">
-                  <td class="tournament-bracket__user flex-column">
-                    <%% if (final) { %>
-                    <abbr class="tournament-bracket__code"><%%= final.player_right.nickname %></abbr>
-                		<img class="rounded-circle tournament-avatar" src="<%%= final.player_right.avatar_url %>" />
+                  <td class="tournament-bracket__user flex-column align-items-center">
+                    <%% if (semiR && semiR.winner) { %>
+                    <abbr class="tournament-bracket__code"><%%= semiR.winner.nickname %></abbr>
+                		<img class="rounded-circle tournament-avatar" src="<%%= semiR.winner.avatar_url %>" />
                     <%% } else { %>
 				          	<%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
                     <%% } %>
@@ -189,9 +194,9 @@
       <ul class="tournament-bracket__list p-0">
         <li class="tournament-bracket__item">
           <div class="tournament-bracket__match align-items-center flex-column">
-          <%% if (final) { %>
-          <abbr class="tournament-bracket__code"><%%= final.winner.nickname %></abbr>
-          <img class="rounded-circle tournament-avatar" src="<%%= final.winner.avatar_url %>" />
+          <%% if (winner) { %>
+          <abbr class="tournament-bracket__code"><%%= winner.nickname %></abbr>
+          <img class="rounded-circle tournament-avatar" src="<%%= winner.avatar_url %>" />
           <%% } else { %>
           <%= image_tag("avatar.webp", class: "rounded-circle tournament-avatar") %>					
           <%% } %>
@@ -202,43 +207,4 @@
   </div>
 </script>
 
-
-<script type="text/template" name="tmpl-tournament-match">
-	<%% if(match) { %>
-		<li class="gameTour game-top 
-			<%%= (match.winner == match.player_one.id ? 'winner' : '') %>">
-			<%%= playerNames[match.player_one.id] %>
-			<span><%%= match.player_one.points %></span>
-		</li>
-		<li class="gameTour game-spacer">
-			<!-- &nbsp; -->
-			<%% if(!match.winner) { %>
-				<%% if(user_id == match.player_one.id || user_id == match.player_two.id) { %>
-					<button id=start-match class="btn btn-success my-2" 
-						data-match_id=<%%= match.id %>>Start</button>
-				<%% } else { %>
-					<button id=spectate-match class="btn btn-primary my-2" 
-						data-match_id=<%%= match.id %>>Spectate</button>
-				<%% } %>
-			<%% } else { %>
-				<li class="gameTour game-spacer">&nbsp;</li>
-			<%% } %>
-		</li>
-		
-		<li class="gameTour game-bottom 
-			<%%= (match.winner == match.player_two.id ? 'winner' : '') %>">
-			<%%= playerNames[match.player_two.id] %>
-			<span><%%= match.player_two.points %></span>
-		</li>
-	<%% } else { %>
-		<li class="gameTour game-top">
-			<span></span>
-		</li>
-		<li class="gameTour game-spacer">&nbsp;</li>
-		<li class="gameTour game-spacer">&nbsp;</li>
-		<li class="gameTour game-bottom">
-			<span></span>
-		</li>
-	<%% } %>
-</script>
 
