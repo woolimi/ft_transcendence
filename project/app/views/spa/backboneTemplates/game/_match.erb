@@ -119,7 +119,7 @@
 	<ul class="list-group">
 		<%% _.forEach(list, (item) => { %>
 		<li class="list-group-item ingame-match cursor" data-match-id="<%%= item.id %>" data-match-type="<%%= item.match_type %>">
-			(<%%= item.match_type %>) <%%= item.player_1.nickname %> vs <%%= item.player_2.nickname %>
+			(<%%= item.match_type %>) <%%= item.player_left.nickname %> VS <%%= item.player_right.nickname %>
 		</li>
 		<%% }) %>
 	</ul>

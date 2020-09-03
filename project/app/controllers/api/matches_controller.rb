@@ -3,7 +3,12 @@ class Api::MatchesController < ApplicationController
 	before_action :authenticate_user!
 
 	def index
-		return render json: Match.where("started_at IS NOT NULL").where(match_finished: false), status: :ok
+		matches = Match.where("started_at IS NOT NULL").where(match_finished: false)
+		res = []
+		matches.each{ |m| 
+			res.push(m.jbuild())
+		}
+		return render json: res, status: :ok
 	end
 
 	def show 
