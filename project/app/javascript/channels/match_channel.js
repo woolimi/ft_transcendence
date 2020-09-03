@@ -33,7 +33,7 @@ if ($('html').data().isLogin) {
         },
         received(data) {
           recv_callback.bind(me)(data);
-        }
+        },
       });
     }
   });// window.onload

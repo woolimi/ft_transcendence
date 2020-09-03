@@ -40,6 +40,9 @@ if ($('html').data().isLogin)
             case "duel-reject":
               handle_duel_reject();
               break;
+            case "double-game":
+              handle_double_game(data);
+              break;
 						default:
 							break;
 					}
@@ -48,6 +51,12 @@ if ($('html').data().isLogin)
         // disconnected() {},
         // rejected() {}
       }); 
+    }
+
+    function handle_double_game(data) {
+      Helper.flash_message("danger", data.content);
+      // return Router.router.navigate(`/`, { trigger: true });
+      window.location.hash = '';
     }
 
     function handle_duel_reject() {

@@ -11,10 +11,19 @@ class MatchChannel < ApplicationCable::Channel
   @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 4 }
   @@session = {}
 
+  # def reject_unauthorized_connection
+  #   logger.error "An unauthorized connection attempt was rejected"
+  #   raise UnauthorizedError
+  # end
+
   def subscribed
+    # kick if user is in game
+    if Match.where("player_1 @> ? OR player_2 @> ?", {user_id: current_user[:id]}.to_json, {user_id: current_user[:id]}.to_json).count > 0
+      return current_user.send_notification("double-game", "Cannot play more than 1 game at the same time")
+    end
     stream_from "match_#{params[:match_id]}_channel"
-    @@session[current_user[:id]] = params[:match_id]
     m = Match.find_by(id: params[:match_id])
+    @@session[current_user[:id]] = params[:match_id]
     info = current_user.user_profile
     if (params[:match_type] == "duel_friend" || params[:match_type].include?("tournament"))
       m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_left_id)
@@ -31,8 +40,6 @@ class MatchChannel < ApplicationCable::Channel
 
   def unsubscribed
     quit_match = Match.find_by(id: @@session[current_user[:id]])
-    return if quit_match.started_at.present?
-    # if match is not started
     quit_match.player_1 = nil if (quit_match.player_1.present? && quit_match.player_1["user_id"] == current_user[:id])
     quit_match.player_2 = nil if (quit_match.player_2.present? && quit_match.player_2["user_id"] == current_user[:id])
     quit_match.save!()
