@@ -12,11 +12,23 @@
 </script>
 
 <script type="text/template" name="tmpl-tournaments-list">
-	<%% _.forEach(list, (item)=> { %>
-		<li class="cursor list-group-item tournament-item <%%=item.status === 'started' ? 'list-group-item-primary' : ''%>" data-id="<%%= item.id %>">
-			<%%= item.name %>
-		</li>
-	<%% }) %>
+	<%% if (list && list.length > 0) { %>
+		<%% _.forEach(list, (item)=> { %>
+			<%% let status = "Registration"
+				if (item.status === 1)
+					status = "SemiFinal";
+				if (item.status === 2)
+					status = "Final";
+				if (item.status === 3)
+					status = "Finished";
+			%>
+			<li class="cursor list-group-item tournament-item <%%=item.status === 3 ? 'list-group-item-secondary' : ''%>" data-id="<%%= item.id %>">
+				<%%= item.name %> (<%%= status %>)
+			</li>
+		<%% }) %>
+	<%% } else { %>
+		<li class="cursor list-group-item tournament-item">No tournament</li>
+	<%% } %>
 </script>
 
 <!-- <class="tournamentItem tournament-<%%= item.status %>" -->

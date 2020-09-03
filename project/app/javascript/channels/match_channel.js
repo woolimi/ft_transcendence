@@ -15,9 +15,7 @@ if ($('html').data().isLogin) {
       }
     }
 
-    let self = null;
     MatchChannel.subscribe = function (match_data, recv_callback, me) {
-      self = me;
       if (this.channel)
         return;
 
@@ -25,21 +23,16 @@ if ($('html').data().isLogin) {
       this.channel = consumer.subscriptions.create({
         channel: "MatchChannel",
         match_id: match_data.id,
+        match_type: match_data.match_type,
       }, {
-        connected() {
-          // Called when the subscription is ready for use on the server
-          console.log("connected to match");
-          MatchChannel.channel.send({ players: true, from: me.user_id });
+        async connected() {
+          const m = await Helper.ajax(`/api/matches/${match_data.id}`, '', 'GET');
+          me.render_players(m);
         },
-
         disconnected() {
-          // Called when the subscription has been terminated by the server
-          console.log("disconnected to match");
         },
-
         received(data) {
-          // Called when there's incoming data on the websocket for this channel
-          recv_callback.bind(self)(data);
+          recv_callback.bind(me)(data);
         }
       });
     }

@@ -22,7 +22,6 @@ if ($('html').data().isLogin) {
           tournament_id: tournament_id,
         }, {
         connected() {
-          console.log("tournament channel", tournament_id);
         },
 
         disconnected() {

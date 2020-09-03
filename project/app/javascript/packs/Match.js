@@ -4,12 +4,14 @@ import Backbone from "backbone"
 import { Pong } from "./Pong.js"
 import MatchChannel from '../channels/match_channel'
 import UserStatusChannel from "../channels/user_status_channel.js"
+import Helper from "./Helper.js"
 
 const Match = {};
 
 if ($('html').data().isLogin) {
 
 $(() => {
+
 	Match.Content = Backbone.View.extend({
 		el: $("#view-content"),
 		page_template: _.template($("script[name='tmpl-game-page']").html()),
@@ -31,24 +33,28 @@ $(() => {
 			try {
 				this.user_id = $('html').data().userId;
 				this.options = options; // { match_type: "duel", id: match_id }
-				// match_data = {id: "", match_type: "", player_1: {}, plyaer_2: {} }
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
-				console.log("match_data", match_data);
+				if (match_data.match_finished)
+					throw "match finished";
 				this.render_page();
 				this.render_players(match_data);
 				this.render_game(match_data);
-				MatchChannel.subscribe(match_data, this.recv_callback, this);
 				const wrapper = document.getElementById("game-screen-wrapper");
 				const canvas = document.getElementById("game-screen");
 				this.pong = new Pong(wrapper, canvas, options.id);
 				if (match_data.started_at	&& !match_data.match_finished
 					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
-					this.pong.keyListener_off();
-					this.pong.on();
+						this.pong.on();
 				}
+				MatchChannel.subscribe(match_data, this.recv_callback, this);
 				UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
 			} catch (error) {
-				console.error(error);
+				if (error.responseText)
+					Helper.flash_message("danger", error.responseText);
+				else {
+					Helper.flash_message("danger", error);
+					window.history.back();
+				}
 			}
 		},
 		check_ready(e) {
@@ -64,61 +70,50 @@ $(() => {
 				});
 			}
 		},
-		async recv_callback(data) {
-			try {
-				// if data is come from me, ignore
-				if (data.from === this.user_id)
-					return;
-				// new user enter into room
-				if (data.ready) {
-					$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
-					return;
-				}
+		recv_callback(data) {
+			if (data.ready) {
+				$(`#player${data.nb_player}-ready-status`).html(data.ready_status ? "Ready" : "Not Ready");
+				return;
+			}
 
-				if (data.all_ready) {
-					// disable ready button
-					$('.ready-status')[0].disabled = true;
-					this.pong.on();
-					return;
-				}
+			if (data.all_ready) {
+				$('.ready-status').addClass('d-none');
+				this.pong.on();
+				return;
+			}
 
-				if (data.count_down) {
-					$("#game-timer").removeClass("d-none")
-					$("#game-timer").html(data.count);
-					if (data.count === "GO!") {
-						setTimeout(()=> {
-							$("#game-timer").addClass("d-none")
-						}, 800)
-					}
-					return;
+			if (data.count_down) {
+				$("#game-timer").removeClass("d-none")
+				$("#game-timer").html(data.count);
+				if (data.count === "GO!") {
+					setTimeout(()=> {
+						$("#game-timer").addClass("d-none")
+					}, 800)
 				}
+				return;
+			}
 
-				if (data.ball) {
-					this.pong.update(data);
-					this.pong.draw();
-					return;
-				}
+			if (data.ball) {
+				this.pong.update(data);
+				this.pong.draw();
+				return;
+			}
 
-				if (data.end) {
-					this.pong.off();
-					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
-					this.render_players(match_data);
-					return;
-				}
+			if (data.end) {
+				this.pong.off();
+				this.render_players(data.data);
+				return;
+			}
 
-				if (data.players) {
-					const match_data = await Helper.ajax(`/api/matches/${this.options.id}`, '', 'GET');
-					this.render_players(match_data);
-					return;
-				}
+			if (data.players) {
+				this.render_players(data.data);
+				return;
+			}
 
-				if (data.score) {
-					$("#player1-score").html(data.score[0]);
-					$("#player2-score").html(data.score[1]);
-					return;
-				}
-			} catch (error) {
-				console.error(error);
+			if (data.score) {
+				$("#player1-score").html(data.score[0]);
+				$("#player2-score").html(data.score[1]);
+				return;
 			}
 		}
 	});
