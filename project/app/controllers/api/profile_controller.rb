@@ -42,8 +42,6 @@ class Api::ProfileController < ApplicationController
 				guild.save()
 			else
 				guild = Guild.find_by(:id => me.guild_id)
-				puts guild[:id]
-				puts me.guild_id
 				if(guild[:guild_members].as_json.length == 1)
 					guild[:guild_members] = "{}"
 					guild[:guild_officers] = "{}"

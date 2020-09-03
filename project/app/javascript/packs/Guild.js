@@ -102,7 +102,23 @@ $(() => {
         acceptWar: async function(e)
         {
             const accept = $(e.target).data();
+            var all_wars;
+            var  i = 0;
             try {
+                all_wars = await Helper.ajax(`/api/war_request/null`, "", "GET");
+                for(i = 0; i < Object.keys(all_wars).length; i++)
+                {
+                    if(accept.war_id == all_wars[i].id)
+                    {
+                        if(new Date(all_wars[i].start_date) < Date.now())
+                        {
+                            Helper.flash_message("danger", "Cannot Accept war after start-time has passed");
+                            await Helper.ajax(`/api/war_request/${accept.war_id}`, "", "DELETE");
+                            GuildChannel.channel.send({type: "acceptWar"});
+                            return;
+                        }
+                    }
+                }
                 await Helper.ajax(`/api/war_request/${accept.war_id}`, "", "PUT");
             } catch (error) {
                 Helper.flash_message("danger", error.responseText);
@@ -159,8 +175,16 @@ $(() => {
 
                 this.war_request[i].end_date = (this.war_request[i].end_date.substring(11,16)+ "hrs on " + this.war_request[i].end_date.substring(8,10) + "/" + this.war_request[i].end_date.substring(5,7) + "/" + this.war_request[i].end_date.substring(0,4));
             }
+            var war_active = 1;
+            try{
+                await Helper.ajax(`/api/war/${Profile.userProfile.toJSON().user_id}`, "", "GET");
+
+            }catch(error){
+                war_active = 0;
+            }
             const content = this.template({
                 guilds: guild,
+                war_active: war_active,
                 user: Profile.userProfile.toJSON(),
                 guild_members: mem_list,
                 current_guild: current_guild,
@@ -211,12 +235,26 @@ $(() => {
                 }
             }
             var data = []
+            var war_type = ""
+            if($('#include-tournament').is(":checked") == true)
+                war_type += "1";
+            else
+                war_type += "0";
+            if($('#include-duel').is(":checked") == true)
+                war_type += "1";
+            else
+                war_type += "0";
+                if($('#include-ladder').is(":checked") == true)
+                war_type += "1";
+            else
+                war_type += "0";
             data.push(challenge_data.challenger)
             data.push(challenge_data.accepter)
             data.push($("#wagerPoints").val())
             data.push($("#maxUnanswered").val())
             data.push($("#war-start-time").val())
             data.push($("#war-end-time").val())
+            data.push(war_type);
             await Helper.ajax(`/api/war_request`, "data=" + data, "POST"); 
             $('#declareWarModal').modal('toggle');
             GuildChannel.channel.send({ type: "rejectWar" });

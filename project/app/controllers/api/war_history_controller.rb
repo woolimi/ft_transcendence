@@ -1,9 +1,6 @@
 class Api::WarHistoryController < ApplicationController
     before_action :authenticate_user!
     def show
-        puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<,"
-        puts (params[:guild_id])
-        puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<,"
         war = War.where(guild_1: params[:guild_id]).or(War.where(guild_2: params[:guild_id])).order("end_date DESC")
         war.each do |i|
             name = Guild.find_by(id: i[:guild_1])

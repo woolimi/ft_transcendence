@@ -5,7 +5,7 @@ class Api::WarController < ApplicationController
         if (params[:user_id] == current_user[:id])
             user = UserProfile.find_by(user_id: current_user[:id]).as_json(only: [:guild_id])
             if (!user["guild_id"])
-                response = "{'status':'user does not have any guild'}"
+                response = "User does not have any guild"
                 return render json: response, status: :ok
             end
             # war = War.find_by(guild_1: user["guild_id"]).as_json()
@@ -14,15 +14,10 @@ class Api::WarController < ApplicationController
             if (war.length == 0)
                 war = War.where('(guild_1 = ? OR guild_2 = ?) AND start_date > ? AND status = 1', user["guild_id"], user["guild_id"], Time.zone.now.to_datetime).order(start_date: :asc).as_json()
                 if (war.length == 0)
-                    return render json: "{}", status: :ok
+                    response = "No Wars Coming up"
+                return render json: response, status: :ok
                 end
             end
-            puts ">>>>>>>>>>>>>>>>."
-            puts Time.zone.now.to_datetime
-            puts war
-            puts "================."
-            puts war[0]
-            puts ">>>>>>>>>>>>>>>>."
             guild_info = check_guild_number(war, user["guild_id"]).split(':')
             guilds = Guild.where(id: war[0]["guild_1"]).or(Guild.where(id: war[0]["guild_2"])).as_json
             
@@ -64,12 +59,6 @@ class Api::WarController < ApplicationController
     private
 
     def check_guild_number(war, user_guild_id)
-        puts ">>>>>>>>>>>>>>>>>>>>>>>>"
-        puts war[0]["guild_1"]
-        puts war[0]["guild_1"].class
-        puts user_guild_id
-        puts user_guild_id.class
-        puts ">>>>>>>>>>>>>>>>>>>>>>>>"
         if (war[0]["guild_1"] == user_guild_id)
             return ("guild_1:guild_2");
         elsif (war[0]["guild_2"] == user_guild_id)
@@ -77,6 +66,5 @@ class Api::WarController < ApplicationController
         else
             return ("undefined");
         end
-        puts "INSIDE THIS METHODDDDDDDDDDDDDDD"
     end
 end
