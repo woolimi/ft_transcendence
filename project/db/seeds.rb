@@ -78,7 +78,7 @@ if User.find_by({ email: "benny@asdf.com"}).blank?
 	UserProfile.create!(
 		name: "Benny Scetbun",
 		nickname: "benny",
-		avatar_url: "https://cdn.intra.42.fr/users/small_benny.jpg",
+		avatar_url: "https://cdn.intra.42.fr/users/small_benny.jpeg",
 		rp: 1780,
 		user_id: u[:id])
 end

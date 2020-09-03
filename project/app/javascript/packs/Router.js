@@ -20,6 +20,9 @@ import GameChannel from "../channels/game_channel"
 import Ladder from "./Ladder"
 import TournamentChannel from "../channels/tournament_channel.js"
 import GuildChannel from "../channels/guild_channel"
+import Admin from "./Admin"
+import AdminGuildRights from "./AdminGuildRights"
+import Duel from "./Duel.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -49,11 +52,12 @@ if ($('html').data().isLogin) {
                 War.content.undelegateEvents();
             if (Tournaments.content)
                 Tournaments.content.undelegateEvents();
-            if (Tournament.content) {
+            if (Tournament.content)
                 Tournament.content.undelegateEvents();
-                clearInterval(Tournament.intervalId);
-                Tournament.intervalId = null;
-            }
+            if (Admin.content)
+                Admin.content.undelegateEvents()
+            if (AdminGuildRights.content)
+                AdminGuildRights.content.undelegateEvents()
             if (TournamentChannel.channel)
                 TournamentChannel.unsubscribe();
             if (GuildChannel.channel)
@@ -62,7 +66,6 @@ if ($('html').data().isLogin) {
             $(window).off("resize");
         };
 
-        const urlHistory = [];
         const RouterClass = Backbone.Router.extend({
             routes: {
                 "": "game",
@@ -79,28 +82,24 @@ if ($('html').data().isLogin) {
                 "channels/:channel_id": "channel",
                 "game/war": "war",
                 "war": "war",
+                "admin": "admin",
+                "admin/guildRights/:guild_id": "adminGuildRights",
             },
             game() {
                 remove_channel();
                 Game.content = new Game.Content();
             },
-            async duel() {
+            duel() {
                 remove_channel();
-                try {
-                    const new_match = await Helper.ajax('/api/matches/', `match_type=duel`, 'POST');
-                    return Router.router.navigate(`/game/duel/${new_match.id}`, { trigger: true });
-                } catch (error) {
-                    console.error(error);
-                }
+                Duel.content = new Duel.Content();
             },
-            async match(match_type, match_id) {
+            match(match_type, match_id) {
                 remove_channel();
-                if (urlHistory[0] && urlHistory[0].indexOf(`#game/${match_type}/`) > -1) {
-                    console.log('here')
-                    return Router.router.navigate(`/`, { trigger: true });
+                if (performance.getEntriesByType("navigation")[0].type === "reload") {
+                    const prev = window.location.hash.slice(1);
+                    window.location.hash = '/';
+                    return window.location.hash = prev;
                 }
-                if (performance.getEntriesByType("navigation")[0].type === "reload")
-                    return Router.router.navigate(`/`, { trigger: true });
                 Match.content = new Match.Content({ match_type: match_type, id: match_id });
             },
             profile() {
@@ -139,17 +138,16 @@ if ($('html').data().isLogin) {
                 remove_channel();
                 Ladder.content = new Ladder.Content(); 
             },
+            admin() {
+                remove_channel();
+                Admin.content = new Admin.Content(); 
+            },
+            adminGuildRights(guild_id){
+                remove_channel();
+                AdminGuildRights.content = new AdminGuildRights.Content({guild_id: guild_id}); 
+            },
         });
-        const router = new RouterClass();
-        Router.router = router;
-
-        $(window).on('hashchange', function(e) {
-            urlHistory.push(location.hash);
-            if (urlHistory.length > 2) {
-                urlHistory.splice(0, urlHistory.length - 2)
-            };
-        });
-
+        Router.router = new RouterClass();
         Router.router.on("route", function(curRoute, params) {
             Navbar.currentRoute.set({ route: curRoute });
         });

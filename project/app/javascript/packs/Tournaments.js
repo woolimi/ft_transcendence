@@ -41,7 +41,7 @@ $(() => {
 			try {
 				e.preventDefault();
 				const data = $(e.currentTarget).serializeArray();
-				if (data[0].value.length < 4)
+				if (data[0].value.length < 3)
 					throw new Error("Tournament name is too short");
 				if (data[0].value.length >= 30)
 					throw new Error("Tournament name is too long");

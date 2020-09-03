@@ -2,13 +2,16 @@ class Api::TournamentsController < ApplicationController
 	protect_from_forgery
 	before_action :authenticate_user!
 	
-	# status 0 pending, 1 started, 2 finished
+	# status 0 pending, 1 semi 2 final 3 finished
 	def index
-		return render json: Tournament.where.not(status: 2), status: :ok
+		res = []
+		res += Tournament.where(status: 3).order("registration_start DESC").limit(1).as_json
+		res += Tournament.where.not(status: 3).as_json
+		return render json: res, status: :ok
 	end
 
 	def create
-		return render plain: 'Tournament name is too short' if params[:name].length < 4
+		return render plain: 'Tournament name is too short' if params[:name].length < 3
 		return render plain: 'Tournament name is too long' if params[:name].length >= 30
 		params[:name] = CGI::escapeHTML(params[:name])
 		return render plain: 'This tournament name is already taken', status: :forbidden if Tournament.find_by(name: params[:name])
@@ -18,7 +21,7 @@ class Api::TournamentsController < ApplicationController
 			status: 0,
 			players: [],
 			registration_start: DateTime.now,
-			registration_end: DateTime.now + 40.second
+			registration_end: DateTime.now + 1.minutes
 		)
 		User.send_to_all('tournament_created', {
 			tournament_id: tournament.id,
@@ -30,7 +33,7 @@ class Api::TournamentsController < ApplicationController
 	def show
 		tournament = Tournament.find_by(id: params[:id])
 		return render plain: 'forbidden', status: :forbidden if tournament.nil?
-		return render json: jbuild(tournament), status: :ok
+		return render json: tournament.jbuild(), status: :ok
 	end
 
 	# PUT /api/tournaments/:tournament_id/players
@@ -41,7 +44,10 @@ class Api::TournamentsController < ApplicationController
 		return render plain: 'too many participants', status: :forbidden if tournament.players.length >= 4
 		return render plain: 'You are already in list', status: :forbidden if !tournament.players.find_index(current_user[:id]).nil?
 		tournament.players.push(current_user[:id])
-		return render json: jbuild(tournament) if tournament.save()
+		if tournament.save()
+			ActionCable.server.broadcast "tournament_#{tournament.id}_channel", {type: "participant", data: tournament.jbuild()}
+			return render plain: "ok", status: :ok
+		end
 	end
 
 	# DELETE /api/tournaments/:tournament_id/players
@@ -52,8 +58,25 @@ class Api::TournamentsController < ApplicationController
 		return render plain: "You aren't in list", status: :forbidden if tournament.players.find_index(current_user[:id]).nil?
 		# return render plain: "the tournament already started, you cannot quit anymore", status: :forbidden if ( ! tournament.pending! )
 		tournament.players.delete(current_user[:id])
-		return render json: jbuild(tournament) if tournament.save()
+		if tournament.save()
+			ActionCable.server.broadcast "tournament_#{tournament.id}_channel", {type: "participant", data: tournament.jbuild()}
+			return render plain: "ok", status: :ok
+		end
 	end
+
+	# PUT /api/tournaments/:tournament_id/dummy
+	def dummy
+		tournament = Tournament.find_by(id: params[:tournament_id])
+		return render plain: "fail to create dummy", status: :forbidden if tournament.blank?
+		tournament.players = []
+		for i in 1..3 do
+			tournament.players.push(User.find_by(ft_id: i).id)
+		end
+		tournament.save!()
+		ActionCable.server.broadcast "tournament_#{tournament.id}_channel", {type: "participant", data: tournament.jbuild()}
+		return render plain: "dummy created", status: :ok
+	end
+
 
 	private
 
@@ -64,26 +87,5 @@ class Api::TournamentsController < ApplicationController
 			:registration_end
 		)
 	end
-
-	def jbuild(tournament)
-		return [] if tournament.nil?
-		nplayers = []
-		tournament.players.each{ |p|
-			u = UserProfile.find_by(user_id: p).as_json(only: [:user_id, :avatar_url, :nickname]);
-			nplayers.push(u)
-		}
-		tournament.players = nplayers
-		res = tournament.as_json
-		res.delete("semiL_id")
-		res.delete("semiR_id")
-		res.delete("final_id")
-		res["semiL"] = tournament.semiL.as_json
-		res["semiR"] = tournament.semiR.as_json
-		res["final"] = tournament.final.as_json
-		res["final"]["player_left"] = tournament.final.player_left.as_json if tournament.final.present?
-		res["final"]["player_right"] = tournament.final.player_right.as_json if tournament.final.present?
-		return res
-	end
-
 end
 
