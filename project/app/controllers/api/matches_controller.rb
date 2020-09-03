@@ -8,7 +8,7 @@ class Api::MatchesController < ApplicationController
 
 	def show 
 		m = Match.find_by(id: params[:id])
-		return render plain: "forbidden", status: :forbidden if m.blank?
+		return render plain: "Invalide match", status: :forbidden if m.blank?
 		return render json: m.jbuild(), status: :ok
 	end
 

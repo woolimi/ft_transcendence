@@ -12,6 +12,9 @@ if ($('html').data().isLogin) {
 
 $(() => {
 
+	Match.canvas = null;
+	Match.wrapper = null;
+	Match.id = null;
 	Match.Content = Backbone.View.extend({
 		el: $("#view-content"),
 		page_template: _.template($("script[name='tmpl-game-page']").html()),
@@ -31,6 +34,7 @@ $(() => {
 		},
 		initialize: async function(options) {
 			try {
+				Match.id = options.id;
 				this.user_id = $('html').data().userId;
 				this.options = options; // { match_type: "duel", id: match_id }
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
@@ -39,12 +43,12 @@ $(() => {
 				this.render_page();
 				this.render_players(match_data);
 				this.render_game(match_data);
-				const wrapper = document.getElementById("game-screen-wrapper");
-				const canvas = document.getElementById("game-screen");
-				this.pong = new Pong(wrapper, canvas, options.id);
+				Match.wrapper = document.getElementById("game-screen-wrapper");
+				Match.canvas = document.getElementById("game-screen");
+				this.pong = new Pong(options.id);
 				if (match_data.started_at	&& !match_data.match_finished
 					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
-						this.pong.on();
+					this.pong.on();
 				}
 				MatchChannel.subscribe(match_data, this.recv_callback, this);
 				UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
@@ -53,8 +57,8 @@ $(() => {
 					Helper.flash_message("danger", error.responseText);
 				else {
 					Helper.flash_message("danger", error);
-					window.history.back();
 				}
+				window.history.back();
 			}
 		},
 		check_ready(e) {

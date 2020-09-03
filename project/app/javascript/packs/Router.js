@@ -20,10 +20,12 @@ import GameChannel from "../channels/game_channel"
 import Ladder from "./Ladder"
 import TournamentChannel from "../channels/tournament_channel.js"
 import Duel from "./Duel.js"
+import Helper from "./Helper.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
     $(() => {
+        const urlHistory = [];
         const remove_channel = function() {
             if (ChatChannel.channel)
                 ChatChannel.unsubscribe();
@@ -50,6 +52,10 @@ if ($('html').data().isLogin) {
             if (TournamentChannel.channel)
                 TournamentChannel.unsubscribe();
             $(window).off("resize");
+            urlHistory.push(location.hash);
+            if (urlHistory.length > 2) {
+                urlHistory.splice(0, urlHistory.length - 2)
+            };
         };
 
         const RouterClass = Backbone.Router.extend({
@@ -78,11 +84,6 @@ if ($('html').data().isLogin) {
             },
             match(match_type, match_id) {
                 remove_channel();
-                if (performance.getEntriesByType("navigation")[0].type === "reload") {
-                    const prev = window.location.hash.slice(1);
-                    window.location.hash = '/';
-                    return window.location.hash = prev;
-                }
                 Match.content = new Match.Content({ match_type: match_type, id: match_id });
             },
             profile() {
