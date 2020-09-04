@@ -6,7 +6,10 @@ class Api::ChannelMembersController < ApplicationController
 	def index
 		channel = Channel.find_by(id: params[:channel_id])
 		return render plain: "forbidden", status: :forbidden if channel.blank?
-		if channel.password.length > 0 && session[params[:channel_id]] != channel.password
+		if (current_user.user_profile.admin.blank? && channel.members.select{ |m| m["user_id"] == current_user[:id] }.blank?)
+			return render plain: "you are not a member of this channel", status: :forbidden
+		end
+		if (current_user.user_profile.admin.blank? && channel.password.length > 0 && session[params[:channel_id]] != channel.password)
 			return render plain: "Unauthorized", status: :unauthorized
 		end
 
