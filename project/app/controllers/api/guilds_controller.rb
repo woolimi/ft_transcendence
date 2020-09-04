@@ -16,6 +16,7 @@ class Api::GuildsController < ApplicationController
     me.save()
   end
 
+  # Helper.ajax('/api/guilds' , {toggle_guild: ..., toggle_id: ...}, 'PUT')
   def update
     guild = Guild.find_by(id: params[:toggle_guild])
     off_list = []
