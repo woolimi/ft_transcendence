@@ -6,7 +6,7 @@ class Api::ChannelMessagesController < ApplicationController
 	def index
 		channel = Channel.find_by(id: params[:channel_id]);
 		render plain: "Not found", status: :not_found if channel.blank?
-		if channel.password.length > 0 && session[params[:channel_id]] != channel.password
+		if (current_user.user_profile.admin.blank? && channel.password.length > 0 && session[params[:channel_id]] != channel.password)
 			return render plain: "Unauthorized", status: :unauthorized
 		end
 		render json: messages_with_user(channel.channel_messages, params[:first_id]);
@@ -14,13 +14,16 @@ class Api::ChannelMessagesController < ApplicationController
 
 	# POST /api/channels/:channel_id/chat_messages/
 	def create
-		return render plain: "forbidden", status: :forbidden if params[:user_id] != current_user[:id]
-		return render plain: "message is too long", status: :forbidden if params[:content].length > 300
+		return render plain: "Forbidden", status: :forbidden if params[:user_id] != current_user[:id]
+		return render plain: "Message is too long", status: :forbidden if params[:content].length > 300
 		channel = Channel.find_by(id: params[:channel_id]);
+		return render plain: "Forbidden", status: :forbidden if channel.blank?
+		if channel.members.select{|m| m["user_id"] == current_user[:id]}.blank?
+			return render plain: "You are not a member", status: :forbidden
+		end
 		if channel.password.length > 0 && session[params[:channel_id]] != channel.password
 			return render plain: "Unauthorized", status: :unauthorized
 		end
-		return render plain: "Forbidden", status: :forbidden if channel.blank?
 		message = channel.channel_messages.create(
 			user_id: params[:user_id],
 			content: params[:content],
@@ -43,17 +46,23 @@ class Api::ChannelMessagesController < ApplicationController
 
 	private
 	def messages_with_user(messages, first_id)
+		res = nil
 		if first_id
-			return messages.select("channel_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url")
+			msgs = messages.select("channel_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url, user_profiles.guild_id")
 					.joins("INNER JOIN user_profiles ON channel_messages.user_id = user_profiles.user_id")
 					.where("channel_messages.id < ?", first_id)
 					.order("channel_messages.timestamp DESC")
 					.limit(20).reverse
 		else
-			return messages.select("channel_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url")
+			msgs = messages.select("channel_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url, user_profiles.guild_id")
 					.joins("INNER JOIN user_profiles ON channel_messages.user_id = user_profiles.user_id")
 					.order("channel_messages.timestamp DESC")
 					.limit(20).reverse
 		end
+		res = msgs.as_json
+		res.each{ |r|
+			r[:guild] = Guild.find_by(id: r["guild_id"]).as_json(only: [:anagram])
+		}
+		return res
 	end
 end

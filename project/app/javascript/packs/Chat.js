@@ -69,10 +69,11 @@ if ($('html').data().isLogin) {
 				this.members = new Members([], options);
 				try {
 					await Helper.fetch(Profile.userProfile);
-					await Helper.fetch(this.messages);		
+					await Helper.fetch(this.messages);
 					await Helper.fetch(this.members);
 					await Helper.ajax(`/api/chats/${options.room}/display`, "display=true", "PUT");
 					await Helper.fetch(Channel.m_channel_list);
+					console.log(this.messages.toJSON())
 					Channel.channel_list.render();
 					this.opponent = this.find_opponent(this.members.toJSON());
 					this.block_list = Profile.userProfile.get("block_list");
@@ -94,7 +95,7 @@ if ($('html').data().isLogin) {
 						this.render_messages();
 					this.scroll_down();
 					this.render_members();
-					ChatChannel.subscribe(options.room, this.recv_callback)
+					ChatChannel.subscribe(options.room, this.recv_callback);
 				} catch (error) {
 					if (error.statusText)
 						Helper.flash_message("danger", error.statusText);
