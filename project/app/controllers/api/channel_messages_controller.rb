@@ -43,17 +43,23 @@ class Api::ChannelMessagesController < ApplicationController
 
 	private
 	def messages_with_user(messages, first_id)
+		res = nil
 		if first_id
-			return messages.select("channel_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url")
+			msgs = messages.select("channel_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url, user_profiles.guild_id")
 					.joins("INNER JOIN user_profiles ON channel_messages.user_id = user_profiles.user_id")
 					.where("channel_messages.id < ?", first_id)
 					.order("channel_messages.timestamp DESC")
 					.limit(20).reverse
 		else
-			return messages.select("channel_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url")
+			msgs = messages.select("channel_messages.*, user_profiles.name, user_profiles.nickname, user_profiles.avatar_url, user_profiles.guild_id")
 					.joins("INNER JOIN user_profiles ON channel_messages.user_id = user_profiles.user_id")
 					.order("channel_messages.timestamp DESC")
 					.limit(20).reverse
 		end
+		res = msgs.as_json
+		res.each{ |r|
+			r[:guild] = Guild.find_by(id: r["guild_id"]).as_json(only: [:anagram])
+		}
+		return res
 	end
 end
