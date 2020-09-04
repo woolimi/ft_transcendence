@@ -98,19 +98,17 @@ $(() => {
                     minutes + "m " + seconds + "s ";
 
                 if (distance < 0) {
-                    try{
-                        self.model.fetch();
+                    try {
                         clearInterval(this.intervalId);
-                        if(self.model.toJSON().status == 1)
-                        self.send_to_game();
+                        self.model.fetch();
+                        if (self.model.toJSON().status == 1)
+                            self.send_to_game();
                         else if(self.model.toJSON().status == 2)
-                        self.send_to_history();
-                    }catch(error)
-                    {
-
+                            self.send_to_history();
+                    } catch(error) {
                         document.getElementById("clock").innerHTML = "WAR EXPIRED";
                     }
-                    }
+                }
             }, 1000);
         },
         attack: async function() {

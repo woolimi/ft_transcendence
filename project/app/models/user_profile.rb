@@ -2,7 +2,7 @@ class UserProfile < ApplicationRecord
 	belongs_to :user
 	belongs_to :guild, optional: true
 	validates :nickname, uniqueness: true
-
+	validates :name, presence: true, uniqueness: true
 	def self.search(keyword, current_user)
 		return UserProfile
 			.where.not(user_id: current_user[:id])

@@ -8,7 +8,7 @@ class User < ApplicationRecord
 #         :omniauthable, omniauth_providers: [:marvin]
   devise :registerable, :validatable, :omniauthable, omniauth_providers: [:marvin]
   has_one :user_profile
-	has_many :chat_messages
+  has_many :chat_messages 
 	
   def self.from_omniauth(auth)
     user = User.find_by(ft_id: auth[:uid])

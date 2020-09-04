@@ -49,6 +49,7 @@ class Api::UserInfoController < ApplicationController
 		info = UserProfile.find_by(user_id: params[:user_id])
 		info.banned = true
 		info.save
+		info.user.send_notification('banned', {})
 	end
 
 	# PUT /api/user_info/:id/unban
@@ -56,5 +57,6 @@ class Api::UserInfoController < ApplicationController
 		info = UserProfile.find_by(user_id: params[:user_id])
 		info.banned = false
 		info.save
+		info.user.send_notification('unbanned', {})
 	end
 end

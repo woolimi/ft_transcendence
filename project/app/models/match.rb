@@ -3,6 +3,8 @@ class Match < ApplicationRecord
 	belongs_to :tournament, optional: true
 	belongs_to :player_left, class_name: 'User', foreign_key: "player_left_id", optional: true
 	belongs_to :player_right, class_name: 'User', foreign_key: "player_right_id", optional: true
+	
+	validates :match_type, presence: true
 
 	def jbuild()
 		res = self.as_json
