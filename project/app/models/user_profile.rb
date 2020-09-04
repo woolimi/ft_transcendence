@@ -1,6 +1,7 @@
 class UserProfile < ApplicationRecord
 	belongs_to :user
 	validates :nickname, uniqueness: true
+	validates :name, presence: true, uniqueness: true
 
 	def self.search(query)
 		where.not(user_id: current_user[:id])
