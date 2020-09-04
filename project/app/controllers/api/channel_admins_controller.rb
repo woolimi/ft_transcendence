@@ -7,7 +7,7 @@ class Api::ChannelAdminsController < ApplicationController
 		channel = Channel.find_by(id: params[:channel_id])
 		return render json: nil, status: :forbidden if channel.blank?
 		# Only owner can designate admin 
-		if (current_user.user_profile.admin.blank? && channel.owner != current_user[:id]))
+		if (current_user.user_profile.admin.blank? && channel.owner != current_user[:id])
 			return render json: nil, status: :forbidden
 		end
 		# Only user in members can be admin
@@ -26,7 +26,7 @@ class Api::ChannelAdminsController < ApplicationController
 		channel = Channel.find_by(id: params[:channel_id])
 		return render json: nil, status: :forbidden if channel.blank?
 		# Only owner can delete admin 
-		if (current_user.user_profile.admin.blank? && channel.owner != current_user[:id]))
+		if (current_user.user_profile.admin.blank? && channel.owner != current_user[:id])
 			return render json: nil, status: :forbidden
 		end
 		# Find user in admins and delete

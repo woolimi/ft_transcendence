@@ -13,7 +13,7 @@ class Api::ChannelMembersController < ApplicationController
 			return render plain: "Unauthorized", status: :unauthorized
 		end
 
-		members = channel.members
+		members = channel.members.as_json
 		members.each { |m| 
 			user_profile = UserProfile.find_by(:user_id => m["user_id"])
 			m["name"] = user_profile.name

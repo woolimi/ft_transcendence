@@ -38,10 +38,10 @@
 				<th style="width: 25%">Actions</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody style="max-height: 30vh; overflow-y: auto">
 			<%% _.forEach(list, (item)=> { %>
 			<tr>
-				<td><a href=<%%= '/#channels/' + item.id %>><%%= item.room %></a></td>
+				<td><a href=<%%= '/#channels/' + item.id %>><%%= item.room %> <%%= (item.password ? "(protected)" : "")%></a></td>
 				<td>
 					<button type="button" class="btn btn-danger btn-sm delete-channel" data-id="<%%= item.id %>">Delete</button>
 				</td>
@@ -60,7 +60,7 @@
 				<th style="width: 25%">Actions</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody style="max-height: 30vh; overflow-y: auto">
 			<%% _.forEach(list, (item)=> { %>
 			<tr>
 				<td><%%= item.name %></td>

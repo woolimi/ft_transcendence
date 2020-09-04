@@ -198,6 +198,7 @@ if ($('html').data().isLogin)
 			info.is_admin = Helper.contain(info.admins, (m) => m === Channel.content.user_id);
 			info.channel_id = info.id;
 			info.members = Channel.content.members.toJSON();
+			info.me = await Helper.ajax(`/api/profile/${Channel.content.user_id}`);
 			Channel.content.render_members(info);
 		}
 
@@ -232,6 +233,7 @@ if ($('html').data().isLogin)
 					info.is_admin = Helper.contain(info.admins, (m) => m === this.user_id);
 					info.channel_id = info.id;
 					info.members = this.members.toJSON();
+					info.me = await Helper.ajax(`/api/profile/${this.user_id}`);
 					await Helper.fetch(this.messages);
 					this.render_page(info);
 					this.render_messages();
