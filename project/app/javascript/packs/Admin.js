@@ -24,10 +24,11 @@ if ($('html').data().isLogin) {
 				try {
 					this.render_page();
 					const list = await Helper.ajax(`/api/channels/show_all`, '', 'GET');
+					console.log(list);
 					this.render_channel_list({ list: list });
 					const listUsers = await Helper.ajax(`/api/user_info/show_all`, '', 'GET');
 					this.render_user_list({ list: listUsers });
-					const listGuilds = await Helper.ajax('/api/guild/user_id', '', 'GET');
+					const listGuilds = await Helper.ajax('/api/guilds/user_id', '', 'GET');
 					this.render_guild_list({ list: listGuilds });
 				} catch (error) {
 					console.error(error);

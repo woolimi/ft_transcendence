@@ -15,14 +15,19 @@ if ($('html').data().isLogin) {
 			page_template: _.template($("script[name='tmpl-admin-guild-page']").html()),
 			user_list_template: _.template($("script[name='tmpl-admin-guild-users']").html()),
 			events: {
-				"click .promote-user": "promote_user",
-				"click .demote-user": "demote_user",
+				"click .promote-user": "toggle_user",
+				"click .demote-user": "toggle_user",
 			},
 			initialize: async function(options) {
 				try {
+					this.guild_id = options.guild_id
 					this.render_page();
-					const listUsers = await Helper.ajax(`/api/user_info/show_all`, '', 'GET');
-					this.render_user_list({ list: listUsers });
+					const listGuilds = await Helper.ajax(`/api/guilds/anything`, '', 'GET');
+					let guild = listGuilds.find((el)=>{return el.id == this.guild_id})
+					this.render_user_list({ 
+						members: guild.guild_members,
+						officers: guild.guild_officers
+					});
 				} catch (error) {
 					console.error(error);
 				}
@@ -33,25 +38,19 @@ if ($('html').data().isLogin) {
 			render_user_list(data) {
 				this.$el.find("#admin-guild-users").html(this.user_list_template(data));
 			},
-			async promote_user(e){
-				// try {
-				// 	const id = $(e.currentTarget).data().id;
-				// 	await Helper.ajax(`/api/user_info/${id}/ban`, '', 'PUT');
-				// 	const listUsers = await Helper.ajax(`/api/user_info/show_all`, '', 'GET');
-				// 	this.render_user_list({ list: listUsers });
-				// } catch (error) {
-				// 	console.error(error);
-				// }
-			},
-			async demote_user(e){
-				// try {
-				// 	const id = $(e.currentTarget).data().id;
-				// 	await Helper.ajax(`/api/user_info/${id}/unban`, '', 'PUT');
-				// 	const listUsers = await Helper.ajax(`/api/user_info/show_all`, '', 'GET');
-				// 	this.render_user_list({ list: listUsers });
-				// } catch (error) {
-				// 	console.error(error);
-				// }
+			async toggle_user(e){
+				try {
+					const id = $(e.currentTarget).data().id;
+					await Helper.ajax('/api/guilds/anything' , {toggle_guild: this.guild_id, toggle_id: id}, 'PUT')
+					const listGuilds = await Helper.ajax(`/api/guilds/anything`, '', 'GET');
+					let guild = listGuilds.find((el)=>{return el.id == this.guild_id})
+					this.render_user_list({ 
+						members: guild.guild_members,
+						officers: guild.guild_officers
+					});
+				} catch (error) {
+					console.error(error);
+				}
 			},
 		});
 	})
