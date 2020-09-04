@@ -83,7 +83,7 @@ $(() => {
         },
         renderTimer: function(date) {
             const self = this;
-            this.intervalId = setInterval(function() {
+            this.intervalId = setInterval(async function() {
                 var dds = new Date(date);
                 var countDownDate = dds.getTime();
                 var now = Date.now();
@@ -100,13 +100,12 @@ $(() => {
                 if (distance < 0) {
                     try {
                         clearInterval(this.intervalId);
-                        self.model.fetch();
-                        if (self.model.toJSON().status == 1)
+                        await self.model.fetch();
+                        if (self.model.toJSON().status == 2)
                             self.send_to_game();
-                        else if(self.model.toJSON().status == 2)
-                            self.send_to_history();
                     } catch(error) {
-                        document.getElementById("clock").innerHTML = "WAR EXPIRED";
+                        clearInterval(this.intervalId);
+                        self.send_to_history();
                     }
                 }
             }, 1000);
