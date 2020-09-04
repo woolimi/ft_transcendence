@@ -16,7 +16,7 @@ class Api::ProfileController < ApplicationController
 			profile[:block_list] = res
 			render json: profile			
 		else
-			render json: {}
+			render plain: "Forbidden", status: :forbidden
 		end
 	end
 

@@ -24,6 +24,7 @@ if ($('html').data().isLogin) {
 				try {
 					this.render_page();
 					const list = await Helper.ajax(`/api/channels/show_all`, '', 'GET');
+					console.log(list);
 					this.render_channel_list({ list: list });
 					const listUsers = await Helper.ajax(`/api/user_info/show_all`, '', 'GET');
 					this.render_user_list({ list: listUsers });
