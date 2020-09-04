@@ -40,6 +40,12 @@ if ($('html').data().isLogin)
             case "duel-reject":
               handle_duel_reject();
               break;
+            case "banned":
+              handle_banned();
+              break;
+            case "unbanned":
+              handle_unbanned();
+              break;
 						default:
 							break;
 					}
@@ -48,6 +54,16 @@ if ($('html').data().isLogin)
         // disconnected() {},
         // rejected() {}
       }); 
+    }
+
+    function handle_banned(){
+      Helper.flash_message('danger', 'Your have been banned');
+      Helper.ajax('/users/sign_out', '', 'DELETE')
+      window.location.href = ''
+    }
+
+    function handle_unbanned(){
+      Helper.flash_message('success', 'Your have been unbanned');
     }
 
     function handle_duel_reject() {
