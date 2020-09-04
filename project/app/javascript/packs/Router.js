@@ -19,6 +19,7 @@ import UserStatusChannel from "../channels/user_status_channel"
 import GameChannel from "../channels/game_channel"
 import Ladder from "./Ladder"
 import TournamentChannel from "../channels/tournament_channel.js"
+import GuildChannel from "../channels/guild_channel"
 import Admin from "./Admin"
 import AdminGuildRights from "./AdminGuildRights"
 import Duel from "./Duel.js"
@@ -45,6 +46,10 @@ if ($('html').data().isLogin) {
                 GameChannel.unsubscribe();
             if (Game.content)
                 Game.content.undelegateEvents();
+            if (Guild.content)
+                Guild.content.undelegateEvents();
+            if (War.content)
+                War.content.undelegateEvents();
             if (Tournaments.content)
                 Tournaments.content.undelegateEvents();
             if (Tournament.content)
@@ -55,6 +60,9 @@ if ($('html').data().isLogin) {
                 AdminGuildRights.content.undelegateEvents()
             if (TournamentChannel.channel)
                 TournamentChannel.unsubscribe();
+            if (GuildChannel.channel)
+                GuildChannel.unsubscribe();
+
             $(window).off("resize");
         };
 
@@ -69,9 +77,10 @@ if ($('html').data().isLogin) {
                 "game/:match_type/:match_id": "match",
                 "profile": "profile",
                 "guild": "guild",
-                "guild/war_history/:guild_id": "guildHistory",
+                "guild/war_history/:guild_name/:guild_id": "guildHistory",
                 "chats/:room": "chat",
                 "channels/:channel_id": "channel",
+                "game/war": "war",
                 "war": "war",
                 "admin": "admin",
                 "admin/guildRights/:guild_id": "adminGuildRights",
@@ -100,10 +109,11 @@ if ($('html').data().isLogin) {
             },
             guild() {
                 remove_channel();
+                Guild.content = new Guild.Content();
                 Guild.content.render();
             },
-            guildHistory(guild_id) {
-                WarHistory.histView = new WarHistory.HistContent({ guild_id: guild_id });
+            guildHistory: function(guild_name, guild_id) {
+                WarHistory.histView = new WarHistory.HistContent({ guild_id: guild_id, guild_name: guild_name });
             },
             chat(room) {
                 remove_channel();

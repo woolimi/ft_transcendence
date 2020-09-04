@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_02_125612) do
+
+ActiveRecord::Schema.define(version: 2020_09_03_172145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -58,6 +59,7 @@ ActiveRecord::Schema.define(version: 2020_09_02_125612) do
     t.string "anagram"
     t.integer "total_score"
     t.jsonb "guild_officers"
+    t.jsonb "guild_members"
     t.uuid "owner"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -154,6 +156,8 @@ ActiveRecord::Schema.define(version: 2020_09_02_125612) do
     t.boolean "match_ongoing"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "max_unanswered"
+    t.string "war_type"
   end
 
   add_foreign_key "channel_messages", "channels"

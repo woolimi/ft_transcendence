@@ -19,7 +19,6 @@ class Api::TwoFactorsController < ApplicationController
     
     # POST /api/two_factors
     def create
-        puts 
         ret = (current_user.validate_and_consume_otp!(params["otp_attempt"]) || check_backup_code(params[:otp_attempt]))
         user_session["otp_validated"] = ret
         return render plain: "forbidden", status: :forbidden if !ret
