@@ -23,10 +23,10 @@ if ($('html').data().isLogin) {
 					this.guild_id = options.guild_id
 					this.render_page();
 					const listGuilds = await Helper.ajax(`/api/guilds/anything`, '', 'GET');
-					let guild = listGuilds.find((el)=>{return el.id == this.guild_id})
+					this.guild = listGuilds.find((el)=>{return el.id == this.guild_id})
 					this.render_user_list({ 
-						members: guild.guild_members,
-						officers: guild.guild_officers
+						members: this.guild.guild_members,
+						officers: this.guild.guild_officers
 					});
 				} catch (error) {
 					console.error(error);
@@ -41,13 +41,17 @@ if ($('html').data().isLogin) {
 			async toggle_user(e){
 				try {
 					const id = $(e.currentTarget).data().id;
-					await Helper.ajax('/api/guilds/anything' , {toggle_guild: this.guild_id, toggle_id: id}, 'PUT')
-					const listGuilds = await Helper.ajax(`/api/guilds/anything`, '', 'GET');
-					let guild = listGuilds.find((el)=>{return el.id == this.guild_id})
-					this.render_user_list({ 
-						members: guild.guild_members,
-						officers: guild.guild_officers
-					});
+					if(id != this.guild.owner){
+						await Helper.ajax('/api/guilds/anything' , {toggle_guild: this.guild_id, toggle_id: id}, 'PUT')
+						const listGuilds = await Helper.ajax(`/api/guilds/anything`, '', 'GET');
+						this.guild = listGuilds.find((el)=>{return el.id == this.guild_id})
+						this.render_user_list({ 
+							members: this.guild.guild_members,
+							officers: this.guild.guild_officers
+						});
+					} else {
+						Helper.flash_message('danger', "The guild owner can't be demoted")
+					}
 				} catch (error) {
 					console.error(error);
 				}
