@@ -4,12 +4,8 @@ class Api::UserInfoController < ApplicationController
 
 	# GET /api/user_info/?search=:name_or_nickname
 	def index
-		if params[:search]
-			res = UserProfile
-				.where.not(user_id: current_user[:id])
-				.where("lower(name) LIKE ? OR lower(nickname) LIKE ?", "%#{sanitize_sql_like(params[:search])}%", "%#{sanitize_sql_like(params[:search])}%")
-				.as_json(only: [:user_id, :name, :nickname, :avatar_url])
-			render json: res
+		if params[:search]				
+			render json: UserProfile.search(params[:search])
 		end
 	end
 
@@ -53,6 +49,7 @@ class Api::UserInfoController < ApplicationController
 		info = UserProfile.find_by(user_id: params[:user_id])
 		info.banned = true
 		info.save
+		info.user.send_notification('banned', {})
 	end
 
 	# PUT /api/user_info/:id/unban
@@ -60,5 +57,6 @@ class Api::UserInfoController < ApplicationController
 		info = UserProfile.find_by(user_id: params[:user_id])
 		info.banned = false
 		info.save
+		info.user.send_notification('unbanned', {})
 	end
 end
