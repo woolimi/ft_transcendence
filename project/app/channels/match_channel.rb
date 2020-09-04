@@ -11,16 +11,7 @@ class MatchChannel < ApplicationCable::Channel
   @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 4 }
   @@session = {}
 
-  # def reject_unauthorized_connection
-  #   logger.error "An unauthorized connection attempt was rejected"
-  #   raise UnauthorizedError
-  # end
-
   def subscribed
-    # kick if user is in game
-    if Match.where("player_1 @> ? OR player_2 @> ?", {user_id: current_user[:id]}.to_json, {user_id: current_user[:id]}.to_json).count > 0
-      return current_user.send_notification("double-game", "Cannot play more than 1 game at the same time")
-    end
     stream_from "match_#{params[:match_id]}_channel"
     m = Match.find_by(id: params[:match_id])
     @@session[current_user[:id]] = params[:match_id]
@@ -31,8 +22,20 @@ class MatchChannel < ApplicationCable::Channel
     elsif (params[:match_type] == "duel" || params[:match_type] == "ladder")
       if (m.player_1.nil?)
         m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+        if !m.match_finished
+          info.status = 2
+          info.save!()
+          ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
+        end
+        m.save!()
       elsif (m.player_2.nil?)
         m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+        if !m.match_finished
+          info.status = 2
+          info.save!()
+          ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
+        end
+        m.save!()
       end
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
@@ -45,7 +48,7 @@ class MatchChannel < ApplicationCable::Channel
     quit_match.save!()
     @@session.delete(current_user[:id])
     if (quit_match.match_type.include?("duel") || quit_match.match_type == "ladder")
-      return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil?)
+      return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil? && quit_match.stared_at.nil?)
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: quit_match.jbuild()})
   end
@@ -149,8 +152,8 @@ class MatchChannel < ApplicationCable::Channel
         match.save()
         if (game["score"][0] == 5 || game["score"][1] == 5)
           # set winner, loser, finished
-          winner = game["score"][0] > game["score"][1] ? match.player_1 : match.player_2
-          loser = game["score"][0] < game["score"][1] ? match.player_1 : match.player_2
+          winner = game["score"][0] > game["score"][1] ? match.player_left.user_profile.as_json : match.player_right.user_profile.as_json
+          loser = game["score"][0] < game["score"][1] ?  match.player_left.user_profile.as_json : match.player_right.user_profile.as_json
           match.winner = winner["user_id"]
           match.loser = loser["user_id"]
           match.score_left = game["score"][0]
@@ -158,7 +161,7 @@ class MatchChannel < ApplicationCable::Channel
           match.match_finished = true
           calculate_RP(winner, loser) if match.match_type == "ladder"
           match.tournament.manage() if match.match_type.include?("tournament")
-          match.save()
+          match.save!()
           break
         else
           ActionCable.server.broadcast("match_#{match_id}_channel", game)

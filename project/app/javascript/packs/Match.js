@@ -38,8 +38,8 @@ $(() => {
 				this.user_id = $('html').data().userId;
 				this.options = options; // { match_type: "duel", id: match_id }
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
-				if (match_data.match_finished)
-					throw "match finished";
+				// if (match_data.match_finished)
+				// 	throw "match finished";
 				this.render_page();
 				this.render_players(match_data);
 				this.render_game(match_data);
@@ -51,7 +51,11 @@ $(() => {
 					this.pong.on();
 				}
 				MatchChannel.subscribe(match_data, this.recv_callback, this);
-				UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
+				// console.log(match_data)
+				// if ((match_data.player_1 && match_data.player_1.user_id == this.user_id)
+				// 	|| (match_data.player_2 && match_data.player_2.user_id == this.user_id))
+				// 	UserStatusChannel.channel.perform("set_status", { user_id: this.user_id, status: 2 });
+				
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message("danger", error.responseText);
