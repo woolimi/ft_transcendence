@@ -7,7 +7,9 @@ class Api::ChannelBansController < ApplicationController
 		channel = Channel.find_by(id: params[:channel_id])
 		return render json: nil, status: :forbidden if channel.blank?
 		# Only owner or admin can ban user
-		return render json: nil, status: :forbidden if channel.owner != current_user[:id] && channel.admins.select{ |a| a == current_user[:id]}.blank?
+		if (current_user.user_profile.admin.blank? && channel.owner != current_user[:id] && channel.admins.select{ |a| a == current_user[:id]}.blank?)
+			return render json: nil, status: :forbidden
+		end
 		# Add user into bans
 		channel.bans.push(params[:user_id]) if channel.bans.select{|b| b == params[:user_id]}.blank?
 		if channel.save()
@@ -22,7 +24,9 @@ class Api::ChannelBansController < ApplicationController
 		channel = Channel.find_by(id: params[:channel_id])
 		return render json: nil, status: :forbidden if channel.blank?
 		# Only owner or admin can ban user
-		return render json: nil, status: :forbidden if channel.owner != current_user[:id] && channel.admins.select{ |a| a == current_user[:id]}.blank?
+		if (current_user.user_profile.admin.blank? && channel.owner != current_user[:id] && channel.admins.select{ |a| a == current_user[:id]}.blank?)
+			return render json: nil, status: :forbidden
+		end
 		# Remove user form bans
 		channel.bans.delete_if { |m| m == params[:user_id] }
 		if channel.save()

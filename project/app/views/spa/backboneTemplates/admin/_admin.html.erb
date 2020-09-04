@@ -38,10 +38,10 @@
 				<th style="width: 25%">Actions</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody style="max-height: 30vh; overflow-y: auto">
 			<%% _.forEach(list, (item)=> { %>
 			<tr>
-				<td><a href=<%%= '/#channels/' + item.id %>><%%= item.room %></a></td>
+				<td><a href=<%%= '/#channels/' + item.id %>><%%= item.room %> <%%= (item.password ? "(protected)" : "")%></a></td>
 				<td>
 					<button type="button" class="btn btn-danger btn-sm delete-channel" data-id="<%%= item.id %>">Delete</button>
 				</td>
@@ -53,14 +53,15 @@
 
 
 <script type="text/template" name="tmpl-admin-ban-users">
-	<table class="table">
+	<div id=banUsersTable>
+	<table  class="table">
 		<thead>
 			<tr>
 				<th style="width: 75%">User name</th>
 				<th style="width: 25%">Actions</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody style="max-height: 30vh; overflow-y: auto">
 			<%% _.forEach(list, (item)=> { %>
 			<tr>
 				<td><%%= item.name %></td>
@@ -75,4 +76,5 @@
 			<%% }) %>
 		</tbody>
 	</table>
+	</div>
 </script>

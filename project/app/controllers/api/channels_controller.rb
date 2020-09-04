@@ -55,6 +55,9 @@ class Api::ChannelsController < ApplicationController
 	# PUT /api/channels/:channel_id
 	def show
 		channel = Channel.find_by(id: params[:id]);
+		if (current_user.user_profile.admin.blank? && channel.bans.select{ |b| b == current_user[:id] }.present?)
+			return render json: "Banned user can't enter", status: :forbidden
+		end
 		if channel.present?
 			return render json: channel, status: :ok
 		else

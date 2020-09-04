@@ -1,14 +1,20 @@
 <script type="text/template" name="tmpl-channel-messages">
 <%% _.each(messages, function(message, index) { %>
-	<div class="chat-box d-flex <%%= message.user_id === $('html').data().userId ? "chat-my-message" : "" %>">
+	<div class="mb-4 chat-box d-flex <%%= message.user_id === $('html').data().userId ? "chat-my-message" : "" %>">
 		<div class="chat-avatar">
-			<img class="rounded-circle nav-avatar" src=<%%= message.avatar_url %>>
+			<div>
+				<img class="rounded-circle nav-avatar cursor userInfoModal" src=<%%= message.avatar_url %> 
+				data-user-id="<%%= message.user_id %>" data-toggle="modal" data-target="#userInfoModal">			
+				<div><%%= message.guild ? message.guild.anagram : '' %> <%%= message.nickname %></div>
+			</div>
 		</div>
 		<div class="chat-message-wrapper">
-			<div class="chat-message">
-				<%%= message.content %>
+			<div>
+				<div class="chat-message">
+					<%%= message.content %>
+				</div>
+				<div class="chat-date text-muted"><%%= new Date(message.timestamp).toLocaleString() %></div>			
 			</div>
-			<div class="chat-date text-muted"><%%= new Date(message.timestamp).toLocaleString() %></div>
 		</div>
 	</div>
 <%% }) %>

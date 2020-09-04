@@ -198,6 +198,7 @@ if ($('html').data().isLogin)
 			info.is_admin = Helper.contain(info.admins, (m) => m === Channel.content.user_id);
 			info.channel_id = info.id;
 			info.members = Channel.content.members.toJSON();
+			info.me = await Helper.ajax(`/api/profile/${Channel.content.user_id}`);
 			Channel.content.render_members(info);
 		}
 
@@ -228,14 +229,11 @@ if ($('html').data().isLogin)
 				try {
 					const info = await Helper.ajax(`/api/channels/${options.channel_id}`, "", "GET")
 					await Helper.fetch(this.members);
-					if (Helper.contain(info.bans, (b) => b === this.user_id))
-						throw new Error("You are not allowed");
-					if (!Helper.contain(this.members, (m) => m.get("user_id") === this.user_id))
-						throw new Error("You are not a member of this channel");
 					info.is_owner = this.user_id === info.owner;
 					info.is_admin = Helper.contain(info.admins, (m) => m === this.user_id);
 					info.channel_id = info.id;
 					info.members = this.members.toJSON();
+					info.me = await Helper.ajax(`/api/profile/${this.user_id}`);
 					await Helper.fetch(this.messages);
 					this.render_page(info);
 					this.render_messages();
@@ -427,8 +425,8 @@ if ($('html').data().isLogin)
 					this.scroll_down();
 					contentEl.val("");
 				} catch (error) {
-					if (error.statusText)
-						Helper.flash_message("danger", error.statusText);
+					if (error.responseText)
+						Helper.flash_message("danger", error.responseText);
 					else
 						console.error(error);
 				}
