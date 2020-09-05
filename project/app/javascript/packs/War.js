@@ -37,7 +37,6 @@ $(() => {
 
     War.data = new WarData();
 
-
     War.Content = Backbone.View.extend({
         el: $("#view-content"),
         model: War.data,
@@ -53,7 +52,7 @@ $(() => {
         render: async function() {
             // await Helper.fetch(this.model);
             const content = this.template(this.model.toJSON());
-            this.$el.html(content);
+            await this.$el.html(content);
             if(this.model.toJSON().status == 2)
                 this.renderTimer(this.model.toJSON().end_date);
             else
@@ -98,15 +97,11 @@ $(() => {
                     minutes + "m " + seconds + "s ";
 
                 if (distance < 0) {
-                    try {
-                        clearInterval(this.intervalId);
-                        await self.model.fetch();
-                        if (self.model.toJSON().status == 2)
-                            self.send_to_game();
-                    } catch(error) {
-                        clearInterval(this.intervalId);
-                        self.send_to_history();
-                    }
+                    clearInterval(this.intervalId);
+                    if(self.model.toJSON().status == 1)
+                        self.send_to_game();
+                    else if(self.model.toJSON().status == 2)
+                    document.getElementById("clock").innerHTML = "0d 0h 0m 0s <br>Go to guild war history for details"
                 }
             }, 1000);
         },
