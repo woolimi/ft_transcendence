@@ -46,9 +46,8 @@ class MatchChannel < ApplicationCable::Channel
     quit_match.player_1 = nil if (quit_match.player_1.present? && quit_match.player_1["user_id"] == current_user[:id])
     quit_match.player_2 = nil if (quit_match.player_2.present? && quit_match.player_2["user_id"] == current_user[:id])
     quit_match.save!()
-    @@session.delete(current_user[:id])
     if (quit_match.match_type.include?("duel") || quit_match.match_type == "ladder")
-      return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil? && quit_match.stared_at.nil?)
+      return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil? && quit_match.started_at.nil?)
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: quit_match.jbuild()})
   end
@@ -176,6 +175,8 @@ class MatchChannel < ApplicationCable::Channel
     match = Match.find_by(id: match_id)
     ActionCable.server.broadcast("match_#{match_id}_channel", {end: true, data: match.jbuild() })
     ActionCable.server.broadcast("game_channel", {type: "match"});
+    ActionCable.server.broadcast("user_status_channel", {user_id: match.player_left_id, status: 1 });
+    ActionCable.server.broadcast("user_status_channel", {user_id: match.player_right_id, status: 1 });
     @@matches.delete(match_id)
   end
 

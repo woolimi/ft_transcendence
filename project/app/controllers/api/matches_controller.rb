@@ -45,21 +45,6 @@ class Api::MatchesController < ApplicationController
 			end
 			return render plain: "internal server error", status: :internal_server_error
 		end
-
-		# if (params[:player_1].present? && params[:player_2].present?)
-		# 	player_1 = UserProfile.find_by(user_id: params[:player_1])
-		# 	player_2 = UserProfile.find_by(user_id: params[:player_2])
-		# 	return render plain: "forbidden", status: :forbidden if (player_1.present? && player_1.status != 1)
-		# 	return render plain: "forbidden", status: :forbidden if (player_2.present? && player_2.status != 1)
-		# 	room = Match.create(
-		# 		match_type: params[:match_type],
-		# 		player_1: {user_id: player_1.user_id, avatar_url: player_1.avatar_url, nickname: player_1.nickname, ready: false, score: 0, guild_id: player_1.guild_id },
-		# 		player_2: {user_id: player_2.user_id, avatar_url: player_2.avatar_url, nickname: player_2.nickname, ready: false, score: 0, guild_id: player_2.guild_id },
-		# 		match_finished: false,
-		# 		created_at: Time.now())
-		# 	return render json: room if (room.present?)
-		# end
-
 	end
 
 end
