@@ -24,7 +24,7 @@ if ($('html').data().isLogin) {
 					const user = await Helper.ajax(`/api/user_info/${user_id}`, '', 'GET');
 					$('#view-user-info-modal').html(this.template({ user: user }));
 				} catch (error) {
-					console.error(error);
+					console.error(error.responseText);
 				}
 			},
 			start_chat(e) {
