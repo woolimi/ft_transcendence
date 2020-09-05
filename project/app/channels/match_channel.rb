@@ -6,6 +6,7 @@ class MatchChannel < ApplicationCable::Channel
   #   player_2: {x, y} 390
   #   players: [uuid1, uuid2]
   # }
+
   @@matches = {}
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
   @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 4 }
@@ -158,9 +159,10 @@ class MatchChannel < ApplicationCable::Channel
           match.score_left = game["score"][0]
           match.score_right = game["score"][1]
           match.match_finished = true
-          calculate_RP(winner, loser) if match.match_type == "ladder"
-          match.tournament.manage() if match.match_type.include?("tournament")
           match.save!()
+          calculate_RP(winner, loser) if match.match_type == "ladder"
+          calculate_GP_WP(winner, match.match_type)
+          match.tournament.manage() if match.match_type.include?("tournament")
           break
         else
           ActionCable.server.broadcast("match_#{match_id}_channel", game)
@@ -225,6 +227,25 @@ class MatchChannel < ApplicationCable::Channel
     end
     w.save();
     l.save();
+  end
+
+
+  #  1. Normal match (duel, ladder, tournament)
+  # regardless wartime, earn 25 guild point
+  # if guild in war, depends on addon, get 25 war point
+  #  2.  War match
+  # 50 war point
+
+  # if winner has guild, give 25 point to his guild
+  def calculate_GP_WP(winner, match_type)
+    winner_guild = UserProfile.find_by(id: winner).guild
+    if winner_guild.present?
+      winner_guild.total_score += 25
+      winner_guild.save()
+      if winner_guild.in_war?
+        winner_guild.current_war.add_score(winner_guild.id, match_type)
+      end
+    end
   end
 end
 
