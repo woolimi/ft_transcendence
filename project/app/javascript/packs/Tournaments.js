@@ -25,10 +25,9 @@ $(() => {
 				this.render_page({me: me});
 				this.render_list({list: list});
 			} catch (error) {
+				console.error(error);
 				if (error.responseText)
 					Helper.flash_message('danger', error.responseText);
-				else
-					console.error(error);
 			}
 		},
 		render_page(data) {

@@ -44,10 +44,17 @@ $(() => {
 				Match.wrapper = document.getElementById("game-screen-wrapper");
 				Match.canvas = document.getElementById("game-screen");
 				this.pong = new Pong(options.id);
-				if (match_data.started_at	&& !match_data.match_finished
+				// console.log('match_data',match_data)
+				// console.log('user id:', this.user_id)
+				// console.log('condition', (match_data.started_at	&& !match_data.match_finished
+				// && (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)))
+
+				// match_data.started_at
+				if(!match_data.match_finished
 					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
 					this.pong.on();
 				}
+				
 				MatchChannel.subscribe(match_data, this.recv_callback, this);				
 			} catch (error) {
 				if (error.responseText)
