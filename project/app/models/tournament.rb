@@ -7,7 +7,7 @@ class Tournament < ApplicationRecord
 	validates :registration_end, presence: true
 	validates :name, presence: true
 
-	@@limit = 1.minutes
+	@@limit = 1.minute
 
 	def cancel
 		self.destroy!
@@ -45,7 +45,8 @@ class Tournament < ApplicationRecord
 		ForceMatchFinishIfNotStartedJob.set(wait_until: self.limit).perform_later(semiL)
 		ForceMatchFinishIfNotStartedJob.set(wait_until: self.limit).perform_later(semiR)
 		self.save()
-		update_ui(self.jbuild())
+		data = self.jbuild()
+		update_ui(data)
 		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "participant", data: data}
 		for i in 0...4 do
 			ActionCable.server.broadcast("notification_channel_#{self.players[i]["user_id"]}", {
@@ -56,7 +57,13 @@ class Tournament < ApplicationRecord
 	end
 
 	def finish_semi()
-		shouldStartFinal = semiR.match_finished && semiL.match_finished && final.blank?
+		shouldStartFinal = self.semiR.match_finished && self.semiL.match_finished && self.final_id == nil
+		puts "\n\n\n\n\n\n"
+		puts 'self.final_id', self.final_id, '--------------'
+		puts 'self.semiL.match_finished:', self.semiL.match_finished, '--------------'
+		puts 'self.semiR.match_finished:', self.semiR.match_finished, '--------------'
+		puts 'shouldStartFinal:', shouldStartFinal, '--------------'
+		puts "\n\n\n\n\n\n"
 		if (shouldStartFinal)
 			final = Match.create(
 				match_type: 'tournament_final',

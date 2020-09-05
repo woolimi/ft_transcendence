@@ -15,9 +15,7 @@ class Api::UserInfoController < ApplicationController
 		info = p.as_json(only: [:user_id, :name, :nickname, :avatar_url, :status, :rp])
 		info[:win] = Match.where(winner: params[:user_id]).count
 		info[:loss] = Match.where(loser: params[:user_id]).count
-		matches = Match.where(match_finished: true)
-			.where('winner = ? OR loser = ?', params[:user_id], params[:user_id])
-			.order('started_at DESC').limit(10).reverse
+		matches = Match.where(match_finished: true).where('winner = ? OR loser = ?', params[:user_id], params[:user_id]).order('started_at DESC').limit(10).reverse
 		match_list = []
 		matches.each{|m|
 			match = m.as_json

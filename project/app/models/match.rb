@@ -36,12 +36,17 @@ class Match < ApplicationRecord
 	end
 
 	def update_tournament_after_match_ends
+		puts("\n\n\n\n\n\n!!!!!!!!!!!")
+		puts 'self.tournament.blank?', self.tournament.blank?
+		puts("\n\n\n\n\n\n")
 		if self.tournament.blank?
 			return
 		end
 		if(self.match_type == 'tournament_semiL' || self.match_type == 'tournament_semiR')
-			self.tournament.finish_semi(self.match_type)
+			puts("\n\n\n\n\n\n!!!!!!!!!!!!! fini semi\n\n\n\n\n\n")
+			self.tournament.finish_semi()
 		elsif(match_type == 'tournament_final')
+			puts("\n\n\n\n\n\n!!!!!!!!!!!!! fini final\n\n\n\n\n\n")
 			self.tournament.finish_final()
 		end
 	end
