@@ -17,8 +17,13 @@ class MatchChannel < ApplicationCable::Channel
     @@session[current_user[:id]] = params[:match_id]
     info = current_user.user_profile
     if (params[:match_type] == "duel_friend" || params[:match_type].include?("tournament"))
-      m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_left_id)
-      m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_right_id)
+      if (current_user[:id] == m.player_left_id)
+        m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+        m.save()
+      elsif (current_user[:id] == m.player_right_id)
+        m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+        m.save()
+      end
     elsif (params[:match_type] == "duel" || params[:match_type] == "ladder")
       if (m.player_1.nil?)
         m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }

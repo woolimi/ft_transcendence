@@ -36,18 +36,23 @@ class Match < ApplicationRecord
 	end
 
 	def update_tournament_after_match_ends
-		puts("\n\n\n\n\n\n!!!!!!!!!!!")
-		puts 'self.tournament.blank?', self.tournament.blank?
-		puts("\n\n\n\n\n\n")
 		if self.tournament.blank?
 			return
 		end
 		if(self.match_type == 'tournament_semiL' || self.match_type == 'tournament_semiR')
-			puts("\n\n\n\n\n\n!!!!!!!!!!!!! fini semi\n\n\n\n\n\n")
 			self.tournament.finish_semi()
 		elsif(match_type == 'tournament_final')
-			puts("\n\n\n\n\n\n!!!!!!!!!!!!! fini final\n\n\n\n\n\n")
 			self.tournament.finish_final()
 		end
 	end
+
+	# def populate_players_jsonb
+	# 	if self.player_1.present?
+	# 	end
+	# 	if self.player_2.present?
+	# 	end
+	# 	info = current_user.user_profile
+	# 	self.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_left_id)
+	# 	self.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_right_id)  
+	# end
 end
