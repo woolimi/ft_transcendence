@@ -9,7 +9,8 @@ if ($('html').data().isLogin) {
 
     MatchChannel.unsubscribe = function() {
       if (this.channel) {
-        UserStatusChannel.channel.perform("set_status", { user_id: $('html').data().userId, status: 1 });
+        UserStatusChannel.user_status.set({status: 1});
+        UserStatusChannel.channel.perform("set_status", { user_id: $('html').data().userId, status: 1, quit_match: true });
         this.channel.unsubscribe(this.match_id);
         this.channel = null;
       }
@@ -33,7 +34,7 @@ if ($('html').data().isLogin) {
         },
         received(data) {
           recv_callback.bind(me)(data);
-        }
+        },
       });
     }
   });// window.onload
