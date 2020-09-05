@@ -97,8 +97,8 @@ class Tournament < ApplicationRecord
 	end
 
 	def finish_final()
-		winner = final.winner
-		status = 3
+		self.winner = self.final.winner
+		self.status = 3
 		self.save!()
 		update_ui(self.jbuild())
 	end
