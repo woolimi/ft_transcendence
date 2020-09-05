@@ -17,8 +17,13 @@ class MatchChannel < ApplicationCable::Channel
     @@session[current_user[:id]] = params[:match_id]
     info = current_user.user_profile
     if (params[:match_type] == "duel_friend" || params[:match_type].include?("tournament"))
-      m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_left_id)
-      m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_right_id)
+      if (current_user[:id] == m.player_left_id)
+        m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+        m.save()
+      elsif (current_user[:id] == m.player_right_id)
+        m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+        m.save()
+      end
     elsif (params[:match_type] == "duel" || params[:match_type] == "ladder")
       if (m.player_1.nil?)
         m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
@@ -159,8 +164,8 @@ class MatchChannel < ApplicationCable::Channel
           match.score_right = game["score"][1]
           match.match_finished = true
           calculate_RP(winner, loser) if match.match_type == "ladder"
-          match.tournament.manage() if match.match_type.include?("tournament")
           match.save!()
+          match.update_tournament_after_match_ends()
           break
         else
           ActionCable.server.broadcast("match_#{match_id}_channel", game)
