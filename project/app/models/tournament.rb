@@ -41,18 +41,18 @@ class Tournament < ApplicationRecord
 		self.semiL_id = semiL.id
 		self.semiR_id = semiR.id
 		self.status = 1
+		self.limit = Time.now() + @@limit
+		ForceMatchFinishIfNotStartedJob.set(wait_until: self.limit).perform_later(semiL)
+		ForceMatchFinishIfNotStartedJob.set(wait_until: self.limit).perform_later(semiR)
 		self.save()
-		data = self.jbuild()
+		update_ui(self.jbuild())
 		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "participant", data: data}
-		update_ui(data)
 		for i in 0...4 do
 			ActionCable.server.broadcast("notification_channel_#{self.players[i]["user_id"]}", {
 				type: 'tournament_start',
 				content: { tournament_id: self.id, tournament_name: self.name, tournament_type: "semifinal" }
 			})
 		end
-		ForceMatchFinishIfNotStartedJob.set(wait_until: Time.now() + @@limit).perform_later(semiL)
-		ForceMatchFinishIfNotStartedJob.set(wait_until: Time.now() + @@limit).perform_later(semiR)
 	end
 
 	def finish_semi()
@@ -72,6 +72,8 @@ class Tournament < ApplicationRecord
 			)
 			self.final_id = final.id
 			self.status = 2 # final
+			self.limit = Time.now() + @@limit
+			ForceMatchFinishIfNotStartedJob.set(wait_until: self.limit).perform_later(final)
 			self.save()
 			update_ui(self.jbuild())
 			ActionCable.server.broadcast("notification_channel_#{self.final.player_left[:id]}", {
@@ -82,7 +84,6 @@ class Tournament < ApplicationRecord
 				type: 'tournament_start',
 				content: { tournament_id: self.id, tournament_name: self.name, tournament_type: "final" }
 			})
-			ForceMatchFinishIfNotStartedJob.set(wait_until: Time.now() + @@limit).perform_later(final)		
 		else
 			update_ui(self.jbuild())
 		end
