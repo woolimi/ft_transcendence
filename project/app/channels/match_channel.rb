@@ -244,7 +244,7 @@ class MatchChannel < ApplicationCable::Channel
 
   # if winner has guild, give 25 point to his guild
   def calculate_GP_WP(winner, match_type)
-    winner_guild = UserProfile.find_by(id: winner).guild
+    winner_guild = UserProfile.find_by(user_id: winner["user_id"]).guild
     # if winner has guild
     if winner_guild.present?
       winner_guild.total_score += 25

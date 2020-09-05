@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_03_172145) do
+ActiveRecord::Schema.define(version: 2020_08_26_123118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -115,8 +115,8 @@ ActiveRecord::Schema.define(version: 2020_09_03_172145) do
     t.integer "rp", default: 1000
     t.boolean "admin", default: false
     t.uuid "guild_id"
-    t.uuid "user_id"
     t.boolean "banned", default: false
+    t.uuid "user_id"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
 
@@ -153,10 +153,10 @@ ActiveRecord::Schema.define(version: 2020_09_03_172145) do
     t.string "match_list"
     t.integer "status"
     t.boolean "match_ongoing"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.integer "max_unanswered"
     t.string "war_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "channel_messages", "channels"
