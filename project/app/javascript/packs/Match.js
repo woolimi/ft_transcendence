@@ -86,7 +86,7 @@ $(() => {
 
 			if (data.all_ready) {
 				$('.ready-status').addClass('d-none');
-				// this.pong.on();
+				this.pong.on();
 				return;
 			}
 
