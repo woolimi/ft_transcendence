@@ -1,5 +1,6 @@
 import MatchChannel from "../channels/match_channel"
 import $ from "jquery"
+import Match from "./Match"
 
 let Pong;
 
@@ -82,43 +83,37 @@ $(() => {
 		}
 	}
 
+	let reqId = null;
 	Pong = class Pong {
-		constructor(wrapper, canvas, match_id) {
-			if (!wrapper || !canvas)
-				throw Error("No element");
-			this.wrapper = document.getElementById("game-screen-wrapper");
-			this.canvas = document.getElementById("game-screen");
+		constructor(match_id) {
 			this.match_id = match_id;
 			this.user_id = $('html').data().userId;
-			this.context = this.canvas.getContext('2d');
-			if (!this.context)
-				throw Error("No context in constructor");
 			this.resize();
 			this.p1 = new Paddle(SIDE.LEFT);
 			this.p2 = new Paddle(SIDE.RIGHT);
 			this.ball = new Ball();
 			this.resize_handler_on();
 			this.draw();
-			this.reqId = null;
+			this.finished = false;
 		}
 		resize() {
-			if (!this.wrapper || !this.canvas)
+			if (!Match.wrapper || !Match.canvas)
 				throw Error("No wrapper or canvas in resize");
-			this.canvas.width = this.wrapper.offsetWidth;
-			this.canvas.height = this.canvas.width / 2;
+			Match.canvas.width = Match.wrapper.offsetWidth;
+			Match.canvas.height = Match.canvas.width / 2;
 		}
 		draw() {
-			if (!this.context || !this.canvas)
-				throw Error("No context or canvas in draw");
+			if (!Match.wrapper || !Match.canvas)
+				throw Error("No wrapper or canvas in draw");
 			// draw map
-			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			this.context.fillStyle = "white";
-			this.context.fillRect(this.canvas.width / 2 - 1, 0, 2, this.canvas.height);
+			Match.canvas.getContext('2d').clearRect(0, 0, Match.canvas.width, Match.canvas.height);
+			Match.canvas.getContext('2d').fillStyle = "white";
+			Match.canvas.getContext('2d').fillRect(Match.canvas.width / 2 - 1, 0, 2, Match.canvas.height);
 			// draw paddle
-			this.p1.draw(this.context, this.canvas);
-			this.p2.draw(this.context, this.canvas);
+			this.p1.draw(Match.canvas.getContext('2d'), Match.canvas);
+			this.p2.draw(Match.canvas.getContext('2d'), Match.canvas);
 			// draw ball
-			this.ball.draw(this.context, this.canvas);
+			this.ball.draw(Match.canvas.getContext('2d'), Match.canvas);
 		}
 
 		update(data) {
@@ -135,21 +130,20 @@ $(() => {
 		}
 		on() {
 			this.keyListener_on();
-			this.reqId = requestAnimationFrame(this.keyLoop.bind(this));
+			this.finished = false;
+			if (!reqId)
+				reqId = requestAnimationFrame(this.keyLoop.bind(this));
 		}
 		off() {
 			this.keyListener_off();
-			cancelAnimationFrame(this.reqId);
+			cancelAnimationFrame(reqId);
+			reqId = null;
 		}
 		keyListener_on() {
-			// $(window).on("keyup", keyup_cb);
-			// $(window).on("keydown", keydown_cb);
 			window.addEventListener("keyup", keyup_cb);
 			window.addEventListener("keydown", keydown_cb);
 		}
 		keyListener_off() {
-			// $(window).off("keyup");
-			// $(window).off("keydown");
 			window.removeEventListener("keyup", keyup_cb);
 			window.removeEventListener("keydown", keydown_cb);
 		}
@@ -161,9 +155,6 @@ $(() => {
 			return false;
 		}
 		async keyLoop() {
-			if (!MatchChannel.channel) {
-				return cancelAnimationFrame(this.reqId);
-			}
 			let move = 0;
 			if (this.keyPressed("ArrowUp"))
 				move += 1;
@@ -176,12 +167,12 @@ $(() => {
 					"move": (move === 1) ? "up" : "down",
 				});
 			}
-			await sleep(0.5)
-			this.reqId = requestAnimationFrame(this.keyLoop.bind(this));
+			await usleep(10);
+			reqId = requestAnimationFrame(this.keyLoop.bind(this));
 		}
 	}
 
-	function sleep(ms) {
+	function usleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 

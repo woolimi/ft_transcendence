@@ -41,5 +41,7 @@ SimpleNotification.r = id => {
 
 import SPA from "./SPA.js"
 if ($("html").data().isLogin) {
-	SPA.start();
+	$(()=> {
+		SPA.start();
+	})
 }

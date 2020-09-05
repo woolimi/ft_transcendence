@@ -9,10 +9,20 @@
 		<div class="col-sm-4 text-center p-1 mt-4" id="match-player1" data-user-id=<%%=player_1 ? player_1.user_id : ''%>>
 			<%% if (player_1) { %>
 			<img class="userInfoModal cursor rounded-circle game-avatar" src="<%%=player_1.avatar_url%>" data-user-id="<%%= player_1.user_id %>" data-toggle="modal" data-target="#userInfoModal">
+			<%% } else if (player_left_id) { %>
+			<img class="userInfoModal cursor rounded-circle game-avatar blur" src="<%%=player_left.avatar_url%>" data-user-id="<%%= player_left.user_id %>" data-toggle="modal" data-target="#userInfoModal">
 			<%% } else { %>
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
-			<div><%%= player_1 ? (match_type === "ladder" ? rank_image(player_1.rp) + player_1.nickname : player_1.nickname): 'Waiting' %></div>
+			<div>
+				<%% if (player_1) { %>
+				<%%= match_type === "ladder" ? rank_image(player_1.rp) + player_1.nickname : player_1.nickname %>
+				<%% } else if (!started_at) { %>
+					Waiting
+				<%% } else if (player_left_id) { %>
+				<%%= player_left.nickname %>
+				<%% } %>
+			</div>
 			<%% let p1_status;
 				if (match_finished) {
 					p1_status = "Finished";
@@ -22,6 +32,8 @@
 					} else {
 						p1_status = 'Not Ready'
 					}
+				} else if (started_at && !player_1) {
+					p1_status = "Disconnected";
 				}
 			%>
 			<div id="player1-ready-status" class="ready-status">
@@ -43,10 +55,20 @@
 		<div class="col-sm-4 text-center p-1 mt-4" id="match-player2">
 			<%% if (player_2) { %>
 			<img class="userInfoModal cursor rounded-circle game-avatar" src="<%%= player_2.avatar_url %>" data-user-id="<%%= player_2.user_id %>" data-toggle="modal" data-target="#userInfoModal">
+			<%% } else if (player_right_id) { %>
+			<img class="userInfoModal cursor rounded-circle game-avatar blur" src="<%%= player_right.avatar_url %>" data-user-id="<%%= player_right.user_id %>" data-toggle="modal" data-target="#userInfoModal">
 			<%% } else { %>
 			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
 			<%% } %>
-			<div><%%= player_2 ? (match_type === "ladder" ? rank_image(player_2.rp) + player_2.nickname : player_2.nickname) : 'Waiting'%></div>
+			<div>
+				<%% if (player_2) { %>
+				<%%= match_type === "ladder" ? rank_image(player_2.rp) + player_2.nickname : player_2.nickname %>
+				<%% } else if (!started_at) { %>
+					Waiting
+				<%% } else if (player_right_id) { %>
+				<%%= player_right.nickname %>
+				<%% } %>
+			</div>
 			<%% let p2_status = '';
 				if (match_finished) {
 					p2_status = "Finished";
@@ -56,6 +78,8 @@
 					} else {
 						p2_status = 'Not Ready'
 					}
+				} else if (started_at && !player_2) {
+					p2_status = "Disconnected";
 				}
 			%>
 			<div id="player2-ready-status" class="ready-status">
@@ -95,7 +119,7 @@
 	<ul class="list-group">
 		<%% _.forEach(list, (item) => { %>
 		<li class="list-group-item ingame-match cursor" data-match-id="<%%= item.id %>" data-match-type="<%%= item.match_type %>">
-			(<%%= item.match_type %>) <%%= item.player_1.nickname %> vs <%%= item.player_2.nickname %>
+			(<%%= item.match_type %>) <%%= item.player_left.nickname %> VS <%%= item.player_right.nickname %>
 		</li>
 		<%% }) %>
 	</ul>
