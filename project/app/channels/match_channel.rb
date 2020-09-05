@@ -159,8 +159,8 @@ class MatchChannel < ApplicationCable::Channel
           match.score_right = game["score"][1]
           match.match_finished = true
           calculate_RP(winner, loser) if match.match_type == "ladder"
-          match.tournament.manage() if match.match_type.include?("tournament")
           match.save!()
+          match.update_tournament_after_match_ends()
           break
         else
           ActionCable.server.broadcast("match_#{match_id}_channel", game)
