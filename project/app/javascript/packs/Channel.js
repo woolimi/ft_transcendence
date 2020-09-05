@@ -153,6 +153,8 @@ if ($('html').data().isLogin)
 						window.location.hash = "";				
 				} catch (error) {
 					Helper.flash_message("danger", error.responseText)
+					await Helper.fetch(Channel.m_channel_list);
+					Channel.channel_list.render_channel_list();
 				}
 			}
 		});
@@ -247,7 +249,14 @@ if ($('html').data().isLogin)
 					if (error.status === 401)
 						return this.render_login();
 					if (error.responseText)
+					{
+						if(error.responseText == "Channel has been deleted by admin")
+						{
+							await Helper.fetch(Channel.m_channel_list);
+							Channel.channel_list.render_channel_list();
+						}
 						Helper.flash_message("danger", error.responseText);
+					}
 					else {
 						Helper.flash_message("danger", error);
 					}
@@ -426,7 +435,15 @@ if ($('html').data().isLogin)
 					contentEl.val("");
 				} catch (error) {
 					if (error.responseText)
+					{
+						if(error.responseText == "Channel has been deleted by admin")
+						{
+							await Helper.fetch(Channel.m_channel_list);
+							Channel.channel_list.render_channel_list();
+							Router.router.navigate("", {trigger: true})
+						}
 						Helper.flash_message("danger", error.responseText);
+					}
 					else
 						console.error(error);
 				}
