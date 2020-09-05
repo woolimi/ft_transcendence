@@ -19,11 +19,11 @@ class Match < ApplicationRecord
 			self.started_at = Time.now()
 			if ((self.player_1.present? && self.player_2.present?) || 
 				(self.player_1.blank? && self.player_2.blank?))
-				self.win = rand(0..1)
+				win = rand(0..1)
 			elsif (self.player_1.present? && self.player_2.blank?)
-				self.win = 0
+				win = 0
 			elsif (self.player_1.blank? && self.player_2.present?)
-				self.win = 1
+				win = 1
 			end
 			self.winner = (win == 0 ? self.player_left_id : self.player_right_id)
 			self.loser = (win == 0 ? self.player_right_id : self.player_left_id)
