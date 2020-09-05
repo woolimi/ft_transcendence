@@ -1,3 +1,4 @@
 class Guild < ApplicationRecord
-    has_one :user_profile
+	validates :name, presence: true, uniqueness: true
+	validates :anagram, presence: true, uniqueness: true
 end

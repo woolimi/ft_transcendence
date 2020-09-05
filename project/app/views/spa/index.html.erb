@@ -1,5 +1,5 @@
 <div id="app">
-<% if !user_signed_in? %>
+<% if !(user_signed_in? && !current_user.user_profile.banned) %>
 	<%= render "login" %>
 <% elsif user_signed_in? && current_user.otp_required_for_login? && !user_session["otp_validated"] %>
 	<%= render "otpPage" %>
@@ -22,6 +22,7 @@
 	<%= render "spa/modal/userInfoModal" %>
 	<%= render "spa/modal/searchUserModal" %>
 	<%= render "spa/modal/searchBlockUserModal" %>
+	<%= render "spa/modal/declareWarModal" %>
 	<%= render "spa/modal/generateChannelModal" %>
 	<%= render "spa/backboneTemplates/channel/searchChannelModal" %>
 	<%= render "spa/backboneTemplates/channel/channelInviteModal" %>

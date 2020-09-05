@@ -1,0 +1,33 @@
+
+<script type="text/template" name="tmpl-admin-guild-page">
+	<div class="container-fluid">
+		<h2 style="margin-top: 40px; margin-bottom: 24px;">Guild members</h2>
+		<div id="admin-guild-users"></div>
+	</div>
+</script>
+
+
+<script type="text/template" name="tmpl-admin-guild-users">
+	<table  class="table">
+		<thead>
+			<tr>
+				<th style="width: 75%">User name</th>
+				<th style="width: 25%">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<%% _.forEach(members, (item)=> { %>
+			<tr>
+				<td><%%= item.name %></td>
+				<td>
+					<%% if(!officers.find((el)=>{return el.user_id == item.user_id})) { %>
+					<button type="button" class="btn btn-success btn-sm promote-user" data-id="<%%= item.user_id %>">Promote</button>
+					<%% } else { %>
+					<button type="button" class="btn btn-warning btn-sm demote-user" data-id="<%%= item.user_id %>">Demote</button>
+					<%% }%>
+				</td>
+			</tr>
+			<%% }) %>
+		</tbody>
+	</table>
+</script>

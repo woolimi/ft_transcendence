@@ -1,6 +1,9 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
+import Guild from "./Guild.js"
+import Router from "./Router.js"
+import Helper from "./Helper.js"
 
 const War = {};
 
@@ -16,9 +19,14 @@ $(() => {
             position: "undefined",
             start_date: "undefined",
             end_date: "undefined",
-            match_ongoing: "undefined",
-            guild_1_score: "undefined",
-            guild_2_score: "undefined",
+            status: "undefined",
+            position: "undefined",
+            wins: 0,
+            losses: 0,
+            unanswered: 0,
+            player_guild_anag: "undefined",
+            opponent_guild_anag: "undefined",
+            match_ongoing: false,
         },
         urlRoot: "/api/war/",
         idAttribute: "user_id",
@@ -37,21 +45,46 @@ $(() => {
         initialize: async function() {
             try {
                 await Helper.fetch(this.model);
-                console.log("Model: " + JSON.stringify(this.model));
                 this.render();
             } catch (error) {
-                Helper.flash_message("danger", "Error while loading war!");
+                Helper.flash_message("danger", error.responseText);
             }
         },
-        render: function() {
+        render: async function() {
+            // await Helper.fetch(this.model);
             const content = this.template(this.model.toJSON());
             this.$el.html(content);
-            this.renderTimer(this.model.toJSON().end_date);
+            if(this.model.toJSON().status == 2)
+                this.renderTimer(this.model.toJSON().end_date);
+            else
+                this.renderTimer(this.model.toJSON().start_date);
         },
-        renderTimer: function(end_date) {
-            this.intervalId = setInterval(function() {
-                var dds = new Date(end_date);
-                console.log("ed:", end_date);
+        events: {
+            "click #attack": "attack",
+        },
+        send_to_game: function(){
+            Router.router.navigate("/game", {trigger: true});
+        },
+        send_to_history: async function(){
+            await Helper.fetch(Guild.allGuilds);
+            var guilds = Guild.allGuilds.toJSON();
+            var i = 0;
+            var gid;
+            var gname;
+            for (i = 0; i < Object.keys(guilds).length; i++)
+            {
+                if(guilds[i].anagram == this.model.toJSON().player_guild_anag)
+                {
+                    gid = guilds[i].id
+                    gname = guilds[i].name
+                }
+            }
+            Router.router.navigate("/guild/war_history/" + gname + "/" + gid, {trigger: true});
+        },
+        renderTimer: function(date) {
+            const self = this;
+            this.intervalId = setInterval(async function() {
+                var dds = new Date(date);
                 var countDownDate = dds.getTime();
                 var now = Date.now();
 
@@ -65,10 +98,28 @@ $(() => {
                     minutes + "m " + seconds + "s ";
 
                 if (distance < 0) {
-                    clearInterval(this.intervalId);
-                    document.getElementById("clock").innerHTML = "WAR EXPIRED";
+                    try {
+                        clearInterval(this.intervalId);
+                        await self.model.fetch();
+                        if (self.model.toJSON().status == 2)
+                            self.send_to_game();
+                    } catch(error) {
+                        clearInterval(this.intervalId);
+                        self.send_to_history();
+                    }
                 }
             }, 1000);
+        },
+        attack: async function() {
+            this.model.set({
+                match_ongoing: true
+            });
+            try {
+                await this.model.save();
+                Helper.flash_message("War", "success!");
+            } catch (error) {
+                Helper.flash_message("War", "failure!");
+            }
         }
     })
 })

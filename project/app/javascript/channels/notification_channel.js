@@ -40,8 +40,11 @@ if ($('html').data().isLogin)
             case "duel-reject":
               handle_duel_reject();
               break;
-            case "double-game":
-              handle_double_game(data);
+            case "banned":
+              handle_banned();
+              break;
+            case "unbanned":
+              handle_unbanned();
               break;
 						default:
 							break;
@@ -53,10 +56,14 @@ if ($('html').data().isLogin)
       }); 
     }
 
-    function handle_double_game(data) {
-      Helper.flash_message("danger", data.content);
-      // return Router.router.navigate(`/`, { trigger: true });
-      window.location.hash = '';
+    function handle_banned(){
+      Helper.flash_message('danger', 'Your have been banned');
+      Helper.ajax('/users/sign_out', '', 'DELETE')
+      window.location.href = ''
+    }
+
+    function handle_unbanned(){
+      Helper.flash_message('success', 'Your have been unbanned');
     }
 
     function handle_duel_reject() {

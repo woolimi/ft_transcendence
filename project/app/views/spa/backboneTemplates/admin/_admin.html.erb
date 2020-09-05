@@ -1,0 +1,80 @@
+
+<script type="text/template" name="tmpl-admin-page">
+	<div class="container-fluid">
+		<h2 style="margin-top: 15px; margin-bottom: 24px;">Delete channels</h2>
+		<div id="admin-channel-list"></div>
+		<h2 style="margin-top: 40px; margin-bottom: 24px;">Ban users</h2>
+		<div id="admin-ban-users"></div>
+		<h2 style="margin-top: 40px; margin-bottom: 24px;">User rights in guilds</h2>
+		<div id="admin-guild-list"></div>
+	</div>
+</script>
+
+<script type="text/template" name="tmpl-admin-guild-list">
+	<table class="table">
+		<thead>
+			<tr>
+				<th style="width: 100%">Guilds</th>
+			</tr>
+		</thead>
+		<tbody>
+			<%% _.forEach(list, (item)=> { %>
+			<tr>
+				<td>
+				<a href=<%%= '/#admin/guildRights/' + item.id %>><%%= item.name %></a>
+				</td>
+			</tr>
+			<%% }) %>
+		</tbody>
+	</table>
+</script>
+
+
+<script type="text/template" name="tmpl-admin-channel-list">
+	<table class="table">
+		<thead>
+			<tr>
+				<th style="width: 75%">Channel name</th>
+				<th style="width: 25%">Actions</th>
+			</tr>
+		</thead>
+		<tbody style="max-height: 30vh; overflow-y: auto">
+			<%% _.forEach(list, (item)=> { %>
+			<tr>
+				<td><a href=<%%= '/#channels/' + item.id %>><%%= item.room %> <%%= (item.password ? "(protected)" : "")%></a></td>
+				<td>
+					<button type="button" class="btn btn-danger btn-sm delete-channel" data-id="<%%= item.id %>">Delete</button>
+				</td>
+			</tr>
+			<%% }) %>
+		</tbody>
+	</table>
+</script>
+
+
+<script type="text/template" name="tmpl-admin-ban-users">
+	<div id=banUsersTable>
+	<table  class="table">
+		<thead>
+			<tr>
+				<th style="width: 75%">User name</th>
+				<th style="width: 25%">Actions</th>
+			</tr>
+		</thead>
+		<tbody style="max-height: 30vh; overflow-y: auto">
+			<%% _.forEach(list, (item)=> { %>
+			<tr>
+				<td><%%= item.name %></td>
+				<td>
+					<%% if(!item.banned) { %>
+					<button type="button" class="btn btn-danger btn-sm ban-user" data-id="<%%= item.user_id %>">Ban</button>
+					<%% } else { %>
+					<button type="button" class="btn btn-warning btn-sm unban-user" data-id="<%%= item.user_id %>">Unban</button>
+					<%% }%>
+				</td>
+			</tr>
+			<%% }) %>
+		</tbody>
+	</table>
+	</div>
+</script>
