@@ -13,8 +13,8 @@ class MatchChannel < ApplicationCable::Channel
 
   def subscribed
     stream_from "match_#{params[:match_id]}_channel"
-    @@session[current_user[:id]] = params[:match_id]
     m = Match.find_by(id: params[:match_id])
+    @@session[current_user[:id]] = params[:match_id]
     info = current_user.user_profile
     if (params[:match_type] == "duel_friend" || params[:match_type].include?("tournament"))
       m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id } if (current_user[:id] == m.player_left_id)
@@ -22,8 +22,20 @@ class MatchChannel < ApplicationCable::Channel
     elsif (params[:match_type] == "duel" || params[:match_type] == "ladder")
       if (m.player_1.nil?)
         m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+        if !m.match_finished
+          info.status = 2
+          info.save!()
+          ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
+        end
+        m.save!()
       elsif (m.player_2.nil?)
         m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: false, guild_id: info.guild_id }
+        if !m.match_finished
+          info.status = 2
+          info.save!()
+          ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
+        end
+        m.save!()
       end
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
@@ -31,14 +43,11 @@ class MatchChannel < ApplicationCable::Channel
 
   def unsubscribed
     quit_match = Match.find_by(id: @@session[current_user[:id]])
-    return if quit_match.started_at.present?
-    # if match is not started
     quit_match.player_1 = nil if (quit_match.player_1.present? && quit_match.player_1["user_id"] == current_user[:id])
     quit_match.player_2 = nil if (quit_match.player_2.present? && quit_match.player_2["user_id"] == current_user[:id])
     quit_match.save!()
-    @@session.delete(current_user[:id])
     if (quit_match.match_type.include?("duel") || quit_match.match_type == "ladder")
-      return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil?)
+      return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil? && quit_match.started_at.nil?)
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: quit_match.jbuild()})
   end
@@ -142,8 +151,8 @@ class MatchChannel < ApplicationCable::Channel
         match.save()
         if (game["score"][0] == 5 || game["score"][1] == 5)
           # set winner, loser, finished
-          winner = game["score"][0] > game["score"][1] ? match.player_1 : match.player_2
-          loser = game["score"][0] < game["score"][1] ? match.player_1 : match.player_2
+          winner = game["score"][0] > game["score"][1] ? match.player_left.user_profile.as_json : match.player_right.user_profile.as_json
+          loser = game["score"][0] < game["score"][1] ?  match.player_left.user_profile.as_json : match.player_right.user_profile.as_json
           match.winner = winner["user_id"]
           match.loser = loser["user_id"]
           match.score_left = game["score"][0]
@@ -151,7 +160,7 @@ class MatchChannel < ApplicationCable::Channel
           match.match_finished = true
           calculate_RP(winner, loser) if match.match_type == "ladder"
           match.tournament.manage() if match.match_type.include?("tournament")
-          match.save()
+          match.save!()
           break
         else
           ActionCable.server.broadcast("match_#{match_id}_channel", game)
@@ -166,6 +175,8 @@ class MatchChannel < ApplicationCable::Channel
     match = Match.find_by(id: match_id)
     ActionCable.server.broadcast("match_#{match_id}_channel", {end: true, data: match.jbuild() })
     ActionCable.server.broadcast("game_channel", {type: "match"});
+    ActionCable.server.broadcast("user_status_channel", {user_id: match.player_left_id, status: 1 });
+    ActionCable.server.broadcast("user_status_channel", {user_id: match.player_right_id, status: 1 });
     @@matches.delete(match_id)
   end
 

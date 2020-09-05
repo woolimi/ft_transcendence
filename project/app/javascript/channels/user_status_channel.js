@@ -21,7 +21,7 @@ if ($('html').data().isLogin) {
       },
     });
 
-    const user_status = new UserStatus();
+    UserStatusChannel.user_status = new UserStatus();
 
     UserStatusChannel.subscribe = function() {
       if (this.channel)
@@ -39,8 +39,26 @@ if ($('html').data().isLogin) {
 
         received(data) {
           // Called when there's incoming data on the websocket for this channel
-          if (user_status.get("user_id") === data.user_id && data.status == 0) {
-            user_status.save();
+          if (data.user_id === UserStatusChannel.user_status.get("user_id")
+            && UserStatusChannel.user_status.get("status") === 2 && data.status === 2) {
+              UserStatusChannel.user_status.set({status: 1});
+              return window.location.hash = '';
+          }
+
+          if (data.user_id === UserStatusChannel.user_status.get("user_id")
+            && UserStatusChannel.user_status.get("status") === 1 && data.status === 2) {
+              UserStatusChannel.user_status.set({status: 2});
+              return;
+          }
+
+          if (data.user_id === UserStatusChannel.user_status.get("user_id")
+            && UserStatusChannel.user_status.get("status") === 2 && data.status === 1) {
+              UserStatusChannel.user_status.set({status: 1});
+            return window.location.hash = '';
+          }
+
+          if (UserStatusChannel.user_status.get("user_id") === data.user_id && data.status == 0) {
+            UserStatusChannel.user_status.save();
             return;
           }
           // check if signout user is friend
