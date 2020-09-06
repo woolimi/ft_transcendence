@@ -8,7 +8,7 @@ class MatchChannel < ApplicationCable::Channel
   # }
   @@matches = {}
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
-  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 4 }
+  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 5 }
   @@session = {}
 
   def subscribed
@@ -59,6 +59,7 @@ class MatchChannel < ApplicationCable::Channel
 
   def ready(data)
     match = Match.find_by(id: data["match_id"])
+    pp match
     return if match.started_at.present?
     match.player_1["ready"] = data["ready_status"] if data["nb_player"] == 1
     match.player_2["ready"] = data["ready_status"] if data["nb_player"] == 2
@@ -78,11 +79,15 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def game_data(data)
-    return if !@@matches.has_key?(data["match_id"])
-    return if current_user[:id] != data["from"]
-    return if @@matches[data["match_id"]]["over"] == true
+    # puts "\n\n\n\n\n\n\n\ntiti\n\n\n\n\n\n\n\n\n"
+    # return if !@@matches.has_key?(data["match_id"])
+    # return if current_user[:id] != data["from"]
+    # return if @@matches[data["match_id"]]["over"] == true
+    puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+    puts data
+    puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
     player_nb = @@matches[data["match_id"]]["players"].find_index(data["from"]) + 1
-    return if player_nb.nil? 
+    # return if player_nb.nil? 
     new_pos = @@matches[data["match_id"]]["player_#{player_nb}"].deep_dup
     new_pos["y"] -= @@PADDLE[:SPEED] if data["move"] == "up"
     new_pos["y"] += @@PADDLE[:SPEED] if data["move"] == "down"
@@ -94,7 +99,7 @@ class MatchChannel < ApplicationCable::Channel
   private
   def game_start(match_id, players)
     @@matches[match_id] = {
-      "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => 0, "moveY" => 0, "speed" => 4 },
+      "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => 0, "moveY" => 0, "speed" => 5 },
       "score" => [0, 0],
       "player_1" => { "x" => 10, "y" => 90 },
       "player_2" => { "x" => 390, "y" => 90 },
@@ -105,7 +110,7 @@ class MatchChannel < ApplicationCable::Channel
     # start loop
     @@matches[match_id]["over"] = true
     while(1) do
-      sleep 0.01
+      sleep 0.04
       game = @@matches[match_id]
       p1 = @@matches[match_id]["player_1"]
       p2 = @@matches[match_id]["player_2"]
