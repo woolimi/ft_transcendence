@@ -1,8 +1,8 @@
 import MatchChannel from "../channels/match_channel"
 import $ from "jquery"
-import Match from "./Match"
+// import Match from "./Match"
 
-let Pong;
+let Pong = {};
 
 if ($('html').data().isLogin) {
 
@@ -23,25 +23,6 @@ $(() => {
 			y: pos.y * canvas.height / CANVAS.HEIGHT,
 		};
 		return trans_pos;
-	}
-
-	const pressedKeys = { up: false, down: false };
-
-	const keyup_cb = function (e) {
-		if (e.code === "ArrowUp")
-			pressedKeys.up = false;
-		if (e.code === "ArrowDown")
-			pressedKeys.down = false;
-		if (e.code === "ArrowUp" || e.code === "ArrowDown")
-			e.preventDefault();
-	}
-	const keydown_cb = function (e) {
-		if (e.code === "ArrowUp")
-			pressedKeys.up = true;
-		if (e.code === "ArrowDown")
-			pressedKeys.down = true;
-		if (e.code === "ArrowUp" || e.code === "ArrowDown")
-			e.preventDefault();
 	}
 
 	class Paddle {
@@ -83,99 +64,91 @@ $(() => {
 		}
 	}
 
-	let reqId = null;
-	Pong = class Pong {
-		constructor(match_id) {
-			this.match_id = match_id;
-			this.user_id = $('html').data().userId;
-			this.resize();
-			this.p1 = new Paddle(SIDE.LEFT);
-			this.p2 = new Paddle(SIDE.RIGHT);
-			this.ball = new Ball();
-			this.resize_handler_on();
-			this.draw();
-			this.finished = false;
-		}
-		resize() {
-			if (!Match.wrapper || !Match.canvas)
-				throw Error("No wrapper or canvas in resize");
-			Match.canvas.width = Match.wrapper.offsetWidth;
-			Match.canvas.height = Match.canvas.width / 2;
-		}
-		draw() {
-			if (!Match.wrapper || !Match.canvas)
-				throw Error("No wrapper or canvas in draw");
-			// draw map
-			Match.canvas.getContext('2d').clearRect(0, 0, Match.canvas.width, Match.canvas.height);
-			Match.canvas.getContext('2d').fillStyle = "white";
-			Match.canvas.getContext('2d').fillRect(Match.canvas.width / 2 - 1, 0, 2, Match.canvas.height);
-			// draw paddle
-			this.p1.draw(Match.canvas.getContext('2d'), Match.canvas);
-			this.p2.draw(Match.canvas.getContext('2d'), Match.canvas);
-			// draw ball
-			this.ball.draw(Match.canvas.getContext('2d'), Match.canvas);
-		}
 
-		update(data) {
-			this.ball.update(data.ball);
-			this.p1.update(data.player_1);
-			this.p2.update(data.player_2);
-		}
+	Pong.resize = function() {
+		if (!Pong.wrapper || !Pong.canvas)
+			throw Error("No wrapper or canvas in resize");
+		Pong.canvas.width = Pong.wrapper.offsetWidth;
+		Pong.canvas.height = Pong.canvas.width / 2;
+	}
+	Pong.draw = function() {
+		if (!Pong.wrapper || !Pong.canvas)
+			throw Error("No wrapper or canvas in draw");
+		// draw map
+		Pong.canvas.getContext('2d').clearRect(0, 0, Pong.canvas.width, Pong.canvas.height);
+		Pong.canvas.getContext('2d').fillStyle = "white";
+		Pong.canvas.getContext('2d').fillRect(Pong.canvas.width / 2 - 1, 0, 2, Pong.canvas.height);
+		// draw paddle
+		Pong.p1.draw(Pong.canvas.getContext('2d'), Pong.canvas);
+		Pong.p2.draw(Pong.canvas.getContext('2d'), Pong.canvas);
+		// draw ball
+		Pong.ball.draw(Pong.canvas.getContext('2d'), Pong.canvas);
+	}
 
-		resize_handler_on() {
-			$(window).on("resize", () => {
-				this.resize();
-				this.draw();
-			})
+	Pong.update = function(data) {
+		Pong.ball.update(data.ball);
+		Pong.p1.update(data.player_1);
+		Pong.p2.update(data.player_2);
+	}
+
+	Pong.resize_handler_on = function() {
+		$(window).on("resize", () => {
+			Pong.resize();
+			Pong.draw();
+		})
+	}
+
+	Pong.send = function(message){
+		MatchChannel.channel.perform("game_data", {
+			"from": window.user_id,
+			"match_id": window.id,
+			"move": message,
+		});
+	}
+
+	Pong.keyup_cb = function (e) {
+		e.preventDefault();
+		if (e.code === "ArrowUp"){
+			Pong.send('stop')
 		}
-		on() {
-			this.keyListener_on();
-			this.finished = false;
-			if (!reqId)
-				reqId = requestAnimationFrame(this.keyLoop.bind(this));
+		if (e.code === "ArrowDown"){
+			Pong.send('stop')
+		}			
+	}
+	
+	Pong.keydown_cb = function (e) {
+		e.preventDefault();
+		if (e.code === "ArrowUp"){
+			Pong.send('up')
 		}
-		off() {
-			this.keyListener_off();
-			cancelAnimationFrame(reqId);
-			reqId = null;
-		}
-		keyListener_on() {
-			window.addEventListener("keyup", keyup_cb);
-			window.addEventListener("keydown", keydown_cb);
-		}
-		keyListener_off() {
-			window.removeEventListener("keyup", keyup_cb);
-			window.removeEventListener("keydown", keydown_cb);
-		}
-		keyPressed(key) {
-			if (key === "ArrowUp")
-				return pressedKeys.up;
-			if (key === "ArrowDown")
-				return pressedKeys.down;
-			return false;
-		}
-		async keyLoop() {
-			let move = 0;
-			if (this.keyPressed("ArrowUp"))
-				move += 1;
-			if (this.keyPressed("ArrowDown"))
-				move -= 1;
-			if (move !== 0) {
-				MatchChannel.channel.perform("game_data", {
-					"from": this.user_id,
-					"match_id": this.match_id,
-					"move": (move === 1) ? "up" : "down",
-				});
-			}
-			await usleep(10);
-			reqId = requestAnimationFrame(this.keyLoop.bind(this));
+		if (e.code === "ArrowDown"){
+			Pong.send('down')
 		}
 	}
 
-	function usleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
+	Pong.on = function() {
+		window.addEventListener("keyup", Pong.keyup_cb);
+		window.addEventListener("keydown", Pong.keydown_cb);
+	}
+
+	Pong.off = function() {
+		window.removeEventListener("keyup", Pong.keyup_cb);
+		window.removeEventListener("keydown", Pong.keydown_cb);
+	}
+
+
+	Pong.setup = function() {
+		Pong.wrapper = document.getElementById("game-screen-wrapper");
+		Pong.canvas = document.getElementById("game-screen");
+		Pong.resize();
+		Pong.p1 = new Paddle(SIDE.LEFT);
+		Pong.p2 = new Paddle(SIDE.RIGHT);
+		Pong.ball = new Ball();
+		Pong.resize_handler_on();
+		Pong.draw();
 	}
 
 }) 
 }
-export { Pong }
+
+export default Pong;
