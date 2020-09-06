@@ -56,7 +56,10 @@ $(() => {
             if(this.model.toJSON().status == 2)
                 this.renderTimer(this.model.toJSON().end_date);
             else
+            {
+                document.getElementById("attack").disabled = true;
                 this.renderTimer(this.model.toJSON().start_date);
+            }
         },
         events: {
             "click #attack": "attack",
@@ -101,7 +104,10 @@ $(() => {
                     if(self.model.toJSON().status == 1)
                         self.send_to_game();
                     else if(self.model.toJSON().status == 2)
-                    document.getElementById("clock").innerHTML = "0d 0h 0m 0s <br>Go to guild war history for details"
+                    {
+                        document.getElementById("clock").innerHTML = "0d 0h 0m 0s <br>Go to guild war history for details"
+                        document.getElementById("attack").disabled = true;
+                    }
                 }
             }, 1000);
         },
