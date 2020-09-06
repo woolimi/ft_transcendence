@@ -7,8 +7,9 @@ class MatchChannel < ApplicationCable::Channel
   #   players: [uuid1, uuid2]
   # }
   @@matches = {}
+  @@speed = 9
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
-  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => 4 }
+  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => @@speed }
   @@session = {}
 
   def subscribed
@@ -59,6 +60,7 @@ class MatchChannel < ApplicationCable::Channel
 
   def ready(data)
     match = Match.find_by(id: data["match_id"])
+    pp match
     return if match.started_at.present?
     match.player_1["ready"] = data["ready_status"] if data["nb_player"] == 1
     match.player_2["ready"] = data["ready_status"] if data["nb_player"] == 2
@@ -78,23 +80,14 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def game_data(data)
-    return if !@@matches.has_key?(data["match_id"])
-    return if current_user[:id] != data["from"]
-    return if @@matches[data["match_id"]]["over"] == true
     player_nb = @@matches[data["match_id"]]["players"].find_index(data["from"]) + 1
-    return if player_nb.nil? 
-    new_pos = @@matches[data["match_id"]]["player_#{player_nb}"].deep_dup
-    new_pos["y"] -= @@PADDLE[:SPEED] if data["move"] == "up"
-    new_pos["y"] += @@PADDLE[:SPEED] if data["move"] == "down"
-    new_pos["y"] = 0 if new_pos["y"] < 0
-    new_pos["y"] = @@CANVAS[:HEIGHT] - @@PADDLE[:HEIGHT] if new_pos["y"] > @@CANVAS[:HEIGHT] - @@PADDLE[:HEIGHT]
-    @@matches[data["match_id"]]["player_#{player_nb}"] = new_pos
+    @@matches[data["match_id"]]["player_#{player_nb}"]["dir"] = data["move"]
   end
 
   private
   def game_start(match_id, players)
     @@matches[match_id] = {
-      "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => 0, "moveY" => 0, "speed" => 4 },
+      "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => 0, "moveY" => 0, "speed" => @@speed },
       "score" => [0, 0],
       "player_1" => { "x" => 10, "y" => 90 },
       "player_2" => { "x" => 390, "y" => 90 },
@@ -105,7 +98,7 @@ class MatchChannel < ApplicationCable::Channel
     # start loop
     @@matches[match_id]["over"] = true
     while(1) do
-      sleep 0.01
+      sleep 0.04
       game = @@matches[match_id]
       p1 = @@matches[match_id]["player_1"]
       p2 = @@matches[match_id]["player_2"]
@@ -145,6 +138,19 @@ class MatchChannel < ApplicationCable::Channel
             game["ball"]["x"] = (p2["x"] - game["ball"]["r"])
             game["ball"]["moveX"] *= -1
           end
+        end
+
+        ['player_1', 'player_2'].each do |player|
+          temp = game[player]["y"]
+          case game[player]['dir']
+          when "up"
+            temp -= @@PADDLE[:SPEED]
+          when "down"
+            temp += @@PADDLE[:SPEED]          
+          end
+          temp = 0 if temp < 0
+          temp = @@CANVAS[:HEIGHT] - @@PADDLE[:HEIGHT] if temp > @@CANVAS[:HEIGHT] - @@PADDLE[:HEIGHT]
+          game[player]['y'] = temp
         end
       end # over false
 
