@@ -25,25 +25,6 @@ $(() => {
 		return trans_pos;
 	}
 
-	window.pressedKeys = { up: false, down: false };
-
-	const keyup_cb = function (e) {
-		if (e.code === "ArrowUp")
-			pressedKeys.up = false;
-		if (e.code === "ArrowDown")
-			pressedKeys.down = false;
-		if (e.code === "ArrowUp" || e.code === "ArrowDown")
-			e.preventDefault();
-	}
-	const keydown_cb = function (e) {
-		if (e.code === "ArrowUp")
-			pressedKeys.up = true;
-		if (e.code === "ArrowDown")
-			pressedKeys.down = true;
-		if (e.code === "ArrowUp" || e.code === "ArrowDown")
-			e.preventDefault();
-	}
-
 	class Paddle {
 		constructor(side) {
 			this.speed = 4;
@@ -116,34 +97,46 @@ $(() => {
 			Pong.draw();
 		})
 	}
-	Pong.keyListener_on = function() {
-		window.addEventListener("keyup", keyup_cb);
-		window.addEventListener("keydown", keydown_cb);
+
+	Pong.send = function(message){
+		MatchChannel.channel.perform("game_data", {
+			"from": window.user_id,
+			"match_id": window.id,
+			"move": message,
+		});
 	}
-	Pong.keyListener_off = function() {
-		window.removeEventListener("keyup", keyup_cb);
-		window.removeEventListener("keydown", keydown_cb);
-	}
-	Pong.on = function() {
-		if(!window.finished){//window.reqId != undefined){
-			Pong.off()
+
+	Pong.keyup_cb = function (e) {
+		e.preventDefault();
+		if (e.code === "ArrowUp"){
+			Pong.send('stop')
 		}
-		Pong.keyListener_on();
-		window.finished = false;
-		// window.reqId = 
-		Pong.keyLoop()
-		// window.requestAnimationFrame()
+		if (e.code === "ArrowDown"){
+			Pong.send('stop')
+		}			
 	}
+	
+	Pong.keydown_cb = function (e) {
+		e.preventDefault();
+		if (e.code === "ArrowUp"){
+			Pong.send('up')
+		}
+		if (e.code === "ArrowDown"){
+			Pong.send('down')
+		}
+	}
+
+	Pong.on = function() {
+		window.addEventListener("keyup", Pong.keyup_cb);
+		window.addEventListener("keydown", Pong.keydown_cb);
+	}
+
 	Pong.off = function() {
-		Pong.keyListener_off();
-		console.log('off', window.reqId)
-		// window.cancelAnimationFrame(window.reqId);
-		window.finished = true;
-		// window.reqId = undefined;
+		window.removeEventListener("keyup", Pong.keyup_cb);
+		window.removeEventListener("keydown", Pong.keydown_cb);
 	}
-	Pong.usleep = function(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
+
+
 	Pong.setup = function() {
 		Pong.wrapper = document.getElementById("game-screen-wrapper");
 		Pong.canvas = document.getElementById("game-screen");
@@ -153,29 +146,7 @@ $(() => {
 		Pong.ball = new Ball();
 		Pong.resize_handler_on();
 		Pong.draw();
-		Pong.off()
 	}
-	Pong.keyLoop = async function() {
-		console.log('on', window.reqId)
-		if(window.finished)
-			return;
-		let move = 0;
-		if (window.pressedKeys.up)
-			move += 1;
-		if (window.pressedKeys.down)
-			move -= 1;
-		if (move !== 0) {
-			console.log('move', move)
-			MatchChannel.channel.perform("game_data", {
-				"from": window.user_id,
-				"match_id": window.id,
-				"move": (move === 1) ? "up" : "down",
-			});
-		}
-		await Pong.usleep(40);
-		window.reqId = window.requestAnimationFrame(Pong.keyLoop);
-	}
-
 
 }) 
 }
