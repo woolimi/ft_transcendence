@@ -20,8 +20,16 @@ class Api::UserInfoController < ApplicationController
 		matches.each{|m|
 			match = m.as_json
 			match["match_type"] = "tournament" if m.match_type.include?("tournament")
-			match["player_left"] = m.player_left.user_profile.nickname
-			match["player_right"] = m.player_right.user_profile.nickname
+			if m.player_left
+				match["player_left"] = m.player_left.user_profile.nickname
+			else
+				match["player_left"] = "unanswered"
+			end
+			if m.player_right
+				match["player_right"] = m.player_right.user_profile.nickname
+			else
+				match["player_right"] = "unanswered"
+			end
 			match_list.push(match);
 		}
 		info[:numberOfWonTournaments] = Tournament.where(winner: current_user[:id]).count

@@ -18,8 +18,7 @@ if ($('html').data().isLogin) {
 
     MatchChannel.subscribe = function (match_data, recv_callback, me) {
       if (this.channel)
-        return;
-
+      return;
       this.match_data = match_data;
       this.channel = consumer.subscriptions.create({
         channel: "MatchChannel",

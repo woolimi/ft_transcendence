@@ -11,6 +11,7 @@ class CreateUserProfiles < ActiveRecord::Migration[6.0]
       t.integer :rp, default: 1000
       t.boolean :admin, default: false
       t.uuid :guild_id
+      t.boolean :banned, default: false
       t.references :user, type: :uuid, foreign_key: true
     end
   end
