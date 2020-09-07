@@ -43,12 +43,21 @@
                                     </th>
                                 </tr>
                                 <tr>
+                                <%% if(guild_flag == 0){ %>
                                     <td>
                                         <%%= guild_1_score %>
                                     </td>
                                     <td>
                                         <%%= guild_2_score %>
                                     </td>
+                                <%% } else { %>
+                                    <td>
+                                        <%%= guild_2_score %>
+                                    </td>
+                                    <td>
+                                        <%%= guild_1_score %>
+                                    </td>
+                                <%% } %>
                                 </tr>
                             </table>
                         </div>
