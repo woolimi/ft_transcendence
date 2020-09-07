@@ -42,10 +42,8 @@ $(() => {
 				this.render_page();
 				this.render_players(match_data);
 				this.render_game(match_data);
-				Pong.setup()
-				// match_data.started_at
-				// (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)
-				if(!match_data.match_finished) {
+				Pong.setup()				
+				if(!match_data.match_finished && (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
 					Pong.on();
 				}
 				MatchChannel.subscribe(match_data, this.recv_callback, this);				
