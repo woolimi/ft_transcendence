@@ -105,6 +105,10 @@ $(() => {
                     throw "There can be ONLY one match in war time";
                 const new_match = await Helper.ajax('/api/matches/',
                     `match_type=war&war_id=${data.id}`, 'POST');
+                await Helper.ajax('/api/war/notify_enemy_guild_of_attack',{
+                    war_id: data.id,
+                    match_id: new_match.id
+                }, 'POST')
                 return Router.router.navigate(`/game/war/${new_match.id}`, { trigger: true });
             } catch (error) {
                 if (error.responseText)
