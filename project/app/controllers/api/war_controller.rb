@@ -56,6 +56,30 @@ class Api::WarController < ApplicationController
         end
     end
 
+    def notify_enemy_guild_of_attack
+        guild_attacker_id = current_user.user_profile.guild_id
+        my_guild = Guild.find(guild_attacker_id)
+        war = War.find(params[:war_id])
+        if(war.guild_1 == guild_attacker_id)
+            enemy_guild = Guild.find(war.guild_2)
+        else
+            enemy_guild = Guild.find(war.guild_1)
+        end
+        enemy_members = enemy_guild.guild_members
+        enemy_members.each do |enemy_json|
+            enemy = User.find(enemy_json["user_id"])
+            puts "\n\n\n\n\n\n\n"
+            puts enemy_json["user_id"]
+            pp enemy
+            puts "\n\n\n\n\n\n\n"
+            enemy.send_notification('war_attacked', {
+                match_id: params[:match_id],
+                attacker: current_user.user_profile.name,
+                guild_of_attacker: my_guild.name
+            })
+        end
+    end
+
     private
 
     def check_guild_number(war, user_guild_id)
