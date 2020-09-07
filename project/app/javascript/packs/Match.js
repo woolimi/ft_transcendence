@@ -1,9 +1,8 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
-import { Pong } from "./Pong.js"
+import Pong from "./Pong.js"
 import MatchChannel from '../channels/match_channel'
-import UserStatusChannel from "../channels/user_status_channel.js"
 import Helper from "./Helper.js"
 
 const Match = {};
@@ -12,8 +11,6 @@ if ($('html').data().isLogin) {
 
 $(() => {
 
-	Match.canvas = null;
-	Match.wrapper = null;
 	Match.id = null;
 	Match.Content = Backbone.View.extend({
 		el: $("#view-content"),
@@ -34,27 +31,20 @@ $(() => {
 		},
 		initialize: async function(options) {
 			try {
+				console.log('match id: ', options.id)
 				Match.id = options.id;
+				window.id = Match.id
 				this.user_id = $('html').data().userId;
+				window.user_id = this.user_id
 				this.options = options; // { match_type: "duel", id: match_id }
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
 				this.render_page();
 				this.render_players(match_data);
 				this.render_game(match_data);
-				Match.wrapper = document.getElementById("game-screen-wrapper");
-				Match.canvas = document.getElementById("game-screen");
-				this.pong = new Pong(options.id);
-				// console.log('match_data',match_data)
-				// console.log('user id:', this.user_id)
-				// console.log('condition', (match_data.started_at	&& !match_data.match_finished
-				// && (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)))
-
-				// match_data.started_at
-				if(!match_data.match_finished
-					&& (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
-					this.pong.on();
+				Pong.setup()				
+				if(!match_data.match_finished && (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
+					Pong.on();
 				}
-				
 				MatchChannel.subscribe(match_data, this.recv_callback, this);				
 			} catch (error) {
 				if (error.responseText)
@@ -70,6 +60,7 @@ $(() => {
 			const data = $(e.currentTarget).data();
 			if (data.userId === this.user_id) {
 				const nbPlayer = data.nbPlayer;
+				console.log('the id of the match:', Match.id)
 				MatchChannel.channel.perform("ready", {
 					ready: true,
 					match_id: this.options.id,
@@ -86,7 +77,7 @@ $(() => {
 
 			if (data.all_ready) {
 				$('.ready-status').addClass('d-none');
-				this.pong.on();
+				Pong.on();
 				return;
 			}
 
@@ -102,14 +93,17 @@ $(() => {
 			}
 
 			if (data.ball) {
-				this.pong.update(data);
-				this.pong.draw();
+				Pong.update(data);
+				Pong.draw();
 				return;
 			}
 
 			if (data.end) {
-				this.pong.off();
+				Pong.off();
 				this.render_players(data.data);
+				if (data.unanswered) {
+					Helper.flash_message("success", "Other guild didn't answered. You Win !")
+				}
 				return;
 			}
 

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html data-is-login="<%= user_signed_in? %>" <% if user_signed_in? %> data-user-id=<%= current_user[:id] %> <% end %> >
+<html data-is-login="<%= (user_signed_in? && !current_user.user_profile.banned) %>" <% if (user_signed_in? && !current_user.user_profile.banned) %> data-user-id=<%= current_user[:id] %> <% end %> >
   <head>
     <title>42 Pong</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+  <% if (user_signed_in? && !current_user.user_profile.banned) %>
     <%= render "spa/backboneTemplates/friendsList"%>
     <%= render "spa/backboneTemplates/searchedUsersModal"%>
     <%= render "spa/backboneTemplates/profile/profileContent"%>
@@ -42,10 +43,12 @@
 		<%= render "spa/backboneTemplates/ladder/index" %>
     <%= render "spa/backboneTemplates/admin/admin" %>
     <%= render "spa/backboneTemplates/admin/adminGuildRights" %>
-
+  
 		<%= stylesheet_link_tag "simpleNotification.min.css" %>
-    <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_include_tag 'simpleNotification.min.js' %>
+  <% end %>
+  
+    <%= stylesheet_link_tag 'application', media: 'all' %>
 		<%= javascript_pack_tag 'application' %>
 
   </head>

@@ -21,7 +21,7 @@ class Api::ChannelMessagesController < ApplicationController
 		if channel.members.select{|m| m["user_id"] == current_user[:id]}.blank?
 			return render plain: "You are not a member", status: :forbidden
 		end
-		if channel.password.length > 0 && session[params[:channel_id]] != channel.password
+		if channel.password.length > 0 && current_user.user_profile.admin.blank? && session[params[:channel_id]] != channel.password
 			return render plain: "Unauthorized", status: :unauthorized
 		end
 		message = channel.channel_messages.create(

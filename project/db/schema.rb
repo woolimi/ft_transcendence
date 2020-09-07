@@ -139,8 +139,8 @@ ActiveRecord::Schema.define(version: 2020_08_26_123118) do
   create_table "wars", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "guild_1"
     t.string "guild_2"
-    t.string "guild_1_score"
-    t.string "guild_2_score"
+    t.integer "guild_1_score"
+    t.integer "guild_2_score"
     t.integer "guild_1_matches_won"
     t.integer "guild_1_matches_lost"
     t.integer "guild_1_matches_unanswered"
