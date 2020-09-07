@@ -42,8 +42,10 @@ if ($('html').data().isLogin) {
                 Channel.content.undelegateEvents();
             if (Match.content)
                 Match.content.undelegateEvents();
-            if (War.content)
+            if (War.content) {
                 clearInterval(War.content.intervalId);
+                War.content.undelegateEvents();
+            }
             if (GameChannel.channel)
                 GameChannel.unsubscribe();
             if (Game.content)
@@ -125,6 +127,7 @@ if ($('html').data().isLogin) {
                 Channel.content = new Channel.Content({ channel_id: channel_id });
             },
             war() {
+                remove_channel();
                 War.content = new War.Content();
             },
             tournaments(){

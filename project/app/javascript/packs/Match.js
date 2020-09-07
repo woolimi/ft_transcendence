@@ -3,7 +3,6 @@ import _ from "underscore"
 import Backbone from "backbone"
 import Pong from "./Pong.js"
 import MatchChannel from '../channels/match_channel'
-import UserStatusChannel from "../channels/user_status_channel.js"
 import Helper from "./Helper.js"
 
 const Match = {};
@@ -102,6 +101,9 @@ $(() => {
 			if (data.end) {
 				Pong.off();
 				this.render_players(data.data);
+				if (data.unanswered) {
+					Helper.flash_message("success", "Other guild didn't answered. You Win !")
+				}
 				return;
 			}
 
