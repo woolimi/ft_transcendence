@@ -56,9 +56,10 @@ if ($('html').data().isLogin)
       }); 
     }
 
-    function handle_banned(){
+    async function handle_banned(){
+      NotificationChannel.unsubscribe()
       Helper.flash_message('danger', 'Your have been banned');
-      Helper.ajax('/users/sign_out', '', 'DELETE')
+      await Helper.ajax('/users/sign_out', '', 'DELETE')
       window.location.href = ''
     }
 
