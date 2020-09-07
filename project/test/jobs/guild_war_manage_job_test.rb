@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ForceMatchFinishIfNotStartedJobTest < ActiveJob::TestCase
+class GuildWarManageJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end

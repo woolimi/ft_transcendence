@@ -43,8 +43,16 @@ class Api::MatchesController < ApplicationController
 			else # if single_room is exist, enter into it
 				return render json: single_rooms[0].jbuild() if single_rooms[0].save()
 			end
-			return render plain: "internal server error", status: :internal_server_error
 		end
+		if (params[:match_type] == "war")
+			room = Match.create!(
+				match_type: params[:match_type],
+				match_finished: false,
+				war_id: params[:war_id],
+				created_at: Time.now())
+			return render json: room.jbuild() if room.present?
+		end
+		return render plain: "forbidden", status: :forbidden
 	end
 
 end

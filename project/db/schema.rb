@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 2020_08_26_123118) do
     t.uuid "loser"
     t.datetime "created_at"
     t.datetime "started_at"
-    t.boolean "match_finished"
+    t.boolean "match_finished", default: false
     t.uuid "player_left_id"
     t.uuid "player_right_id"
     t.integer "score_left", default: 0

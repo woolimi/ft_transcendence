@@ -366,3 +366,33 @@ html, body, #app{
 .blur {
   opacity: 0.5;
 }
+
+   .clock-class {
+        text-align: center;
+        font-size: 60px;
+        margin-top: 0px;
+    }
+    
+    #status {
+        text-shadow: 2px 2px #000000;
+        margin-top: 1rem !important;
+        background: rgb(2, 0, 36);
+        background: linear-gradient(90deg, rgba(2, 0, 36, 1) 14%, rgba(9, 9, 121, 1) 100%, rgba(0, 212, 255, 1) 100%);
+    }
+    
+    #countdown, #stats {
+        background: rgb(2, 0, 36);
+        background: linear-gradient(90deg, rgba(2, 0, 36, 1) 14%, rgba(9, 9, 121, 1) 100%, rgba(0, 212, 255, 1) 100%);
+        text-shadow: 2px 2px #000000;
+    }
+    
+    #score {
+        font-size: 200%;
+        margin-right: 1rem !important;
+        border-right: 6px solid white;
+        border-width: thin;
+    }
+    
+    #other_statistics {
+        font-size: 30px;
+    }

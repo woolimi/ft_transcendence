@@ -43,6 +43,35 @@ class MatchChannel < ApplicationCable::Channel
         end
         m.save!()
       end
+    # war
+    elsif (params[:match_type] == "war")
+      if (m.player_1.nil?)
+        m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: true, guild_id: info.guild_id }
+        if !m.match_finished
+          info.status = 2
+          info.save!()
+          ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
+        end
+        m.save!()
+      elsif (m.player_2.nil?)
+        m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: true, guild_id: info.guild_id }
+        if !m.match_finished
+          info.status = 2
+          info.save!()
+          ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
+        end
+        m.save!()
+      end
+      if (m.player_1.present? && m.player_2.present?)
+        m.player_left_id = m.player_1["user_id"]
+        m.player_right_id = m.player_2["user_id"]
+        m.save!()
+        ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
+        ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { all_ready: true })
+        return game_start(match[:id], [match.player_left_id, match.player_right_id])
+      else
+        GuildWarManageJob.set(wait: 1.minutes).perform_later(params[:match_id])
+      end
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
   end

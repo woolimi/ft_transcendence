@@ -10,23 +10,9 @@ const War = {};
 if ($('html').data().isLogin) {
 
 $(() => {
-
-
     const WarData = Backbone.Model.extend({
         defaults: {
             user_id: $('html').data().userId,
-            user_guild_number: "undefined",
-            position: "undefined",
-            start_date: "undefined",
-            end_date: "undefined",
-            status: "undefined",
-            position: "undefined",
-            wins: 0,
-            losses: 0,
-            unanswered: 0,
-            player_guild_anag: "undefined",
-            opponent_guild_anag: "undefined",
-            match_ongoing: false,
         },
         urlRoot: "/api/war/",
         idAttribute: "user_id",
@@ -50,9 +36,8 @@ $(() => {
             }
         },
         render: async function() {
-            // await Helper.fetch(this.model);
             const content = this.template(this.model.toJSON());
-            await this.$el.html(content);
+            this.$el.html(content);
             if(this.model.toJSON().status == 2)
                 this.renderTimer(this.model.toJSON().end_date);
             else
@@ -105,15 +90,21 @@ $(() => {
                 }
             }, 1000);
         },
-        attack: async function() {
-            this.model.set({
-                match_ongoing: true
-            });
+        attack: async function(e) {
+            e.stopImmediatePropagation();
+            const data = War.data.toJSON();
             try {
-                await this.model.save();
-                Helper.flash_message("War", "success!");
+                const ongoing = await Helper.ajax(`/api/war_ongoing/${data.id}`);
+                if (ongoing === "true")
+                    throw "There can be ONLY one match in war time";
+                const new_match = await Helper.ajax('/api/matches/',
+                    `match_type=war&war_id=${data.id}`, 'POST');
+                return Router.router.navigate(`/game/war/${new_match.id}`, { trigger: true });
             } catch (error) {
-                Helper.flash_message("War", "failure!");
+                if (error.responseText)
+                    Helper.flash_message("danger", error.responseText);
+                else
+                    Helper.flash_message("danger", error);
             }
         }
     })
