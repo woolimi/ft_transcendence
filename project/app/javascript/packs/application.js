@@ -27,18 +27,6 @@ import Helper from "./Helper.js"
 global.Helper = Helper;
 window.Helper = Helper;
 
-SimpleNotification.options({ position: 'bottom-center', duration: 6000 });
-SimpleNotification.genericRequestError = (resp) => SimpleNotification.error({
-	title: 'Error',
-	text: `There was an error while sending your request (code: **${resp.status}**).`
-});
-SimpleNotification.r = id => {
-	if (window.invNotification[id]) {
-		window.invNotification[id].remove();
-		window.invNotification[id] = undefined;
-	}
-};
-
 import SPA from "./SPA.js"
 if ($("html").data().isLogin) {
 	$(()=> {

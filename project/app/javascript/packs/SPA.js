@@ -23,8 +23,7 @@ SPA.start = function() {
 		// 	}
 		// });
 		
-		// Test -->
-		// SimpleNotification.genericRequestError('coucou')
+		SimpleNotification.options({ position: 'bottom-center', duration: 6000 });
 
 		Backbone.history.start();
 		Backbone.history.loadUrl(Backbone.history.fragment);
