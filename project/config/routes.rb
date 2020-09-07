@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     resources :war, only: [:show, :update], param: :user_id
     resources :war_request, only: [:show, :create, :update, :destroy], param: :war_id
     resources :war_history, only: [:show], param: :guild_id
+    resources :war_ongoing, only: [:show], param: :war_id
     resources :my_friends, only: [:index, :show, :update, :destroy], param: :user_id
     resources :user_status, only: [:show, :update], param: :user_id
     resources :chats, param: :room, only: [:index] do

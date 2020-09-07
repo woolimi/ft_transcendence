@@ -6,8 +6,9 @@ class MatchChannel < ApplicationCable::Channel
   #   player_2: {x, y} 390
   #   players: [uuid1, uuid2]
   # }
+
   @@matches = {}
-  @@speed = 9
+  @@speed = 8
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
   @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => @@speed }
   @@session = {}
@@ -42,6 +43,37 @@ class MatchChannel < ApplicationCable::Channel
           ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
         end
         m.save!()
+      end
+    # war
+    elsif (params[:match_type] == "war")
+      if (m.war.guild_1 == current_user.user_profile.guild.id && m.player_1.nil?)
+        m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: true, guild_id: info.guild_id }
+        if !m.match_finished
+          info.status = 2
+          info.save!()
+          ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
+        end
+        m.save!()
+      elsif (m.war.guild_2 == current_user.user_profile.guild.id && m.player_2.nil?)
+        m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: true, guild_id: info.guild_id }
+        if !m.match_finished
+          info.status = 2
+          info.save!()
+          ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
+        end
+        m.save!()
+      end
+      if (m.started_at.blank? && m.player_1.present? && m.player_2.present?)
+        m.player_left_id = m.player_1["user_id"]
+        m.player_right_id = m.player_2["user_id"]
+        m.started_at = Time.now()
+        m.save!()
+        ActionCable.server.broadcast("match_#{params[:match_id]}_channel", { players: true, data: m.jbuild()})
+        ActionCable.server.broadcast("match_#{params[:match_id]}_channel", { all_ready: true })
+        return game_start(m.id, [m.player_left_id, m.player_right_id])
+      else
+        GuildWarManageJob.set(wait: 1.minutes).perform_later(params[:match_id])
+        # GuildWarManageJob.set(wait: 10.seconds).perform_later(params[:match_id])
       end
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
@@ -102,7 +134,7 @@ class MatchChannel < ApplicationCable::Channel
     # start loop
     @@matches[match_id]["over"] = true
     while(1) do
-      sleep 0.04
+      sleep 0.02
       game = @@matches[match_id]
       p1 = @@matches[match_id]["player_1"]
       p2 = @@matches[match_id]["player_2"]
@@ -173,7 +205,9 @@ class MatchChannel < ApplicationCable::Channel
           match.score_left = game["score"][0]
           match.score_right = game["score"][1]
           match.match_finished = true
+          match.save!()
           calculate_RP(winner, loser) if match.match_type == "ladder"
+          calculate_GP_WP(winner, match.match_type)
           match.save!()
           match.update_tournament_after_match_ends()
           break
@@ -240,6 +274,38 @@ class MatchChannel < ApplicationCable::Channel
     end
     w.save();
     l.save();
+  end
+
+
+  #  1. Normal match (duel, ladder, tournament)
+  # regardless wartime, earn 25 guild point
+  # if guild in war, depends on addon, get 25 war point
+  #  2.  War match
+  # 50 war point
+
+  # if winner has guild, give 25 point to his guild
+  def calculate_GP_WP(winner, match_type)
+    winner_guild = UserProfile.find_by(user_id: winner["user_id"]).guild
+    # if winner has guild
+    if winner_guild.present?
+      winner_guild.total_score += 25
+      winner_guild.save()
+      # if winner's guild in war
+      if winner_guild.in_war?
+        winner_guild.current_war.calculate_WP(winner_guild.id, match_type)
+        war = winner_guild.current_war
+        if war.guild_1 == winner_guild.id
+          war.guild_1_matches_won += 1
+          war.guild_2_matches_lost += 1
+          war.save!()
+        elsif war.guild_2 == winner_guild.id
+          war.guild_2_matches_won += 1
+          war.guild_1_matches_lost += 1
+          war.save!()
+        end
+      end
+
+    end
   end
 end
 

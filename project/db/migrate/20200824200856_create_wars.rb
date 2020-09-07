@@ -3,8 +3,8 @@ class CreateWars < ActiveRecord::Migration[6.0]
     create_table :wars, id: :uuid do |t|
       t.string :guild_1
       t.string :guild_2
-      t.string :guild_1_score
-      t.string :guild_2_score
+      t.integer :guild_1_score
+      t.integer :guild_2_score
       t.integer :guild_1_matches_won
       t.integer :guild_1_matches_lost
       t.integer :guild_1_matches_unanswered
@@ -16,7 +16,8 @@ class CreateWars < ActiveRecord::Migration[6.0]
       t.integer :wager
       t.string :match_list
       t.integer :status
-      t.boolean :match_ongoing
+      t.integer :max_unanswered
+      t.string :war_type
       t.timestamps
     end
   end

@@ -58,12 +58,12 @@ class Tournament < ApplicationRecord
 
 	def finish_semi()
 		shouldStartFinal = self.semiR.match_finished && self.semiL.match_finished && self.final_id == nil
-		puts "\n\n\n\n\n\n"
-		puts 'self.final_id', self.final_id, '--------------'
-		puts 'self.semiL.match_finished:', self.semiL.match_finished, '--------------'
-		puts 'self.semiR.match_finished:', self.semiR.match_finished, '--------------'
-		puts 'shouldStartFinal:', shouldStartFinal, '--------------'
-		puts "\n\n\n\n\n\n"
+		# puts "\n\n\n\n\n\n"
+		# puts 'self.final_id', self.final_id, '--------------'
+		# puts 'self.semiL.match_finished:', self.semiL.match_finished, '--------------'
+		# puts 'self.semiR.match_finished:', self.semiR.match_finished, '--------------'
+		# puts 'shouldStartFinal:', shouldStartFinal, '--------------'
+		# puts "\n\n\n\n\n\n"
 		if (shouldStartFinal)
 			final = Match.create(
 				match_type: 'tournament_final',
