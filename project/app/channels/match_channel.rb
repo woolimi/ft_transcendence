@@ -45,7 +45,7 @@ class MatchChannel < ApplicationCable::Channel
       end
     # war
     elsif (params[:match_type] == "war")
-      if (m.player_1.nil?)
+      if (m.war.guild_1 == current_user.user_profile.guild.id && m.player_1.nil?)
         m.player_1 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: true, guild_id: info.guild_id }
         if !m.match_finished
           info.status = 2
@@ -53,7 +53,7 @@ class MatchChannel < ApplicationCable::Channel
           ActionCable.server.broadcast("user_status_channel", {:user_id => current_user[:id], :status => 2})
         end
         m.save!()
-      elsif (m.player_2.nil?)
+      elsif (m.war.guild_2 == current_user.user_profile.guild.id && m.player_2.nil?)
         m.player_2 = {user_id: info.user_id, avatar_url: info.avatar_url, nickname: info.nickname, ready: true, guild_id: info.guild_id }
         if !m.match_finished
           info.status = 2
@@ -70,7 +70,8 @@ class MatchChannel < ApplicationCable::Channel
         ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { all_ready: true })
         return game_start(match[:id], [match.player_left_id, match.player_right_id])
       else
-        GuildWarManageJob.set(wait: 1.minutes).perform_later(params[:match_id])
+        # GuildWarManageJob.set(wait: 1.minutes).perform_later(params[:match_id])
+        GuildWarManageJob.set(wait: 10.seconds).perform_later(params[:match_id])
       end
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: m.jbuild()}) if m.save()
@@ -281,7 +282,16 @@ class MatchChannel < ApplicationCable::Channel
       # if winner's guild in war
       if winner_guild.in_war?
         winner_guild.current_war.calculate_WP(winner_guild.id, match_type)
+        war = current_war
+        if war.guild_1 == winner["guild_id"]
+          war.guild_1_matches_won += 1
+          war.guild_2_matches_lost += 1
+        elsif war.guild_2 == winner["guild_id"]
+          war.guild_2_matches_won += 1
+          war.guild_1_matches_lost += 1
+        end
       end
+
     end
   end
 end

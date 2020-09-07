@@ -45,6 +45,20 @@ class Api::MatchesController < ApplicationController
 			end
 		end
 		if (params[:match_type] == "war")
+			guild = current_user.user_profile.guild
+			return render plain: "forbidden" if guild.blank?
+			return render plain: "forbidden" if !guild.in_war?
+			war = guild.current_war
+			side = -1 if war.guild_1 == guild.id
+			side = 1 if war.guild_2 == guild.id
+			empty_room = nil
+			if side == -1
+				empty_room = Match.where(war_id: params[:war_id]).where(match_finished: false).where(player_1: nil)
+				return render json: empty_room[0].jbuild() if empty_room.present?
+			elsif side == 1
+				empty_room = Match.where(war_id: params[:war_id]).where(match_finished: false).where(player_2: nil)
+				return render json: empty_room[0].jbuild() if empty_room.present?
+			end
 			room = Match.create!(
 				match_type: params[:match_type],
 				match_finished: false,
