@@ -28,7 +28,11 @@ Rails.application.routes.draw do
     end
     resources :profile, only: [:show, :update], param: :user_id
     resources :guilds, only: [:show, :create, :update, :destroy], param: :user_id
-    resources :war, only: [:show, :update], param: :user_id
+    resources :war, only: [:show, :update], param: :user_id do
+      collection do
+        post :notify_enemy_guild_of_attack
+      end
+    end
     resources :war_request, only: [:show, :create, :update, :destroy], param: :war_id
     resources :war_history, only: [:show], param: :guild_id
     resources :war_ongoing, only: [:show], param: :war_id

@@ -152,7 +152,6 @@ ActiveRecord::Schema.define(version: 2020_08_26_123118) do
     t.integer "wager"
     t.string "match_list"
     t.integer "status"
-    t.boolean "match_ongoing"
     t.integer "max_unanswered"
     t.string "war_type"
     t.datetime "created_at", precision: 6, null: false

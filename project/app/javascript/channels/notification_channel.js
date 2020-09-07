@@ -46,6 +46,9 @@ if ($('html').data().isLogin)
             case "unbanned":
               handle_unbanned();
               break;
+            case "war_attacked":
+              handle_war_attacked(data.content);
+              break;
 						default:
 							break;
 					}
@@ -54,6 +57,20 @@ if ($('html').data().isLogin)
         // disconnected() {},
         // rejected() {}
       }); 
+    }
+
+    function handle_war_attacked(data){
+      SimpleNotification.message({
+        text: `The player ${data.attacker} from guild ${data.guild_of_attacker} attacked your guild as part of the ongoing war.`,
+        buttons: [{
+          value: 'Go to war match',
+          type: 'warning',
+          onClick(notification) {
+            notification.close();
+            return Router.router.navigate(`/game/war/${data.match_id}`, { trigger: true });
+          }
+        }]
+      })
     }
 
     async function handle_banned(){
