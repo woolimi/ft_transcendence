@@ -19,6 +19,11 @@ class Api::WarController < ApplicationController
                 end
             end
             guild_info = check_guild_number(war, user["guild_id"]).split(':')
+            if(guild_info[0] == "guild_1")
+                war[0]["guild_flag"] = 0
+            else
+                war[0]["guild_flag"] = 1
+            end
             guilds = Guild.where(id: war[0]["guild_1"]).or(Guild.where(id: war[0]["guild_2"])).as_json
             
             if (guilds[0]["id"] == war[0][(guild_info[0])])
