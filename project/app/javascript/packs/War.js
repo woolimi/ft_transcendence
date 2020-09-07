@@ -112,7 +112,7 @@ $(() => {
                 return Router.router.navigate(`/game/war/${new_match.id}`, { trigger: true });
             } catch (error) {
                 if (error.responseText)
-                    Helper.flash_message("danger", error.responseText);
+                    Helper.flash_message("danger", "War ended");
                 else
                     Helper.flash_message("danger", error);
             }

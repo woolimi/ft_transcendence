@@ -251,7 +251,10 @@ $(() => {
             data.push(challenge_data.challenger)
             data.push(challenge_data.accepter)
             data.push($("#wagerPoints").val())
-            data.push($("#maxUnanswered").val())
+            if($("#maxUnanswered").val())
+                data.push($("#maxUnanswered").val())
+            else
+                data.push(0)
             data.push($("#war-start-time").val())
             data.push($("#war-end-time").val())
             data.push(war_type);
