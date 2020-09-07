@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-is-login="<%= user_signed_in? %>" <% if user_signed_in? %> data-user-id=<%= current_user[:id] %> <% end %> >
+<html data-is-login="<%= (user_signed_in? && !current_user.user_profile.banned) %>" <% if (user_signed_in? && !current_user.user_profile.banned) %> data-user-id=<%= current_user[:id] %> <% end %> >
   <head>
     <title>42 Pong</title>
     <%= csrf_meta_tags %>
