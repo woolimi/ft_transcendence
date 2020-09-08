@@ -203,6 +203,8 @@ $(() => {
         template: _.template($("script[name='tmpl-declare-war-modal']").html()),
         wardata: [],
         el: $("#app"),
+        fp_start: {},
+        fp_end: {},
         // model: user,
         events: {
             "click .declareWar": "declareWar",
