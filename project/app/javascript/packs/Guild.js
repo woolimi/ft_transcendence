@@ -5,6 +5,8 @@ import Profile from "./Profile.js"
 import Router from "./Router.js"
 import Helper from "./Helper.js"
 import GuildChannel from "../channels/guild_channel"
+import flatpickr from "flatpickr";
+require("flatpickr/dist/flatpickr.css")
 
 const Guild = {};
 
@@ -213,7 +215,9 @@ $(() => {
         },
         onSubmit: async function(e){
             const challenge_data = $(e.target).data();
-            if(new Date($("#war-start-time").val()).getTime() > (new Date($("#war-end-time").val()).getTime()) || (Date.now() - new Date($("#war-start-time").val()).getTime() > 120000))
+            const dateTimeStart = this.fp_start.selectedDates[0]
+            const dateTimeEnd = this.fp_end.selectedDates[0]
+            if((dateTimeStart > dateTimeEnd) || ((Date.now() - dateTimeStart) > 120000))
             {
                 Helper.flash_message("danger", "End date should always be greater than Start Date and Start Date cannot be in the Past");
                 return;
@@ -255,8 +259,8 @@ $(() => {
                 data.push($("#maxUnanswered").val())
             else
                 data.push(0)
-            data.push($("#war-start-time").val())
-            data.push($("#war-end-time").val())
+            data.push(dateTimeStart)
+            data.push(dateTimeEnd)
             data.push(war_type);
             await Helper.ajax(`/api/war_request`, "data=" + data, "POST"); 
             $('#declareWarModal').modal('toggle');
@@ -265,6 +269,12 @@ $(() => {
         },
         render: async function(){
             $('#view-declare-war-modal').html(this.template({war_data: this.war_data,}));
+            this.fp_start = flatpickr('#war-start-time', {
+                enableTime: true, dateFormat: "Y-m-d H:i" 
+            });
+            this.fp_end = flatpickr('#war-end-time', {
+                enableTime: true, dateFormat: "Y-m-d H:i" 
+            });
         },
     });
 
