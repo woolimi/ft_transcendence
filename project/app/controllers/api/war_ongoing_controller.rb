@@ -5,8 +5,8 @@ class Api::WarOngoingController < ApplicationController
     # GET /api/war/:war_id/
 	def show
 		guild = current_user.user_profile.guild
-		return rendeer plain: "forbidden", status: :forbidden if guild.blank?
-		return rendeer plain: "forbidden", status: :forbidden if !guild.in_war?
+		return render plain: "forbidden", status: :forbidden if guild.blank?
+		return render plain: "forbidden", status: :forbidden if !guild.in_war?
 		# war = guild.current_war
 		# side = 0
 		# side = -1 if war.guild_1 == guild.id

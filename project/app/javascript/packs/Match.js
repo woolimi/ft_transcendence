@@ -31,7 +31,6 @@ $(() => {
 		},
 		initialize: async function(options) {
 			try {
-				console.log('match id: ', options.id)
 				Match.id = options.id;
 				window.id = Match.id
 				this.user_id = $('html').data().userId;
@@ -60,7 +59,6 @@ $(() => {
 			const data = $(e.currentTarget).data();
 			if (data.userId === this.user_id) {
 				const nbPlayer = data.nbPlayer;
-				console.log('the id of the match:', Match.id)
 				MatchChannel.channel.perform("ready", {
 					ready: true,
 					match_id: this.options.id,
