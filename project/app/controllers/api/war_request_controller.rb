@@ -29,16 +29,14 @@ class Api::WarRequestController < ApplicationController
         guild_1 = Guild.find_by(id: current_war[:guild_1])
         guild_2 = Guild.find_by(id: current_war[:guild_2])
         if((guild_1[:total_score].to_i < current_war[:wager].to_i) || (guild_2[:total_score].to_i < current_war[:wager].to_i))
-            current_war.delete()
-            current_war.save()
+            current_war.destroy()
             return render json: "Both Guilds Should have points more than wager!", status: :bad_request
         end
 
         existing_wars = War.where('(guild_1 = ? OR guild_1 = ? OR guild_2 = ? OR guild_2 = ?) AND (status = 1 OR status = 2)', guild_1[:id], guild_2[:id], guild_1[:id], guild_2[:id])
         for i in existing_wars
-            if((war_start <= i.end_date) and (war_end >= i.start_date))
-                current_war.delete()
-                current_war.save()
+            if((war_start <= i.end_date) && (war_end >= i.start_date))
+                current_war.destroy()
                 return render json: "One or both guilds are not available in this time period", status: :bad_request
             end
         end
