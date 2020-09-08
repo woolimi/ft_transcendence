@@ -23,7 +23,6 @@ import GuildChannel from "../channels/guild_channel"
 import Admin from "./Admin"
 import AdminGuildRights from "./AdminGuildRights"
 import Duel from "./Duel.js"
-import Helper from "./Helper.js"
 
 const Router = {};
 if ($('html').data().isLogin) {
