@@ -112,9 +112,9 @@ class MatchChannel < ApplicationCable::Channel
   end
 
   def game_data(data)
-    return if !@@matches.has_key?(data["match_id"])
-    return if current_user[:id] != data["from"]
-    return if @@matches[data["match_id"]]["over"] == true
+    # return if !@@matches.has_key?(data["match_id"])
+    # return if current_user[:id] != data["from"]
+    # return if @@matches[data["match_id"]]["over"] == true
     player_nb = @@matches[data["match_id"]]["players"].find_index(data["from"]) + 1
     return if player_nb.nil?
     @@matches[data["match_id"]]["player_#{player_nb}"]["dir"] = data["move"]
