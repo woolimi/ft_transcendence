@@ -16,6 +16,11 @@ class UserStatusChannel < ApplicationCable::Channel
   end
 
   def set_status(data)
+    puts "\n\n\n\n\n\n"
+    puts "set status"
+    puts data.as_json
+    puts current_user[:id]
+    puts "\n\n\n\n\n\n"
     return if data["user_id"] != current_user[:id]
     user_status = UserProfile.find_by(user_id: data["user_id"])
     user_status.update(status: data["status"])
