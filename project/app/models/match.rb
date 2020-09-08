@@ -13,7 +13,7 @@ class Match < ApplicationRecord
 		return res
 	end
 
-	def force_match_finish_if_not_started
+	def force_match_finish_if_not_started()
 		if started_at.blank?
 			self.match_finished = true
 			self.started_at = Time.now()
@@ -41,7 +41,7 @@ class Match < ApplicationRecord
 		end
 		if(self.match_type == 'tournament_semiL' || self.match_type == 'tournament_semiR')
 			self.tournament.finish_semi()
-		elsif(match_type == 'tournament_final')
+		elsif(self.match_type == 'tournament_final')
 			self.tournament.finish_final()
 		end
 	end

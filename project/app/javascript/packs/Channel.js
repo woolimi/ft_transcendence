@@ -451,7 +451,6 @@ if ($('html').data().isLogin)
 			channel_setting: async function(e) {
 				e.preventDefault();
 				e.stopImmediatePropagation();
-				console.log("channel_setting");
 			},
 			ban_unban_member: async function(e) {
 				e.stopImmediatePropagation();
