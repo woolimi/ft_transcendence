@@ -18,6 +18,10 @@ class Api::WarRequestController < ApplicationController
         arr =  params[:data].split(",")
         guild_1 = Guild.find_by(name: arr[0])[:id]
         guild_2 = Guild.find_by(name: arr[1])[:id]
+        puts "\n\n\n\n\n\n\n\n"
+        puts arr[4]
+        puts arr[4].to_time.to_i
+        puts "\n\n\n\n\n\n\n\n"
         war = War.create(guild_1: guild_1, guild_2: guild_2, guild_1_score: 0, guild_2_score: 0,guild_1_matches_won: 0, guild_2_matches_won: 0, guild_1_matches_lost: 0, guild_2_matches_lost: 0, guild_1_matches_unanswered: 0, guild_2_matches_unanswered: 0, wager: arr[2], max_unanswered: arr[3], status: 0, start_date: arr[4], end_date: arr[5], war_type: arr[6])
         war.save()
     end

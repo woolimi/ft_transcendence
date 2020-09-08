@@ -7,6 +7,7 @@ import Helper from "./Helper.js"
 import GuildChannel from "../channels/guild_channel"
 import flatpickr from "flatpickr";
 require("flatpickr/dist/flatpickr.css")
+// import { French } from "flatpickr/dist/l10n/fr.js"
 
 const Guild = {};
 
@@ -160,6 +161,7 @@ $(() => {
             }
             this.war_request = await Helper.ajax(`/api/war_request/null`, "", "GET");
             var j = 0
+            console.log(this.war_request)
             for(i = 0; i < Object.keys(this.war_request).length; i++)
             {
                 for(j = 0; j < Object.keys(guild).length; j++)
@@ -173,9 +175,9 @@ $(() => {
                         this.war_request[i].guild_2 = guild[j].name
                     }
                 }
-                this.war_request[i].start_date = (this.war_request[i].start_date.substring(11,16)+ "hrs on " + this.war_request[i].start_date.substring(8,10) + "/" + this.war_request[i].start_date.substring(5,7) + "/" + this.war_request[i].start_date.substring(0,4));
+                //this.war_request[i].start_date = (this.war_request[i].start_date.substring(11,16)+ "hrs on " + this.war_request[i].start_date.substring(8,10) + "/" + this.war_request[i].start_date.substring(5,7) + "/" + this.war_request[i].start_date.substring(0,4));
 
-                this.war_request[i].end_date = (this.war_request[i].end_date.substring(11,16)+ "hrs on " + this.war_request[i].end_date.substring(8,10) + "/" + this.war_request[i].end_date.substring(5,7) + "/" + this.war_request[i].end_date.substring(0,4));
+                //this.war_request[i].end_date = (this.war_request[i].end_date.substring(11,16)+ "hrs on " + this.war_request[i].end_date.substring(8,10) + "/" + this.war_request[i].end_date.substring(5,7) + "/" + this.war_request[i].end_date.substring(0,4));
             }
             var war_active = 1;
             try{
@@ -262,6 +264,8 @@ $(() => {
             else
                 data.push(0)
             data.push(dateTimeStart)
+            console.log(dateTimeStart)
+            console.log(dateTimeStart.getTime())
             data.push(dateTimeEnd)
             data.push(war_type);
             await Helper.ajax(`/api/war_request`, "data=" + data, "POST"); 
@@ -272,10 +276,14 @@ $(() => {
         render: async function(){
             $('#view-declare-war-modal').html(this.template({war_data: this.war_data,}));
             this.fp_start = flatpickr('#war-start-time', {
-                enableTime: true, dateFormat: "Y-m-d H:i" 
+                enableTime: true, 
+                dateFormat: "Y-m-d H:i",
+                //locale: "fr"
             });
             this.fp_end = flatpickr('#war-end-time', {
-                enableTime: true, dateFormat: "Y-m-d H:i" 
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                // locale: "fr"
             });
         },
     });
