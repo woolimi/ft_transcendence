@@ -280,13 +280,15 @@ $(() => {
         render: async function(){
             $('#view-declare-war-modal').html(this.template({war_data: this.war_data,}));
             this.fp_start = flatpickr('#war-start-time', {
-                enableTime: true, 
+                enableTime: true,
                 dateFormat: "Y-m-d H:i",
+                minuteIncrement: 1,
                 //locale: "fr"
             });
             this.fp_end = flatpickr('#war-end-time', {
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
+                minuteIncrement: 1,
                 // locale: "fr"
             });
         },
