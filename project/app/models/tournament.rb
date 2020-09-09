@@ -42,9 +42,8 @@ class Tournament < ApplicationRecord
 		self.semiR_id = semiR.id
 		self.status = 1
 		self.limit = Time.now() + @@limit
-		ForceMatchFinishIfNotStartedJob.set(wait_until: self.limit).perform_later(semiL)
-		ForceMatchFinishIfNotStartedJob.set(wait_until: self.limit).perform_later(semiR)
 		self.save()
+		ForceMatchFinishIfNotStartedJob.set(wait_until: self.limit).perform_later(semiL, semiR)
 		data = self.jbuild()
 		update_ui(data)
 		ActionCable.server.broadcast "tournament_#{self.id}_channel", { type: "participant", data: data}
@@ -58,12 +57,6 @@ class Tournament < ApplicationRecord
 
 	def finish_semi()
 		shouldStartFinal = self.semiR.match_finished && self.semiL.match_finished && self.final_id == nil
-		# puts "\n\n\n\n\n\n"
-		# puts 'self.final_id', self.final_id, '--------------'
-		# puts 'self.semiL.match_finished:', self.semiL.match_finished, '--------------'
-		# puts 'self.semiR.match_finished:', self.semiR.match_finished, '--------------'
-		# puts 'shouldStartFinal:', shouldStartFinal, '--------------'
-		# puts "\n\n\n\n\n\n"
 		if (shouldStartFinal)
 			final = Match.create(
 				match_type: 'tournament_final',
