@@ -283,12 +283,14 @@ $(() => {
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
                 minuteIncrement: 1,
+                static: true,
                 //locale: "fr"
             });
             this.fp_end = flatpickr('#war-end-time', {
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
                 minuteIncrement: 1,
+                static: true,
                 // locale: "fr"
             });
         },
