@@ -217,6 +217,10 @@ $(() => {
         },
         onSubmit: async function(e){
             const challenge_data = $(e.target).data();
+            if(this.fp_start.selectedDates.length === 0 || this.fp_end.selectedDates.length === 0){
+                Helper.flash_message('danger', "You need to pick a start date and an end date.")
+                return;
+            }
             const dateTimeStart = this.fp_start.selectedDates[0]
             const dateTimeEnd = this.fp_end.selectedDates[0]
             if((dateTimeStart > dateTimeEnd) || ((Date.now() - dateTimeStart) > 120000))
