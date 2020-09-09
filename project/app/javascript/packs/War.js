@@ -33,6 +33,7 @@ $(() => {
                 this.render();
             } catch (error) {
                 Helper.flash_message("danger", error.responseText);
+                window.history.back();
             }
         },
         render: async function() {

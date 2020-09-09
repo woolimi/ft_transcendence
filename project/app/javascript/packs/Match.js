@@ -4,6 +4,7 @@ import Backbone from "backbone"
 import Pong from "./Pong.js"
 import MatchChannel from '../channels/match_channel'
 import Helper from "./Helper.js"
+import UserStatusChannel from '../channels/user_status_channel'
 
 const Match = {};
 
@@ -31,7 +32,6 @@ $(() => {
 		},
 		initialize: async function(options) {
 			try {
-				console.log('match id: ', options.id)
 				Match.id = options.id;
 				window.id = Match.id
 				this.user_id = $('html').data().userId;
@@ -45,7 +45,7 @@ $(() => {
 				if(!match_data.match_finished && (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)) {
 					Pong.on();
 				}
-				MatchChannel.subscribe(match_data, this.recv_callback, this);				
+				MatchChannel.subscribe(match_data, this.recv_callback, this);		
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message("danger", error.responseText);
@@ -60,7 +60,6 @@ $(() => {
 			const data = $(e.currentTarget).data();
 			if (data.userId === this.user_id) {
 				const nbPlayer = data.nbPlayer;
-				console.log('the id of the match:', Match.id)
 				MatchChannel.channel.perform("ready", {
 					ready: true,
 					match_id: this.options.id,

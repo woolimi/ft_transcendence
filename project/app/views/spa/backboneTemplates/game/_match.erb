@@ -12,7 +12,7 @@
 			<%% } else if (player_left_id) { %>
 			<img class="userInfoModal cursor rounded-circle game-avatar blur" src="<%%=player_left.avatar_url%>" data-user-id="<%%= player_left.user_id %>" data-toggle="modal" data-target="#userInfoModal">
 			<%% } else { %>
-			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
+			<%= image_tag("avatar.jpg", class: "rounded-circle game-avatar") %>
 			<%% } %>
 			<div>
 				<%% if (player_1) { %>
@@ -58,7 +58,7 @@
 			<%% } else if (player_right_id) { %>
 			<img class="userInfoModal cursor rounded-circle game-avatar blur" src="<%%= player_right.avatar_url %>" data-user-id="<%%= player_right.user_id %>" data-toggle="modal" data-target="#userInfoModal">
 			<%% } else { %>
-			<%= image_tag("avatar.webp", class: "rounded-circle game-avatar") %>
+			<%= image_tag("avatar.jpg", class: "rounded-circle game-avatar") %>
 			<%% } %>
 			<div>
 				<%% if (player_2) { %>

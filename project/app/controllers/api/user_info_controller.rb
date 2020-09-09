@@ -20,6 +20,7 @@ class Api::UserInfoController < ApplicationController
 		matches.each{|m|
 			match = m.as_json
 			match["match_type"] = "tournament" if m.match_type.include?("tournament")
+			match["match_type"] = "duel" if m.match_type.include?("duel")
 			if m.player_left
 				match["player_left"] = m.player_left.user_profile.nickname
 			else
