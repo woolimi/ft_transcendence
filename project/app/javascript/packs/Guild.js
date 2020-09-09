@@ -8,6 +8,7 @@ import GuildChannel from "../channels/guild_channel"
 import flatpickr from "flatpickr";
 require("flatpickr/dist/flatpickr.css")
 // import { French } from "flatpickr/dist/l10n/fr.js"
+import moment from 'moment';
 
 const Guild = {};
 
@@ -175,9 +176,12 @@ $(() => {
                         this.war_request[i].guild_2 = guild[j].name
                     }
                 }
-                this.war_request[i].start_date = (this.war_request[i].start_date.substring(11,16)+ "hrs on " + this.war_request[i].start_date.substring(8,10) + "/" + this.war_request[i].start_date.substring(5,7) + "/" + this.war_request[i].start_date.substring(0,4));
-
-                this.war_request[i].end_date = (this.war_request[i].end_date.substring(11,16)+ "hrs on " + this.war_request[i].end_date.substring(8,10) + "/" + this.war_request[i].end_date.substring(5,7) + "/" + this.war_request[i].end_date.substring(0,4));
+                this.war_request[i].start_date = 
+                    moment(this.war_request[i].start_date)
+                    .format("YYYY-MM-DD HH:mm:ss")
+                this.war_request[i].end_date = 
+                    moment(this.war_request[i].end_date)
+                    .format("YYYY-MM-DD HH:mm:ss")
             }
             var war_active = 1;
             try{
@@ -267,12 +271,16 @@ $(() => {
                 data.push($("#maxUnanswered").val())
             else
                 data.push(0)
-            data.push(dateTimeStart)
+
+            // console.log('!!!!!!!!!!!')
             // console.log(dateTimeStart)
             // console.log(dateTimeStart.getTime())
-            data.push(dateTimeEnd)
+            // console.log(moment(dateTimeStart).format())
+
+            data.push(moment(dateTimeStart).format()) // "YYYY-MM-DD HH:mm:ssZ"
+            data.push(moment(dateTimeEnd).format())
             data.push(war_type);
-            await Helper.ajax(`/api/war_request`, "data=" + data, "POST"); 
+            await Helper.ajax(`/api/war_request`, {data: data}, "POST"); 
             $('#declareWarModal').modal('toggle');
             GuildChannel.channel.send({ type: "rejectWar" });
             // Guild.content.render();
