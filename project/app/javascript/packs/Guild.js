@@ -175,9 +175,9 @@ $(() => {
                         this.war_request[i].guild_2 = guild[j].name
                     }
                 }
-                //this.war_request[i].start_date = (this.war_request[i].start_date.substring(11,16)+ "hrs on " + this.war_request[i].start_date.substring(8,10) + "/" + this.war_request[i].start_date.substring(5,7) + "/" + this.war_request[i].start_date.substring(0,4));
+                this.war_request[i].start_date = (this.war_request[i].start_date.substring(11,16)+ "hrs on " + this.war_request[i].start_date.substring(8,10) + "/" + this.war_request[i].start_date.substring(5,7) + "/" + this.war_request[i].start_date.substring(0,4));
 
-                //this.war_request[i].end_date = (this.war_request[i].end_date.substring(11,16)+ "hrs on " + this.war_request[i].end_date.substring(8,10) + "/" + this.war_request[i].end_date.substring(5,7) + "/" + this.war_request[i].end_date.substring(0,4));
+                this.war_request[i].end_date = (this.war_request[i].end_date.substring(11,16)+ "hrs on " + this.war_request[i].end_date.substring(8,10) + "/" + this.war_request[i].end_date.substring(5,7) + "/" + this.war_request[i].end_date.substring(0,4));
             }
             var war_active = 1;
             try{
