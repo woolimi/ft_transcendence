@@ -73,7 +73,6 @@ if ($('html').data().isLogin) {
 					await Helper.fetch(this.members);
 					await Helper.ajax(`/api/chats/${options.room}/display`, "display=true", "PUT");
 					await Helper.fetch(Channel.m_channel_list);
-					console.log(this.messages.toJSON())
 					Channel.channel_list.render();
 					this.opponent = this.find_opponent(this.members.toJSON());
 					this.block_list = Profile.userProfile.get("block_list");
