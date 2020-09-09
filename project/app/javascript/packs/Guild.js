@@ -264,8 +264,8 @@ $(() => {
             else
                 data.push(0)
             data.push(dateTimeStart)
-            console.log(dateTimeStart)
-            console.log(dateTimeStart.getTime())
+            // console.log(dateTimeStart)
+            // console.log(dateTimeStart.getTime())
             data.push(dateTimeEnd)
             data.push(war_type);
             await Helper.ajax(`/api/war_request`, "data=" + data, "POST"); 
