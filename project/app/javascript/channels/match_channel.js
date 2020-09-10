@@ -30,6 +30,7 @@ if ($('html').data().isLogin) {
           me.render_players(m);
           if ((m.player_1 && m.player_1.user_id == me.user_id)
             || (m.player_2 && m.player_2.user_id == me.user_id)) {
+              console.log("change user status ")
             UserStatusChannel.channel.perform("set_status", { user_id: me.user_id, status: 2 });
           }
         },

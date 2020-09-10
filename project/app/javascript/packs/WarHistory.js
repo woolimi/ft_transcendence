@@ -1,6 +1,8 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
+import moment from 'moment';
+
 const WarHistory = {};
 
 if ($('html').data().isLogin) {
@@ -33,9 +35,8 @@ $(() => {
             var i = 0
             for (i = 0; i < Object.keys(wars).length; i++)
             {
-                wars[i].end_date = (wars[i].end_date.substring(11,16)+ "hrs on " + wars[i].end_date.substring(8,10) + "/" + wars[i].end_date.substring(5,7) + "/" + wars[i].end_date.substring(0,4));
-
-                wars[i].start_date = (wars[i].start_date.substring(11,16)+ "hrs on " + wars[i].start_date.substring(8,10) + "/" + wars[i].start_date.substring(5,7) + "/" + wars[i].start_date.substring(0,4));
+                wars[i].end_date = moment(wars[i].end_date).format("YYYY-MM-DD HH:mm:ss")
+                wars[i].start_date = moment(wars[i].start_date).format("YYYY-MM-DD HH:mm:ss")
             }
             const content = this.template({
                 wars: wars,
