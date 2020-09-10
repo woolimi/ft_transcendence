@@ -40,13 +40,13 @@ $(() => {
             const content = this.template(this.model.toJSON());
             this.$el.html(content);
             if(this.model.toJSON().status == 2)
-                this.end = this.model.toJSON().end_date;
+                this.end = new Date(this.model.toJSON().end_date);
             else
             {
                 document.getElementById("attack").disabled = true;
-                this.end = this.model.toJSON().start_date;
+                this.end = new Date(this.model.toJSON().start_date);
             }
-            render_timer()
+            this.render_timer()
         },
         events: {
             "click #attack": "attack",
