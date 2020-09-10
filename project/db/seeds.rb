@@ -160,8 +160,8 @@ if User.find_by({ email: "wpark@student.42.fr"}).blank?
 		password: "asdfas"
 	)
 	UserProfile.create!(
-		name: "Woolim",
-		nickname: "PARK",
+		name: "Woolim PARK",
+		nickname: "wpark",
 		avatar_url: "https://cdn.intra.42.fr/users/small_wpark.jpg",
 		rp: 1000,
 		user_id: u[:id],

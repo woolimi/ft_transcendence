@@ -29,7 +29,7 @@ $(() => {
 		constructor(side) {
 			this.speed = 4;
 			this.width = 4;
-			this.height = 20;
+			this.height = 32;
 			this.score = 0;
 			this.side = side;
 			this.y = 90;
