@@ -68,12 +68,13 @@ $(() => {
             }
             Router.router.navigate("/guild/war_history/" + gname + "/" + gid, {trigger: true});
         },
-        render_timer: function() {
+        render_timer: async function() {
 			let now = new Date();
             let distanceToStart = ((this.start - now)/1000) >> 0
             let distanceToEnd = ((this.end - now)/1000) >> 0
             if(distanceToStart <= 0){
                 if(distanceToStart == 0){
+                    await Helper.fetch(this.model);
                     const content = this.template(this.model.toJSON());
                     this.$el.html(content);
                 }
