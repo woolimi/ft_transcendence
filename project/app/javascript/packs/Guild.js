@@ -48,6 +48,7 @@ $(() => {
                 dateFormat: "Y-m-d H:i",
                 minuteIncrement: 1,
                 static: true,
+                minDate: new Date(),
                 //locale: "fr"
             });
             this.fp_end = flatpickr('#war-end-time', {
@@ -55,6 +56,7 @@ $(() => {
                 dateFormat: "Y-m-d H:i",
                 minuteIncrement: 1,
                 static: true,
+                minDate: new Date(),
                 // locale: "fr"
             });
         },
