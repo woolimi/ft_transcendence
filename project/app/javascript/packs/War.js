@@ -40,12 +40,13 @@ $(() => {
             const content = this.template(this.model.toJSON());
             this.$el.html(content);
             if(this.model.toJSON().status == 2)
-                this.renderTimer(this.model.toJSON().end_date);
+                this.end = new Date(this.model.toJSON().end_date);
             else
             {
                 document.getElementById("attack").disabled = true;
-                this.renderTimer(this.model.toJSON().start_date);
+                this.end = new Date(this.model.toJSON().start_date);
             }
+            this.render_timer()
         },
         events: {
             "click #attack": "attack",
@@ -69,34 +70,27 @@ $(() => {
             }
             Router.router.navigate("/guild/war_history/" + gname + "/" + gid, {trigger: true});
         },
-        renderTimer: function(date) {
-            const self = this;
-            this.intervalId = setInterval(async function() {
-                var dds = new Date(date);
-                var countDownDate = dds.getTime();
-                var now = Date.now();
-
-                var distance = countDownDate - now;
-                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                if (document.getElementById("clock"))
-                    document.getElementById("clock").innerHTML = days + "d " + hours + "h " +
-                    minutes + "m " + seconds + "s ";
-
-                if (distance < 0) {
-                    clearInterval(this.intervalId);
-                    if(self.model.toJSON().status == 1)
-                        self.send_to_game();
-                    else if(self.model.toJSON().status == 2)
-                    {
-                        document.getElementById("clock").innerHTML = "0d 0h 0m 0s <br>Go to guild war history for details"
-                        document.getElementById("attack").disabled = true;
-                    }
+        render_timer: function() {
+			let now = new Date();
+			let distance = ((this.end - now)/1000) >> 0
+			if (distance < 0){
+                if(self.model.toJSON().status == 1)
+                    self.send_to_game();
+                else if(self.model.toJSON().status == 2)
+                {
+                    $('#clock').html("0d 0h 0m 0s <br>Go to guild war history for details")
+                    document.getElementById("attack").disabled = false;
                 }
-            }, 1000);
-        },
+            }
+			else {
+				$('#clock').html(Helper.getTimeString(distance))
+				setTimeout(() => {
+					if ($('#clock').length) {
+						this.render_timer();
+					}
+				}, 1000);
+			}	
+		},
         attack: async function(e) {
             e.stopImmediatePropagation();
             const data = War.data.toJSON();
