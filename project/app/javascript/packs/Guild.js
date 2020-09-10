@@ -39,7 +39,6 @@ $(() => {
         },
         initialize: async function(options) {
             this.war_data = options.war_data
-            debugger
             this.render()
         },
         render: async function(){
