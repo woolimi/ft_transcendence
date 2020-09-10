@@ -79,7 +79,7 @@ $(() => {
                 else if(self.model.toJSON().status == 2)
                 {
                     $('#clock').html("0d 0h 0m 0s <br>Go to guild war history for details")
-                    document.getElementById("attack").disabled = true;
+                    document.getElementById("attack").disabled = false;
                 }
             }
 			else {
