@@ -39,12 +39,10 @@ $(() => {
         render: async function() {
             const content = this.template(this.model.toJSON());
             this.$el.html(content);
-            if(this.model.toJSON().status == 2)
-                this.end = new Date(this.model.toJSON().end_date);
-            else
-            {
+            this.end = new Date(this.model.toJSON().end_date);
+            this.start = new Date(this.model.toJSON().start_date);
+            if(this.model.toJSON().status != 2) {
                 document.getElementById("attack").disabled = true;
-                this.end = new Date(this.model.toJSON().start_date);
             }
             this.render_timer()
         },
@@ -70,16 +68,26 @@ $(() => {
             }
             Router.router.navigate("/guild/war_history/" + gname + "/" + gid, {trigger: true});
         },
-        render_timer: function() {
+        render_timer: async function() {
 			let now = new Date();
-			let distance = ((this.end - now)/1000) >> 0
-			if (distance <= 0){
-                $('#clock').html("0d 0h 0m 0s <br>Go to guild war history for details")
+            let distanceToStart = ((this.start - now)/1000) >> 0
+            let distanceToEnd = ((this.end - now)/1000) >> 0
+            if(distanceToStart <= 0){
+                if(distanceToStart == 0){
+                    await Helper.fetch(this.model);
+                    const content = this.template(this.model.toJSON());
+                    this.$el.html(content);
+                }
                 document.getElementById("attack").disabled = false;
-                if(self.model.toJSON().status == 1)
-                    self.send_to_game();
+                if(this.model.toJSON().status == 1)
+                    this.send_to_game();
             }
-			else {
+			if (distanceToEnd <= 0){
+                document.getElementById("attack").disabled = true;
+                $('#clock').html("0d 0h 0m 0s <br>Go to guild war history for details")
+            }
+            let distance = (distanceToStart > 0 ? distanceToStart : distanceToEnd)
+			if(distance > 0) {
 				$('#clock').html(Helper.getTimeString(distance))
 				setTimeout(() => {
 					if ($('#clock').length) {
