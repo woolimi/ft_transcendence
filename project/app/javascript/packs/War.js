@@ -79,8 +79,8 @@ $(() => {
                     this.$el.html(content);
                 }
                 document.getElementById("attack").disabled = false;
-                if(this.model.toJSON().status == 1)
-                    this.send_to_game();
+                // if(this.model.toJSON().status == 1)
+                //     this.send_to_game();
             }
 			if (distanceToEnd <= 0){
                 document.getElementById("attack").disabled = true;
