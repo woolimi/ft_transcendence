@@ -21,7 +21,6 @@ if User.find_by({ email: "doby@asdf.com" }).blank?
 		avatar_url: "https://cdn.intra.42.fr/users/small_doby.jpg",
 		rp: 900,
 		user_id: u[:id],
-		admin: true
 	)
 end
 
@@ -154,101 +153,17 @@ if User.find_by({ email: "charly@asdf.com"}).blank?
 		user_id: u[:id])
 end
 
-if User.find_by({ email: "admin@asdf.com"}).blank?
+if User.find_by({ email: "wpark@student.42.fr"}).blank?
 	u = User.create!(
-		ft_id: 11, 
-		email: "admin@asdf.com",
-		password: "asdfas",
+		ft_id: 57601,
+		email:  "wpark@student.42.fr",
+		password: "asdfas"
 	)
+	UserProfile.create!(
+		name: "Woolim PARK",
+		nickname: "wpark",
+		avatar_url: "https://cdn.intra.42.fr/users/small_wpark.jpg",
+		rp: 1000,
+		user_id: u[:id],
+		admin: true)
 end
-
-# if Guild.find_by(name: 'Mumbai Indians').blank?
-# 	u1 = User.find_by({ email: "jai@asdf.com"})
-# 	g1 = Guild.create(
-# 		name: "Mumbai Indians",
-# 		anagram: "mindia",
-# 		total_score: 5,
-# 		guild_officers: "{}",
-# 		owner: u1[:id]
-# 	)
-# end
-# if Guild.find_by(name: 'Chennai Super Kings').blank?
-	
-# 	u2 = UserProfile.find_by({ name: "dongbin"})
-# 	g2 = Guild.create(
-# 		name: "Chennai Super Kings",
-# 		anagram: "chenia",
-# 		total_score: 4,
-# 		guild_officers: "{}",
-# 		owner: u2[:user_id]
-# 	)
-# end
-
-# if War.all.blank?
-# 	g1 = Guild.find_by({ name: 'Mumbai Indians'})
-# 	g2 = Guild.find_by({ name: 'Chennai Super Kings'})
-
-# 	u1 = User.find_by({ email: "jai@asdf.com"})
-# 	u2 = User.find_by({ email: "doby@asdf.com"})
-
-	
-# 	w1 = War.create(
-# 		guild_1: g1[:id],
-# 		guild_2: g2[:id],
-# 		guild_1_score: 10,
-# 		guild_2_score: 5,
-# 		guild_1_matches_won: 2,
-# 		guild_1_matches_lost: 1,
-# 		guild_1_matches_unanswered: 0,
-# 		guild_2_matches_won: 1,
-# 		guild_2_matches_lost: 2,
-# 		guild_2_matches_unanswered: 0,
-# 		start_date: Time.now.to_datetime,
-# 		end_date: (Time.now + 100000).to_datetime,
-# 		wager: 20,
-# 		match_list: "",
-# 		status: 2,
-# 		match_ongoing: false
-# 	)
-
-# 	match1=Match.create(
-# 		match_type: 'war',
-# 		player_1: {score: 10},
-# 		player_2: {score: 8},
-# 		winner: u1[:id],
-# 		loser: u2[:id],
-# 		match_finished: true,
-# 		player_left_id: u1[:id],
-# 		player_right_id: u2[:id],
-# 		score_left: 10,
-# 		score_right: 8,
-# 		war_id: w1[:id]
-# 	)
-
-# 	match2=Match.create(
-# 		match_type: 'war',
-# 		player_1: {score: 10},
-# 		player_2: {score: 2},
-# 		winner: u1[:id],
-# 		loser: u2[:id],
-# 		match_finished: true,
-# 		player_left_id: u1[:id],
-# 		player_right_id: u2[:id],
-# 		score_left: 10,
-# 		score_right: 2,
-# 		war_id: w1[:id]
-# 	)
-
-# 	match3=Match.create(
-# 		match_type: 'war',
-# 		player_1: {score: 6},
-# 		player_2: {score: 10},
-# 		winner: u2[:id],
-# 		loser: u1[:id],
-# 		match_finished: true,
-# 		player_left_id: u1[:id],
-# 		player_right_id: u2[:id],
-# 		score_left: 6,
-# 		score_right: 10,
-# 		war_id: w1[:id]
-# 	)

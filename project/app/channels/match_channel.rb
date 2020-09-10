@@ -10,7 +10,7 @@ class MatchChannel < ApplicationCable::Channel
   @@matches = {}
   @@speed = 8
   @@CANVAS = { :WIDTH => 400, :HEIGHT => 200 }
-  @@PADDLE = { :WIDTH => 4, :HEIGHT => 20, :SPEED => @@speed }
+  @@PADDLE = { :WIDTH => 4, :HEIGHT => 32, :SPEED => @@speed }
   @@session = {}
 
   def subscribed
