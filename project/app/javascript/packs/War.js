@@ -74,9 +74,10 @@ $(() => {
             let distanceToEnd = ((this.end - now)/1000) >> 0
             if(distanceToStart <= 0){
                 if(distanceToStart == 0){
-                    await Helper.fetch(this.model);
-                    const content = this.template(this.model.toJSON());
-                    this.$el.html(content);
+                    // await Helper.fetch(this.model);
+                    // const content = this.template(this.model.toJSON());
+                    // this.$el.html(content);
+                    $("#messageBeforeClock").html('War ends in:')
                 }
                 document.getElementById("attack").disabled = false;
                 // if(this.model.toJSON().status == 1)
