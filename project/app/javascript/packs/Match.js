@@ -35,18 +35,18 @@ $(() => {
 				Match.id = options.id;
 				window.id = Match.id
 				this.user_id = $('html').data().userId;
-				window.user_id = this.user_id
+				window.user_id = this.user_id;
 				this.options = options; // { match_type: "duel", id: match_id }
 				const match_data = await Helper.ajax(`/api/matches/${options.id}`, '','GET');
 				this.render_page();
 				this.render_players(match_data);
 				this.render_game(match_data);
-				Pong.setup()				
+				Pong.setup();
 				// && (this.user_id == match_data.player_left_id || this.user_id == match_data.player_right_id)
 				if(!match_data.match_finished) {
 					Pong.on();
 				}
-				MatchChannel.subscribe(match_data, this.recv_callback, this);		
+				MatchChannel.subscribe(match_data, this.recv_callback, this);
 			} catch (error) {
 				if (error.responseText)
 					Helper.flash_message("danger", error.responseText);
