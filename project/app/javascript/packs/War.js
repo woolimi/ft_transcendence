@@ -73,14 +73,11 @@ $(() => {
         render_timer: function() {
 			let now = new Date();
 			let distance = ((this.end - now)/1000) >> 0
-			if (distance < 0){
+			if (distance <= 0){
+                $('#clock').html("0d 0h 0m 0s <br>Go to guild war history for details")
+                document.getElementById("attack").disabled = false;
                 if(self.model.toJSON().status == 1)
                     self.send_to_game();
-                else if(self.model.toJSON().status == 2)
-                {
-                    $('#clock').html("0d 0h 0m 0s <br>Go to guild war history for details")
-                    document.getElementById("attack").disabled = false;
-                }
             }
 			else {
 				$('#clock').html(Helper.getTimeString(distance))
