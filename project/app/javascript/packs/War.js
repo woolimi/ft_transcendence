@@ -74,9 +74,9 @@ $(() => {
 			let now = new Date();
 			let distance = ((this.end - now)/1000) >> 0
 			if (distance < 0){
-                if(self.model.toJSON().status == 1)
-                    self.send_to_game();
-                else if(self.model.toJSON().status == 2)
+                if(this.model.toJSON().status == 1)
+                    this.send_to_game();
+                else if(this.model.toJSON().status == 2)
                 {
                     $('#clock').html("0d 0h 0m 0s <br>Go to guild war history for details")
                     document.getElementById("attack").disabled = false;
@@ -95,7 +95,7 @@ $(() => {
             e.stopImmediatePropagation();
             const data = War.data.toJSON();
             try {
-                const ongoing = await Helper.ajax(`/api/war_ongoing/${data.id}`);
+                const ongoing = await Helper.ajax(`/api/war_ongoing/${data.id}`, '', 'GET');
                 if (ongoing === "true")
                     throw "There can be ONLY one match in war time";
                 const new_match = await Helper.ajax('/api/matches/',

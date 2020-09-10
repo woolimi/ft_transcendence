@@ -11,7 +11,7 @@ class Api::WarOngoingController < ApplicationController
 		# side = 0
 		# side = -1 if war.guild_1 == guild.id
 		# side = 1 if war.guild_2 == guild.id
-		ongoing =  Match.where(war_id: params[:war_id]).where(match_finished: false)
+		ongoing =  Match.where(war_id: params[:war_id]).where("started_at IS NOT NULL").where(match_finished: false)
 		# if side == -1
 		# 	ongoing = Match.where(war_id: params[:war_id]).where(match_finished: false).where.not(player_1: nil)
 		# elsif side == 1

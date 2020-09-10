@@ -63,7 +63,7 @@ class MatchChannel < ApplicationCable::Channel
     quit_match.player_1 = nil if (quit_match.player_1.present? && quit_match.player_1["user_id"] == current_user[:id])
     quit_match.player_2 = nil if (quit_match.player_2.present? && quit_match.player_2["user_id"] == current_user[:id])
     quit_match.save!()
-    if (quit_match.match_type.include?("duel") || quit_match.match_type == "ladder")
+    if (quit_match.match_type.include?("duel") || quit_match.match_type == "ladder" || quit_match.match_type == "war")
       return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil? && quit_match.started_at.nil?)
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: quit_match.jbuild()})
@@ -94,9 +94,9 @@ class MatchChannel < ApplicationCable::Channel
     # return if !@@matches.has_key?(data["match_id"])
     # return if current_user[:id] != data["from"]
     # return if @@matches[data["match_id"]]["over"] == true
-    player_nb = @@matches[data["match_id"]]["players"].find_index(data["from"]) + 1
+    player_nb = @@matches[data["match_id"]]["players"].find_index(data["from"])
     return if player_nb.nil?
-    @@matches[data["match_id"]]["player_#{player_nb}"]["dir"] = data["move"]
+    @@matches[data["match_id"]]["player_#{player_nb + 1}"]["dir"] = data["move"]
   end
 
   private
