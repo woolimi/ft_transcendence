@@ -11,6 +11,7 @@ require("flatpickr/dist/flatpickr.css")
 import moment from 'moment';
 
 const Guild = {};
+const WarModalView = {};
 
 if ($('html').data().isLogin) {
 
@@ -26,6 +27,99 @@ $(() => {
 
     Guild.allGuilds = new AllGuilds();
 
+    WarModalView.Content = Backbone.View.extend({
+        template: _.template($("script[name='tmpl-declare-war-modal']").html()),
+        wardata: [],
+        el: $("#app"),
+        fp_start: {},
+        fp_end: {},
+        // model: user,
+        events: {
+            "submit #declare-war-form": "onSubmit",
+        },
+        initialize: async function(options) {
+            this.war_data = options.war_data
+            this.render()
+        },
+        render: async function(){
+            $('#view-declare-war-modal').html(this.template({war_data: this.war_data,}));
+            this.fp_start = flatpickr('#war-start-time', {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                minuteIncrement: 1,
+                static: true,
+                //locale: "fr"
+            });
+            this.fp_end = flatpickr('#war-end-time', {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                minuteIncrement: 1,
+                static: true,
+                // locale: "fr"
+            });
+        },
+        onSubmit: async function(e){
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            const challenge_data = $(e.target).data();
+            if(this.fp_start.selectedDates.length === 0 || this.fp_end.selectedDates.length === 0){
+                Helper.flash_message('danger', "You need to pick a start date and an end date.")
+                return;
+            }
+            const dateTimeStart = this.fp_start.selectedDates[0]
+            const dateTimeEnd = this.fp_end.selectedDates[0]
+            if((dateTimeStart > dateTimeEnd) || ((Date.now() - dateTimeStart) > 120000))
+            {
+                Helper.flash_message("danger", "End date should always be greater than Start Date and Start Date cannot be in the Past");
+                return;
+            }
+            await Helper.fetch(Guild.allGuilds);
+            var allGuilds = Guild.allGuilds.toJSON();
+            var i = 0 
+            for(i = 0; i < Object.keys(allGuilds).length; i++)
+            {
+                if(challenge_data.challenger == allGuilds[i].name &&    allGuilds[i].total_score < parseInt($("#wagerPoints").val()))
+                {
+                    Helper.flash_message("danger", "Challenger guild does not have enough points for wager");
+                    return;
+                }
+                if(challenge_data.accepter == allGuilds[i].name && allGuilds[i].total_score < parseInt($("#wagerPoints").val()))
+                {
+                    Helper.flash_message("danger", "Accepter guild does not have enough points for wager");
+                    return;
+                }
+            }
+            var data = []
+            var war_type = ""
+            if($('#include-tournament').is(":checked") == true)
+                war_type += "1";
+            else
+                war_type += "0";
+            if($('#include-duel').is(":checked") == true)
+                war_type += "1";
+            else
+                war_type += "0";
+                if($('#include-ladder').is(":checked") == true)
+                war_type += "1";
+            else
+                war_type += "0";
+            data.push(challenge_data.challenger)
+            data.push(challenge_data.accepter)
+            data.push($("#wagerPoints").val())
+            if($("#maxUnanswered").val())
+                data.push($("#maxUnanswered").val())
+            else
+                data.push(0)
+            data.push(moment(dateTimeStart).format()) // "YYYY-MM-DD HH:mm:ssZ"
+            data.push(moment(dateTimeEnd).format())
+            data.push(war_type);
+            await Helper.ajax(`/api/war_request`, {data: data}, "POST"); 
+            $('#declareWarModal').modal('toggle');
+            GuildChannel.channel.send({ type: "rejectWar" });
+            // Guild.content.render();
+        },
+    });
+
     Guild.Content = Backbone.View.extend({
         el: $("#view-content"),
         template: _.template($("script[name='tmpl-content-guild']").html()),
@@ -40,6 +134,7 @@ $(() => {
             "click .kickMember": "kickMember",
             "click .acceptWar": "acceptWar",
             "click .rejectWar": "rejectWar",
+            "click .declareWar": "declareWar",
         },
         initialize: async function() {
             try {
@@ -199,105 +294,18 @@ $(() => {
             });
             this.$el.html(content);
             return this;
-        }
-    });
-
-    // Guild.content = new GuildContent();
-    
-    const WarModalView = Backbone.View.extend({
-        template: _.template($("script[name='tmpl-declare-war-modal']").html()),
-        wardata: [],
-        el: $("#app"),
-        fp_start: {},
-        fp_end: {},
-        // model: user,
-        events: {
-            "click .declareWar": "declareWar",
-            "submit #declare-war-form": "onSubmit",
         },
         declareWar: async function(e)
         {
+            // e.stopImmediatePropagation();
+            // e.preventDefault();
             this.war_data = $(e.target).data();
-            this.render();
-        },
-        onSubmit: async function(e){
-            const challenge_data = $(e.target).data();
-            if(this.fp_start.selectedDates.length === 0 || this.fp_end.selectedDates.length === 0){
-                Helper.flash_message('danger', "You need to pick a start date and an end date.")
-                return;
+            if(WarModalView.content){
+                WarModalView.content.undelegateEvents()
             }
-            const dateTimeStart = this.fp_start.selectedDates[0]
-            const dateTimeEnd = this.fp_end.selectedDates[0]
-            if((dateTimeStart > dateTimeEnd) || ((Date.now() - dateTimeStart) > 120000))
-            {
-                Helper.flash_message("danger", "End date should always be greater than Start Date and Start Date cannot be in the Past");
-                return;
-            }
-            await Helper.fetch(Guild.allGuilds);
-            var allGuilds = Guild.allGuilds.toJSON();
-            var i = 0 
-            for(i = 0; i < Object.keys(allGuilds).length; i++)
-            {
-                if(challenge_data.challenger == allGuilds[i].name &&    allGuilds[i].total_score < parseInt($("#wagerPoints").val()))
-                {
-                    Helper.flash_message("danger", "Challenger guild does not have enough points for wager");
-                    return;
-                }
-                if(challenge_data.accepter == allGuilds[i].name && allGuilds[i].total_score < parseInt($("#wagerPoints").val()))
-                {
-                    Helper.flash_message("danger", "Accepter guild does not have enough points for wager");
-                    return;
-                }
-            }
-            var data = []
-            var war_type = ""
-            if($('#include-tournament').is(":checked") == true)
-                war_type += "1";
-            else
-                war_type += "0";
-            if($('#include-duel').is(":checked") == true)
-                war_type += "1";
-            else
-                war_type += "0";
-                if($('#include-ladder').is(":checked") == true)
-                war_type += "1";
-            else
-                war_type += "0";
-            data.push(challenge_data.challenger)
-            data.push(challenge_data.accepter)
-            data.push($("#wagerPoints").val())
-            if($("#maxUnanswered").val())
-                data.push($("#maxUnanswered").val())
-            else
-                data.push(0)
-            data.push(moment(dateTimeStart).format()) // "YYYY-MM-DD HH:mm:ssZ"
-            data.push(moment(dateTimeEnd).format())
-            data.push(war_type);
-            await Helper.ajax(`/api/war_request`, {data: data}, "POST"); 
-            $('#declareWarModal').modal('toggle');
-            GuildChannel.channel.send({ type: "rejectWar" });
-            // Guild.content.render();
-        },
-        render: async function(){
-            $('#view-declare-war-modal').html(this.template({war_data: this.war_data,}));
-            this.fp_start = flatpickr('#war-start-time', {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                minuteIncrement: 1,
-                static: true,
-                //locale: "fr"
-            });
-            this.fp_end = flatpickr('#war-end-time', {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                minuteIncrement: 1,
-                static: true,
-                // locale: "fr"
-            });
-        },
+            WarModalView.content = new WarModalView.Content({war_data: this.war_data})
+        }
     });
-
-    WarModalView.content = new WarModalView();
 })
 
 }
