@@ -73,10 +73,6 @@ class Api::WarController < ApplicationController
         enemy_members = enemy_guild.guild_members
         enemy_members.each do |enemy_json|
             enemy = User.find(enemy_json["user_id"])
-            puts "\n\n\n\n\n\n\n"
-            puts enemy_json["user_id"]
-            pp enemy
-            puts "\n\n\n\n\n\n\n"
             enemy.send_notification('war_attacked', {
                 match_id: params[:match_id],
                 attacker: current_user.user_profile.name,
