@@ -33,7 +33,7 @@ class Api::UserInfoController < ApplicationController
 			end
 			match_list.push(match);
 		}
-		info[:numberOfWonTournaments] = Tournament.where(winner: current_user[:id]).count
+		info[:numberOfWonTournaments] = Tournament.where(winner: params[:user_id]).count
 		info[:matches] = match_list
 		info[:guild] = p.guild.as_json if p.guild_id.present?
 		info[:guild] = nil if p.guild_id.blank?
