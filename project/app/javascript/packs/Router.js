@@ -23,6 +23,7 @@ import GuildChannel from "../channels/guild_channel"
 import Admin from "./Admin"
 import AdminGuildRights from "./AdminGuildRights"
 import Duel from "./Duel.js"
+import Pong from "./Pong"
 
 const Router = {};
 if ($('html').data().isLogin) {
@@ -71,6 +72,7 @@ if ($('html').data().isLogin) {
             if (urlHistory.length > 2) {
                 urlHistory.splice(0, urlHistory.length - 2)
             };
+            Pong.off();
         };
 
         const RouterClass = Backbone.Router.extend({

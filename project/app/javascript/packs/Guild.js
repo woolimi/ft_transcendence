@@ -162,7 +162,6 @@ $(() => {
             }
             this.war_request = await Helper.ajax(`/api/war_request/null`, "", "GET");
             var j = 0
-            console.log(this.war_request)
             for(i = 0; i < Object.keys(this.war_request).length; i++)
             {
                 for(j = 0; j < Object.keys(guild).length; j++)
@@ -271,12 +270,6 @@ $(() => {
                 data.push($("#maxUnanswered").val())
             else
                 data.push(0)
-
-            // console.log('!!!!!!!!!!!')
-            // console.log(dateTimeStart)
-            // console.log(dateTimeStart.getTime())
-            // console.log(moment(dateTimeStart).format())
-
             data.push(moment(dateTimeStart).format()) // "YYYY-MM-DD HH:mm:ssZ"
             data.push(moment(dateTimeEnd).format())
             data.push(war_type);

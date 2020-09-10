@@ -62,7 +62,6 @@ $(() => {
 		render_timer: function() {
 			let now = new Date();
 			let distance = ((this.end - now)/1000) >> 0
-			// console.log('render_timer')
 			if (distance < 0)
 				$('#tournament-timer').html('in 0d 0h 0m 0s')
 			else {
