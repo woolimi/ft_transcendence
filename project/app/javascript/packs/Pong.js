@@ -107,22 +107,24 @@ $(() => {
 	}
 
 	Pong.keyup_cb = function (e) {
-		e.preventDefault();
 		if (e.code === "ArrowUp"){
 			Pong.send('stop')
+			e.preventDefault();
 		}
 		if (e.code === "ArrowDown"){
 			Pong.send('stop')
+			e.preventDefault();
 		}			
 	}
 	
 	Pong.keydown_cb = function (e) {
-		e.preventDefault();
 		if (e.code === "ArrowUp"){
 			Pong.send('up')
+			e.preventDefault();
 		}
 		if (e.code === "ArrowDown"){
 			Pong.send('down')
+			e.preventDefault();
 		}
 	}
 
