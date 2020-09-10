@@ -50,7 +50,12 @@ class MatchChannel < ApplicationCable::Channel
         m.save!()
         ActionCable.server.broadcast("match_#{params[:match_id]}_channel", { players: true, data: m.jbuild()})
         ActionCable.server.broadcast("match_#{params[:match_id]}_channel", { all_ready: true })
-        return game_start(m.id, [m.player_left_id, m.player_right_id])
+        # return game_start(m.id, [m.player_left_id, m.player_right_id])
+        p = current_user.user_profile
+        p.status = 2
+        p.save()
+        ActionCable.server.broadcast "user_status_channel", {:user_id => current_user[:id], :status => 2}
+        return GameStartJob.new(m.id, [m.player_left_id, m.player_right_id]).perform_now()
       else
         GuildWarManageJob.set(wait: 1.minutes).perform_later(params[:match_id])
       end
@@ -63,7 +68,7 @@ class MatchChannel < ApplicationCable::Channel
     quit_match.player_1 = nil if (quit_match.player_1.present? && quit_match.player_1["user_id"] == current_user[:id])
     quit_match.player_2 = nil if (quit_match.player_2.present? && quit_match.player_2["user_id"] == current_user[:id])
     quit_match.save!()
-    if (quit_match.match_type.include?("duel") || quit_match.match_type == "ladder")
+    if (quit_match.match_type.include?("duel") || quit_match.match_type == "ladder" || quit_match.match_type == "war")
       return quit_match.delete if (quit_match.player_1.nil? && quit_match.player_2.nil? && quit_match.started_at.nil?)
     end
     ActionCable.server.broadcast("match_#{params[:match_id]}_channel", {players: true, data: quit_match.jbuild()})
@@ -86,7 +91,8 @@ class MatchChannel < ApplicationCable::Channel
       ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { all_ready: true })
       ActionCable.server.broadcast("match_#{data["match_id"]}_channel", { players: true, data: match.jbuild() })
       ActionCable.server.broadcast("game_channel", {type: "match"});
-      return game_start(match[:id], [match.player_left_id, match.player_right_id])
+      # return game_start(match[:id], [match.player_left_id, match.player_right_id])
+      return GameStartJob.new(match[:id], [match.player_left_id, match.player_right_id]).perform_now()
     end
   end
 
@@ -94,13 +100,12 @@ class MatchChannel < ApplicationCable::Channel
     # return if !@@matches.has_key?(data["match_id"])
     # return if current_user[:id] != data["from"]
     # return if @@matches[data["match_id"]]["over"] == true
-    player_nb = @@matches[data["match_id"]]["players"].find_index(data["from"]) + 1
+    player_nb = @@matches[data["match_id"]]["players"].find_index(data["from"])
     return if player_nb.nil?
-    @@matches[data["match_id"]]["player_#{player_nb}"]["dir"] = data["move"]
+    @@matches[data["match_id"]]["player_#{player_nb + 1}"]["dir"] = data["move"]
   end
 
-  private
-  def game_start(match_id, players)
+  def self.game_start(match_id, players)
     @@matches[match_id] = {
       "ball" => { "x" => @@CANVAS[:WIDTH] / 2, "y" => @@CANVAS[:HEIGHT] / 2, "r" => 3, "moveX" => 0, "moveY" => 0, "speed" => @@speed },
       "score" => [0, 0],
@@ -208,24 +213,24 @@ class MatchChannel < ApplicationCable::Channel
     @@matches.delete(match_id)
   end
 
-  def ball_reset(ball)
+  def self.ball_reset(ball)
     ball["x"] = @@CANVAS[:WIDTH] / 2
     ball["y"] = @@CANVAS[:HEIGHT] / 2
     ball["moveX"] = 0
     ball["moveY"] = 0
   end
 
-  def player_reset(game)
+  def self.player_reset(game)
     game["player_1"] = { "x" => 10, "y" => 90 }
     game["player_2"] = { "x" => 390, "y" => 90 }
   end
 
-  def ball_start(ball)
+  def self.ball_start(ball)
     ball["moveX"] = (rand(0..1) == 1 ? -1 : 1) * Math.cos(rand(45..60) * Math::PI / 180)
     ball["moveY"] = (rand(0..1) == 1 ? -1 : 1) * Math.sin(rand(45..60) * Math::PI / 180)
   end
 
-  def count_down(match_id)
+  def self.count_down(match_id)
     data = { count_down: true, count: 3 }
     ActionCable.server.broadcast("match_#{match_id}_channel", data)
     sleep 1
@@ -240,7 +245,7 @@ class MatchChannel < ApplicationCable::Channel
     sleep 1
   end
 
-  def calculate_RP(winner, loser)
+  def self.calculate_RP(winner, loser)
     w = UserProfile.find_by(user_id: winner["user_id"])
     l = UserProfile.find_by(user_id: loser["user_id"])
     if (l.rp - w.rp >= 200)
@@ -263,7 +268,7 @@ class MatchChannel < ApplicationCable::Channel
   # 50 war point
 
   # if winner has guild, give 25 point to his guild
-  def calculate_GP_WP(winner, match_type)
+  def self.calculate_GP_WP(winner, match_type)
     winner_guild = UserProfile.find_by(user_id: winner["user_id"]).guild
     # if winner has guild
     if winner_guild.present?

@@ -100,7 +100,7 @@ $(() => {
             e.stopImmediatePropagation();
             const data = War.data.toJSON();
             try {
-                const ongoing = await Helper.ajax(`/api/war_ongoing/${data.id}`);
+                const ongoing = await Helper.ajax(`/api/war_ongoing/${data.id}`, '', 'GET');
                 if (ongoing === "true")
                     throw "There can be ONLY one match in war time";
                 const new_match = await Helper.ajax('/api/matches/',
