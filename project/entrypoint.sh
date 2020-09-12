@@ -14,13 +14,22 @@ yarn install
 # seed data
 # bundle exec rake db:seed
 
-rails db:drop && rails db:create && rails db:migrate && rails db:seed
+export SECRET_KEY_BASE=$(bundle exec rake secret)
+export DISABLE_DATABASE_ENVIRONMENT_CHECK=1
+
+rails db:environment:set RAILS_ENV=production
+RAILS_ENV=production bundle exec rake db:drop db:create db:migrate db:seed
+
+RAILS_ENV=production bundle exec rake assets:clobber
+RAILS_ENV=production bundle exec rake assets:precompile
+
+RAILS_ENV=production RACK_ENV=production NODE_ENV=production bin/webpack
 
 # --------------
 # https://stackoverflow.com/questions/25775266/how-to-keep-docker-container-running-after-starting-services
 
 #./bin/webpack-dev-server &
-rails s -b 0.0.0.0 &
-tail -f /dev/null
+RAILS_SERVE_STATIC_FILES=true RAILS_ENV=production rails s -b 0.0.0.0 -e production # &
+# tail -f /dev/null
 
 

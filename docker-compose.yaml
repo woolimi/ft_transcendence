@@ -20,8 +20,10 @@ services:
     depends_on: 
       - 'db'
     environment:
-      RAILS_ENV: development
-    # restart: always
+      RAILS_ENV: production
+      RACK_ENV: production
+      NODE_ENV: production
+    restart: always
 
   db:
     image: postgres:12.1
