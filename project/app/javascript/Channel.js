@@ -4,7 +4,7 @@ import Backbone from "backbone"
 import Helper from "./Helper.js"
 import Router from "./Router.js"
 import Profile from "./Profile"
-import ChannelChannel from "../channels/channel_channel"
+import ChannelChannel from "./channels/channel_channel"
 
 const Channel = {};
 

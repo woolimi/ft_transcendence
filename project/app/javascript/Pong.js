@@ -1,4 +1,4 @@
-import MatchChannel from "../channels/match_channel"
+import MatchChannel from "./channels/match_channel"
 import $ from "jquery"
 // import Match from "./Match"
 

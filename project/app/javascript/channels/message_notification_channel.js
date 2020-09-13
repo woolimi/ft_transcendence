@@ -1,7 +1,7 @@
 import consumer from "./consumer"
 import Backbone from "backbone"
-import Channel from "../packs/Channel"
-import Helper from "../packs/Helper";
+import Channel from "../Channel"
+import Helper from "../Helper";
 
 const MessageNotificationChannel = {};
 

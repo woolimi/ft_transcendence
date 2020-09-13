@@ -23,13 +23,13 @@ window._ = _;
 require("jquery-ui");
 require("bootstrap");
 require("backbone");
-import Helper from "./Helper.js"
+import Helper from "../Helper.js"
 global.Helper = Helper;
 window.Helper = Helper;
 
-import 'css/site'
+import '../css/site.scss'
 
-import SPA from "./SPA.js"
+import SPA from "../SPA.js"
 if ($("html").data().isLogin) {
 	$(()=> {
 		SPA.start();

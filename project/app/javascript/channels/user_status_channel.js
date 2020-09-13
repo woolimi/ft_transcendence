@@ -1,7 +1,7 @@
 import consumer from "./consumer"
 import $ from "jquery"
 import Backbone from "backbone"
-import Friends from "../packs/Friends.js"
+import Friends from "../Friends.js"
 
 const UserStatusChannel = {};
 UserStatusChannel.channel = null;

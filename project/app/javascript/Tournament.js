@@ -2,8 +2,8 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Helper from "./Helper.js"
-import Router from "../packs/Router";
-import TournamentChannel from "../channels/tournament_channel"
+import Router from "./Router.js";
+import TournamentChannel from "./channels/tournament_channel"
 
 import 'css/tournament'
 

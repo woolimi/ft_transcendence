@@ -1,6 +1,6 @@
 import consumer from "./consumer"
-import Helper from "../packs/Helper";
-import Router from "../packs/Router";
+import Helper from "../Helper";
+import Router from "../Router";
 
 const NotificationChannel = {};
 NotificationChannel.channel = null;

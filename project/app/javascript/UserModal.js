@@ -3,7 +3,7 @@ import _ from "underscore"
 import Backbone from "backbone"
 import Router from "./Router.js"
 import Helper from "./Helper.js";
-import NotificationChannel from "../channels/notification_channel.js";
+import NotificationChannel from "./channels/notification_channel.js";
 
 const UserModal = {};
 

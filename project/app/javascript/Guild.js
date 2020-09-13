@@ -4,7 +4,7 @@ import Backbone from "backbone"
 import Profile from "./Profile.js"
 import Router from "./Router.js"
 import Helper from "./Helper.js"
-import GuildChannel from "../channels/guild_channel"
+import GuildChannel from "./channels/guild_channel"
 import flatpickr from "flatpickr";
 require("flatpickr/dist/flatpickr.css")
 // import { French } from "flatpickr/dist/l10n/fr.js"

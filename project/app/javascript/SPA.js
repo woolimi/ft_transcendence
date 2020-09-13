@@ -4,9 +4,9 @@ import Backbone from "backbone"
 import Navbar from "./Navbar.js"
 import UserModal from "./UserModal.js"
 import Friends from "./Friends.js"
-import MessageNotificationChannel from "../channels/message_notification_channel"
+import MessageNotificationChannel from "./channels/message_notification_channel"
 import Channel from "./Channel"
-import NotificationChannel from '../channels/notification_channel'
+import NotificationChannel from './channels/notification_channel'
 
 const SPA = {}
 

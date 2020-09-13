@@ -1,5 +1,5 @@
 import consumer from "./consumer"
-import Helper from "../packs/Helper";
+import Helper from "../Helper";
 
 const ChatChannel = {};
 ChatChannel.channel = null;

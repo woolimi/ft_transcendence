@@ -2,9 +2,9 @@ import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
 import Pong from "./Pong.js"
-import MatchChannel from '../channels/match_channel'
+import MatchChannel from './channels/match_channel'
 import Helper from "./Helper.js"
-import UserStatusChannel from '../channels/user_status_channel'
+import UserStatusChannel from './channels/user_status_channel'
 
 const Match = {};
 

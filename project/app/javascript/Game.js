@@ -1,7 +1,7 @@
 import $ from "jquery"
 import _ from "underscore"
 import Backbone from "backbone"
-import GameChannel from "../channels/game_channel"
+import GameChannel from "./channels/game_channel"
 import Helper from "./Helper";
 
 const Game = {};
