@@ -3,8 +3,8 @@ class TournamentRegistrationLimitJob < ApplicationJob
 
   def perform(tournament)
     if tournament.players.count < 4
-      tournament.cancel()
       ActionCable.server.broadcast "tournament_#{tournament.id}_channel", {type: "canceled" }
+      tournament.destroy
     else
       tournament.launch()
       ActionCable.server.broadcast "tournament_#{tournament.id}_channel", {type: "launch", data: tournament.jbuild() }

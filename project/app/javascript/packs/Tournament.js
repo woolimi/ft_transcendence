@@ -5,6 +5,8 @@ import Helper from "./Helper.js"
 import Router from "../packs/Router";
 import TournamentChannel from "../channels/tournament_channel"
 
+import 'css/tournament'
+
 const Tournament = {};
 
 if ($('html').data().isLogin) {

@@ -38,17 +38,17 @@ if User.find_by({ email: "jai@asdf.com"}).blank?
 		user_id: u[:id])
 end
 
-if User.find_by({ email: "salty@asdf.com"}).blank?
+if User.find_by({ email: "tintin@asdf.com"}).blank?
 	u = User.create!(
 		ft_id: 3, 
-		email: "salty@asdf.com",
+		email: "tintin@asdf.com",
 		password: "asdfas",
 	)
 
 	UserProfile.create!(
-		name: "Adrien Hanot",
-		nickname: "salty",
-		avatar_url: "https://cdn.intra.42.fr/users/small_salty.jpg",
+		name: "Tintin",
+		nickname: "tintin",
+		avatar_url: "https://anniversaire-celebrite.com/upload/250x333/tintin-250.jpg",
 		rp: 1320,
 		user_id: u[:id])
 end

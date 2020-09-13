@@ -27,6 +27,8 @@ import Helper from "./Helper.js"
 global.Helper = Helper;
 window.Helper = Helper;
 
+import 'css/site'
+
 import SPA from "./SPA.js"
 if ($("html").data().isLogin) {
 	$(()=> {
