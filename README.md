@@ -9,7 +9,7 @@ This 42 Pong support realtime game, chat, group chat channel, friend's online-of
 For more details, please read subject file `en.subject.pdf`.
 
 ## How to launch
-For lanching our website, just enter the command below.
+For launching our website, just enter the command below.
 ```
 docker-compose up --build
 ```
