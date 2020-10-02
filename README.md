@@ -1,7 +1,5 @@
 # ft_transcendence (42 Pong)
-<div style="text-align:center">
-	<img src="./presentation.gif" alt="presentation 42Pong"/>
-</div>
+<img src="./presentation.gif" alt="presentation 42Pong"/>
 
 ## Overview
 `ft_transcendence` is the last common core project of école 42. The superficial purpose of this project is to implement a real-time online pong contest website with `ruby on rails`, `backbone.js`, and `postgreSQL`, but <b>the real purpose is to create something you've never done before with a language you've never used and a framework you've never experienced before</b>.
